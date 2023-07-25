@@ -1,5 +1,5 @@
 .Header{
-    background: url("../images/Logo.png") left / 300px no-repeat, url("../images/HeaderBackground.jpg") center / 1800px no-repeat;
+    background: url("../images/Logo.png") top -7px left 20px / 370px no-repeat, url("../images/HeaderBackground.jpg") center / 1800px no-repeat;
     width: 100%;
     padding: 15px 0;
     height: 11rem;

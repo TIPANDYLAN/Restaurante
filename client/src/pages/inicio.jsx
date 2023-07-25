@@ -4,7 +4,7 @@ import {Header} from "../components/header.jsx"
 const Inicio = ()=>{
     return(
         <>
-        <Header/>
+        <Header titulo={"Menú de Platillos"} Buscar={true}/>
         <p>Hola Mundo!</p>
         </>
     );

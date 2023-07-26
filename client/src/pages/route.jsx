@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Inicio from "./inicio";
-import Cliente from "./ciente";
+import Cliente from "./cliente";
 
 export default function Page() {
   return (

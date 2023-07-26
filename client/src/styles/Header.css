@@ -19,7 +19,7 @@
 
 .Menu .titulo{
     font-size: 30px;
-    margin-left: 20px;
+    margin-left: 40px;
 }
 
 .login{
@@ -29,6 +29,7 @@
     margin-left: auto;
     display: flex;
     cursor: pointer;
+    margin-right: 20px;
 }
 
 .login .texto{
@@ -53,6 +54,7 @@
     width: 15px;
     height: auto;
     filter: brightness(4) opacity(0.7);
+    margin-left: -15px;
 }
 
 .Menu .Buscar{
@@ -62,7 +64,8 @@
     padding: 5px;
     font-size: 17px;
     padding-left: 30px;
-    margin-right: 30px;
+    margin-right: 50px;
+    color: white;
 }
 
 .Menu .Buscar::placeholder{

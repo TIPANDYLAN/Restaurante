@@ -52,4 +52,35 @@
   .button:hover {
     background-color: #E07A36; /* Color naranja un poco más claro en el hover */
   }
+
+  /* Estilos para el grid */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding: 20px;
+}
+
+.platos-container {
+  /* Estilos para el contenedor de los platos */
+}
+
+.order-container {
+  /* Estilos para el contenedor de la orden */
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.order-container h2 {
+  margin-bottom: 10px;
+}
+
+.order-container p {
+  font-size: 16px;
+  color: #666;
+}
+
+
   

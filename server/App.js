@@ -38,9 +38,12 @@ connection.connect((error) => {
   }
 });
 
+// Servir archivos estáticos (imágenes) desde la carpeta "uploads"
+app.use('/uploads', express.static('uploads'));
+
 // Obtener todos los platos
 app.get('/api/platos', (req, res) => {
-  const query = 'SELECT * FROM Restaurant.plato';
+  const query = 'SELECT * FROM Restaurant.PLATO';
 
   connection.query(query, (error, results) => {
     if (error) {
@@ -57,7 +60,7 @@ app.post('/api/platos', upload.single('Foto'), (req, res) => {
   const { Nombre, Precio, Descripcion } = req.body;
   const Foto = req.file.filename;
 
-  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO Restaurant.PLATO (NOMBRE_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?)';
 
   connection.query(query, [Nombre, Precio, Foto, Descripcion], (error, result) => {
     if (error) {
@@ -70,13 +73,14 @@ app.post('/api/platos', upload.single('Foto'), (req, res) => {
   });
 });
 
-// Actualizar un plato por ID
-app.put('/api/platos/:id', (req, res) => {
+app.put('/api/platos/:id', upload.single('Foto'), (req, res) => {
   const id = req.params.id;
-  const { Nombre, Precio } = req.body;
-  const query = 'UPDATE Restaurant.plato SET NOMBRE_PL = ?, PRECIO_PL = ? WHERE ID_PL = ?';
+  const { Nombre, Precio, Descripcion } = req.body;
+  const Foto = req.file ? req.file.filename : null; // Verificar si se cargó una nueva imagen
 
-  connection.query(query, [Nombre, Precio, id], (error, result) => {
+  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?, PRECIO_PL = ?, FOTO_PL = ?, DESCRIPCION_PL = ? WHERE ID_PL = ?';
+
+  connection.query(query, [Nombre, Precio, Foto, Descripcion, id], (error, result) => {
     if (error) {
       console.error('Error al actualizar el plato:', error);
       res.sendStatus(500);
@@ -90,7 +94,7 @@ app.put('/api/platos/:id', (req, res) => {
 // Eliminar un plato por ID
 app.delete('/api/platos/:id', (req, res) => {
   const id = req.params.id;
-  const query = 'DELETE FROM Restaurant.plato WHERE ID_PL = ?';
+  const query = 'DELETE FROM Restaurant.PLATO WHERE ID_PL = ?';
 
   connection.query(query, [id], (error, result) => {
     if (error) {

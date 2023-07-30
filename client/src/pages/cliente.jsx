@@ -1,7 +1,5 @@
 import React from "react";
 import { Header } from "../components/header.jsx";
-import clientestyle from "../styles/clientestyle.css"
-import Logo from "../images/Logo.png"
 
 
 const Cliente = () => {

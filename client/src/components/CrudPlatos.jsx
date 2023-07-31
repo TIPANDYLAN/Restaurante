@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
 import "../styles/Platos/CrudPlatos.css";
+import "../styles/Orden.css";
 
 const CrudPlatos = () => {
   const [platos, setPlatos] = useState([]);
@@ -125,10 +126,17 @@ const CrudPlatos = () => {
         <div className="Platos">
         {platos.map((plato) => (
           <li key={plato.ID_PL} className="Plato">
-            <p className="NombrePlato">{plato.NOMBRE_PL}</p>
-            <p>Precio: {plato.PRECIO_PL}</p>
-            <p>Descripción: {plato.DESCRIPCION_PL}</p>
+            <p className="recipe-title">{plato.NOMBRE_PL}</p>
+            <p className="recipe-desc">Precio: {plato.PRECIO_PL}</p>
+            <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
+            <p className="recipe-metadata">
+                    <span className="recipe-rating">★★★★<span>☆</span></span>
+                    <span className="recipe-votes">(12 votes)</span>
+                  </p>
+            
             <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
+            <br></br>
+
             <button onClick={() => handleEditarPlato(plato)}>Editar</button>
             <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
           </li>
@@ -139,7 +147,7 @@ const CrudPlatos = () => {
 
       <Modal isOpen={mostrar} onClose={() => setMostrar(false)}>
         {platoSeleccionado && (
-          <div className="Editar">
+          <div className="SegundoModal">
             <h2>Editar plato:</h2>
             <form>
               <label>Nombre:</label>

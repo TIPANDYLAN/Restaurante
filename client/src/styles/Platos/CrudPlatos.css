@@ -1,5 +1,8 @@
 .Crud{
     padding: 5px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .Editar{
     background-color: #faead9;
@@ -7,16 +10,16 @@
 }
 .Platos{
     display: grid;
-    grid-template-columns: repeat(auto-fill, 47%);
+    grid-template-columns: repeat(auto-fill, 37%);
     justify-content: center;
 }
 .Plato img{
-    max-width: 250px;
-    height: 150px;
+    height: 80%;
     grid-column: 2;
     grid-row: 1 / span 3;
     padding: 10px;
     justify-self: center;
+    width: 100%;
 }
 
 .Plato{
@@ -26,10 +29,6 @@
     padding: 10px 30px;
 }
 
-.Plato button{
-    padding: 5px;
-    margin: 0 5px;
-}
 
 .NombrePlato{
     font-weight: bold;
@@ -46,7 +45,76 @@
 .SegundoModal label, .Editar label{
     padding: 0 10px;
 }
-.SegundoModal input, .Editar input{
-    padding: 5px 0;
-    margin: 10px 0;
-}
+
+.AgregarPlato {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #30ac0e;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    font-size: clamp(0.7em, 1.2vw, 1.3em);
+    font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+  }
+  
+  /* Estilo para el adorno */
+  .AgregarPlato::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  
+  /* Estilo para el efecto hover */
+  .AgregarPlato:hover {
+    background-color: #dfa53b;
+  }
+
+ /* Estilos para el formulario dentro de SegundoModal */
+.SegundoModal form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Estilos para las etiquetas del formulario */
+  .SegundoModal form label {
+    margin-bottom: 5px;
+  }
+  
+  /* Estilos para los inputs del formulario */
+  .SegundoModal form input,
+  .SegundoModal form textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos para el botón del formulario */
+  .SegundoModal form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Estilo para el efecto hover en el botón */
+  .SegundoModal form button:hover {
+    background-color: #45a049;
+  }

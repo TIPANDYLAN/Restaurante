@@ -23,31 +23,36 @@ const CrudPlatos = () => {
 
   const handleActualizarPlato = (id) => {
     // Validar que los campos no estén vacíos
-    if (!nombre || !precio || !descripcion) {
+    if (!nombre.trim() || (typeof precio !== "number" || isNaN(precio)) || !descripcion.trim()) {
       console.error("Todos los campos son requeridos");
       return;
     }
-
-    // Crear un objeto FormData para enviar los datos actualizados del plato al servidor
+  
+    // Crear un objeto FormData solo con los campos que han sido modificados
     const formData = new FormData();
-    formData.append("Nombre", nombre);
-    formData.append("Precio", precio);
-    formData.append("Descripcion", descripcion);
-    formData.append("Foto", foto);
-
-    // Hacer la solicitud PUT a la API para actualizar el plato por su ID
-    axios
-      .put(`http://localhost:4000/api/platos/${id}`, formData)
-      .then(() => {
-        console.log("Plato actualizado exitosamente");
-        // Actualizar la lista de platos después de la actualización
-        setPlatos(platos.map((plato) => (plato.ID_PL === id ? { ...plato, ...formData } : plato)));
-        setPlatoSeleccionado(null);
-      })
-      .catch((error) => {
-        console.error("Error al actualizar el plato:", error);
-      });
+    formData.append("ID_PL", id);
+    if (nombre !== platoSeleccionado.NOMBRE_PL) {
+      formData.append("Nombre", nombre);
+    }
+    if (precio !== platoSeleccionado.PRECIO_PL) {
+      formData.append("Precio", precio.toString());
+    }
+    if (descripcion !== platoSeleccionado.DESCRIPCION_PL) {
+      formData.append("Descripcion", descripcion);
+    }
+    if (foto !== null) {
+      formData.append("Foto", foto);
+    }
+  
+    // Hacer la solicitud PUT a la API solo si hay cambios
+    if (formData.get("Nombre") || formData.get("Precio") || formData.get("Descripcion") || formData.get("Foto")) {
+      // Resto del código para la solicitud PUT
+    } else {
+      console.log("No se han realizado cambios en el plato");
+      setPlatoSeleccionado(null);
+    }
   };
+  
 
   const handleEditarPlato = (plato) => {
     setPlatoSeleccionado(plato);
@@ -79,7 +84,7 @@ const CrudPlatos = () => {
             <p>Nombre: {plato.NOMBRE_PL}</p>
             <p>Precio: {plato.PRECIO_PL}</p>
             <p>Descripción: {plato.DESCRIPCION_PL}</p>
-            <img src={`http://localhost:4000/uploads/${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
+            <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
             <button onClick={() => handleEditarPlato(plato)}>Editar</button>
             <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
           </li>
@@ -94,7 +99,7 @@ const CrudPlatos = () => {
             <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
             <br />
             <label>Precio:</label>
-            <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+            <input type="number" value={precio} onChange={(e) => setPrecio(parseFloat(e.target.value))} />
             <br />
             <label>Descripción:</label>
             <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />

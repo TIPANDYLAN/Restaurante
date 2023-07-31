@@ -33,7 +33,7 @@ const Inicio = () => {
                 <p>Nombre: {plato.NOMBRE_PL}</p>
                 <p>Precio: {plato.PRECIO_PL}</p>
                 <p>Descripción: {plato.DESCRIPCION_PL}</p>
-                <img src={`http://localhost:4000/uploads/${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
+                <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
               </li>
             ))}
           </ul>

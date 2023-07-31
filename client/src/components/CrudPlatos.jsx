@@ -75,6 +75,7 @@ const CrudPlatos = () => {
     axios
       .post("http://localhost:4000/api/platos", formData)
       .then((response) => {
+
         console.log("Plato creado exitosamente");
         // Actualizar la lista de platos después de crear uno nuevo
         setPlatos([...platos, response.data]);
@@ -125,6 +126,7 @@ const CrudPlatos = () => {
         </div>
       </ul>
       <h2>Agregar nuevo plato:</h2>
+      
       <form>
         <label>Nombre:</label>
         <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />

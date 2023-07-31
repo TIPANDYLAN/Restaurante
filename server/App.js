@@ -71,7 +71,7 @@ app.post('/api/platos', fileUpload, (req, res) => {
     path.join(__dirname, "./uploads/" + req.file.filename)
   );
 
-  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?, ?)';
 
   connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion], (error, result) => {
     if (error) {
@@ -84,13 +84,12 @@ app.post('/api/platos', fileUpload, (req, res) => {
   });
 });
 
-// Actualizar un plato por ID
-app.put('/api/platos/:id', (req, res) => {
+app.put('/api/platos/:id', fileUpload, (req, res) => {
   const id = req.params.id;
   const { Nombre, Categoria, Precio, Descripcion } = req.body;
-  const Foto = req.file ? req.file.filename : null; // Verificar si se cargó una nueva imagen
+  const Foto = req.file ? fs.readFileSync(path.join(__dirname, "./uploads/" + req.file.filename)) : null;
 
-  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?,CATEGORIA_PL = ? ,PRECIO_PL = ?, FOTO_PL = ?, DESCRIPCION_PL = ? WHERE ID_PL = ?';
+  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?, CATEGORIA_PL = ?, PRECIO_PL = ?, FOTO_PL = ?, DESCRIPCION_PL = ? WHERE ID_PL = ?';
 
   connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion, id], (error, result) => {
     if (error) {
@@ -102,6 +101,7 @@ app.put('/api/platos/:id', (req, res) => {
     }
   });
 });
+
 
 // Eliminar un plato por ID
 app.delete('/api/platos/:id', (req, res) => {

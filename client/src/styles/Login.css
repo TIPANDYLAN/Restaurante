@@ -61,3 +61,15 @@
     color: #DF964A;
     cursor: pointer;
 }
+
+.gridModal{
+    background-color: #424242;
+    display: grid;
+    grid-template-columns: 55% auto;
+    border-radius: 15px;
+}
+
+.gridModal .imagen{
+    background: url('../images/Parrilla.webp') center / cover no-repeat;
+    border-radius: 15px;
+}

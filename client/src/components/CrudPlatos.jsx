@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Modal from "./Modal";
+
+import "../styles/CrudPlatos.css";
 
 const CrudPlatos = () => {
   const [platos, setPlatos] = useState([]);
   const [platoSeleccionado, setPlatoSeleccionado] = useState(null);
   const [nombre, setNombre] = useState("");
-  
   const [precio, setPrecio] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [foto, setFoto] = useState(null);
+
+  const [mostrar, setMostrar] = useState(false);
 
   useEffect(() => {
     // Hacer la solicitud a la API para obtener los platos
@@ -31,29 +35,35 @@ const CrudPlatos = () => {
   
     // Crear un objeto FormData solo con los campos que han sido modificados
     const formData = new FormData();
-    formData.append("ID_PL", id);
-    if (nombre !== platoSeleccionado.NOMBRE_PL) {
-      formData.append("Nombre", nombre);
-    }
-    if (precio !== platoSeleccionado.PRECIO_PL) {
-      formData.append("Precio", precio.toString());
-    }
-    if (descripcion !== platoSeleccionado.DESCRIPCION_PL) {
-      formData.append("Descripcion", descripcion);
-    }
-    if (foto !== null) {
-      formData.append("Foto", foto);
-    }
+    formData.append("Nombre", nombre);
+    formData.append("Precio", precio.toString());
+    formData.append("Descripcion", descripcion);
+    formData.append("Foto", foto);
   
     // Hacer la solicitud PUT a la API solo si hay cambios
-    if (formData.get("Nombre") || formData.get("Precio") || formData.get("Descripcion") || formData.get("Foto")) {
-      // Resto del código para la solicitud PUT
+    if (
+      nombre !== platoSeleccionado.NOMBRE_PL ||
+      precio !== platoSeleccionado.PRECIO_PL ||
+      descripcion !== platoSeleccionado.DESCRIPCION_PL ||
+      foto !== null
+    ) {
+      axios
+        .put(`http://localhost:4000/api/platos/${id}`, formData)
+        .then((response) => {
+          console.log("Plato actualizado exitosamente");
+          // Resto del código para actualizar los platos
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el plato:", error);
+        });
     } else {
       console.log("No se han realizado cambios en el plato");
       setPlatoSeleccionado(null);
+      setMostrar(false);
     }
   };
   
+
   const handleAgregarPlato = () => {
     // Crear un objeto FormData para enviar la imagen al servidor
     const formData = new FormData();
@@ -80,6 +90,8 @@ const CrudPlatos = () => {
     setNombre(plato.NOMBRE_PL);
     setPrecio(plato.PRECIO_PL);
     setDescripcion(plato.DESCRIPCION_PL);
+    setFoto(null); // Clear the image selection when editing
+    setMostrar(true);
   };
 
   const handleEliminarPlato = (id) => {
@@ -110,7 +122,6 @@ const CrudPlatos = () => {
             <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
           </li>
         ))}
-        
       </ul>
       <h2>Agregar nuevo plato:</h2>
       <form>
@@ -132,28 +143,30 @@ const CrudPlatos = () => {
       </form>
       {platos.length === 0 && <p>No hay platos disponibles.</p>}
 
-      {platoSeleccionado && (
-        <div>
-          <h2>Editar plato:</h2>
-          <form>
-            <label>Nombre:</label>
-            <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-            <br />
-            <label>Precio:</label>
-            <input type="number" value={precio} onChange={(e) => setPrecio(parseFloat(e.target.value))} />
-            <br />
-            <label>Descripción:</label>
-            <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-            <br />
-            <label>Foto:</label>
-            <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
-            <br />
-            <button type="button" onClick={() => handleActualizarPlato(platoSeleccionado.ID_PL)}>
-              Actualizar Plato
-            </button>
-          </form>
-        </div>
-      )}
+      <Modal isOpen={mostrar} onClose={() => setMostrar(false)}>
+        {platoSeleccionado && (
+          <div className="Editar">
+            <h2>Editar plato:</h2>
+            <form>
+              <label>Nombre:</label>
+              <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+              <br />
+              <label>Precio:</label>
+              <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+              <br />
+              <label>Descripción:</label>
+              <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+              <br />
+              <label>Foto:</label>
+              <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
+              <br />
+              <button type="button" onClick={() => handleActualizarPlato(platoSeleccionado.ID_PL)}>
+                Actualizar Plato
+              </button>
+            </form>
+          </div>
+        )}
+      </Modal>
     </>
   );
 };

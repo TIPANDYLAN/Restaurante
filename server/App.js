@@ -66,20 +66,20 @@ app.get('/api/platos', (req, res) => {
 
 // Crear un nuevo plato
 app.post('/api/platos', fileUpload, (req, res) => {
-  const { Nombre, Precio, Descripcion } = req.body;
+  const { Nombre, Categoria,Precio, Descripcion } = req.body;
   const Foto = fs.readFileSync(
     path.join(__dirname, "./uploads/" + req.file.filename)
   );
 
-  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?)';
+  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?)';
 
-  connection.query(query, [Nombre, Precio, Foto, Descripcion], (error, result) => {
+  connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion], (error, result) => {
     if (error) {
       console.error('Error al crear el plato:', error);
       res.sendStatus(500);
     } else {
       console.log('Plato creado exitosamente');
-      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre, PRECIO_PL: Precio, FOTO_PL: Foto, DESCRIPCION_PL: Descripcion });
+      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre,  CATEGORIA_PL: Categoria ,PRECIO_PL: Precio, FOTO_PL: Foto, DESCRIPCION_PL: Descripcion });
     }
   });
 });
@@ -87,12 +87,12 @@ app.post('/api/platos', fileUpload, (req, res) => {
 // Actualizar un plato por ID
 app.put('/api/platos/:id', (req, res) => {
   const id = req.params.id;
-  const { Nombre, Precio, Descripcion } = req.body;
+  const { Nombre, Categoria, Precio, Descripcion } = req.body;
   const Foto = req.file ? req.file.filename : null; // Verificar si se cargó una nueva imagen
 
-  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?, PRECIO_PL = ?, FOTO_PL = ?, DESCRIPCION_PL = ? WHERE ID_PL = ?';
+  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?,CATEGORIA_PL = ? ,PRECIO_PL = ?, FOTO_PL = ?, DESCRIPCION_PL = ? WHERE ID_PL = ?';
 
-  connection.query(query, [Nombre, Precio, Foto, Descripcion, id], (error, result) => {
+  connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion, id], (error, result) => {
     if (error) {
       console.error('Error al actualizar el plato:', error);
       res.sendStatus(500);

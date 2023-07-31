@@ -5,6 +5,7 @@ const CrudPlatos = () => {
   const [platos, setPlatos] = useState([]);
   const [platoSeleccionado, setPlatoSeleccionado] = useState(null);
   const [nombre, setNombre] = useState("");
+  
   const [precio, setPrecio] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [foto, setFoto] = useState(null);
@@ -53,6 +54,26 @@ const CrudPlatos = () => {
     }
   };
   
+  const handleAgregarPlato = () => {
+    // Crear un objeto FormData para enviar la imagen al servidor
+    const formData = new FormData();
+    formData.append("Nombre", nombre);
+    formData.append("Precio", precio);
+    formData.append("Descripcion", descripcion);
+    formData.append("Foto", foto);
+
+    // Hacer la solicitud POST a la API para crear un nuevo plato
+    axios
+      .post("http://localhost:4000/api/platos", formData)
+      .then((response) => {
+        console.log("Plato creado exitosamente");
+        // Actualizar la lista de platos después de crear uno nuevo
+        setPlatos([...platos, response.data]);
+      })
+      .catch((error) => {
+        console.error("Error al crear el plato:", error);
+      });
+  };
 
   const handleEditarPlato = (plato) => {
     setPlatoSeleccionado(plato);
@@ -89,7 +110,27 @@ const CrudPlatos = () => {
             <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
           </li>
         ))}
+        
       </ul>
+      <h2>Agregar nuevo plato:</h2>
+      <form>
+        <label>Nombre:</label>
+        <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+        <br />
+        <label>Precio:</label>
+        <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+        <br />
+        <label>Descripción:</label>
+        <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+        <br />
+        <label>Foto:</label>
+        <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
+        <br />
+        <button type="button" onClick={handleAgregarPlato}>
+          Agregar Plato
+        </button>
+      </form>
+      {platos.length === 0 && <p>No hay platos disponibles.</p>}
 
       {platoSeleccionado && (
         <div>

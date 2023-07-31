@@ -77,3 +77,18 @@
     outline: none;
     color: white;
 }
+
+.MenuNav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .MenuNav li {
+    margin-right: 20px;
+  }
+  
+  .MenuNav li:last-child {
+    margin-right: 0;
+  }

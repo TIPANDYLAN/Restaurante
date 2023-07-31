@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import Modal from "./Modal.jsx";
 import "../styles/Header.css";
 import Lupa from "../images/search-icon.png";
-import Login from "../images/login.png"
+import LoginPicture from "../images/login.png"
+import { Login } from "./login.jsx";
 
 export const Header = ({titulo,Buscar}) =>{
 
@@ -17,14 +18,16 @@ export const Header = ({titulo,Buscar}) =>{
                 <div className="titulo">{titulo}</div>
                 <button className="login" onClick={()=>setMostrar(true)}>
                     <div className="texto">Iniciar Sesion</div>
-                    <img src={Login} alt="" />
+                    <img src={LoginPicture} alt="" />
                 </button>
                 <div className="Busqueda">
                     {Buscar ? <><button><img src={Lupa} alt="" /></button><input type="text" placeholder="Buscar" className="Buscar"/></> : null}
                 </div>
                 
             </div>
-            <Modal isOpen={mostrar} onClose={() => setMostrar(false)}/>
+            <Modal isOpen={mostrar} onClose={() => setMostrar(false)}>
+                <Login/>
+            </Modal>
         </>
     );
 }

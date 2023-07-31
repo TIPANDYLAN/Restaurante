@@ -27,12 +27,12 @@ drop table if exists CLIENTE;
 /*==============================================================*/
 create table CLIENTE
 (
-   ID_CL                smallint not null,
+   ID_CL                int not null,
    NOMBRE_CL            text not null,
    CORREO_CL            text not null,
-   TELEFONO_CL          numeric(8,0) not null,
+   TELEFONO_CL          bigint not null,
    DIRECCION_CL         text not null,
-   CEDULA_CL            int not null,
+   CEDULA_CL            bigint  not null,
    primary key (ID_CL)
 );
 
@@ -53,9 +53,9 @@ create table EMPLEADO
 /*==============================================================*/
 create table ENTREGA
 (
-   ID_EN                smallint not null,
-   ID_I                 smallint not null,
-   ID_PR                smallint not null,
+   ID_EN                int not null,
+   ID_I                 int not null,
+   ID_PR                int not null,
    FECHA_EN             date not null,
    TIPO_EN              text not null,
    CANTIDAD_EN          float not null,
@@ -67,7 +67,7 @@ create table ENTREGA
 /*==============================================================*/
 create table INGREDIENTES
 (
-   ID_I                 smallint not null,
+   ID_I                 int not null,
    NOMBRE_I             text not null,
    DESCRIPCION_I        text not null,
    PRECIO_I             float not null,
@@ -79,8 +79,8 @@ create table INGREDIENTES
 /*==============================================================*/
 create table INVENTARIO
 (
-   ID_EN                smallint not null,
-   ID_INV               smallint not null,
+   ID_EN                int not null,
+   ID_INV               int not null,
    DESCRIPCION_INV      text not null,
    primary key (ID_INV)
 );
@@ -90,9 +90,9 @@ create table INVENTARIO
 /*==============================================================*/
 create table ORDEN
 (
-   ID_OR                smallint not null,
-   ID_CL                smallint not null,
-   ID_EMP               int,
+   ID_OR                int not null,
+   ID_CL                int not null,
+   ID_EMP               int not null,
    FECHA_OR             date not null,
    NMESA_OR             numeric(20,0) not null,
    DESCRIPCION_OR       text not null,
@@ -104,10 +104,10 @@ create table ORDEN
 /*==============================================================*/
 create table PEDIDO
 (
-   ID_PE                smallint not null,
-   ID_PL                smallint not null,
-   ID_OR                smallint not null,
-   ID_INV               smallint not null,
+   ID_PE                int not null,
+   ID_PL                int not null,
+   ID_OR                int not null,
+   ID_INV               int not null,
    PRECIO_PE            real,
    primary key (ID_PE)
 );
@@ -117,8 +117,9 @@ create table PEDIDO
 /*==============================================================*/
 CREATE TABLE PLATO
 (
-   ID_PL                SMALLINT NOT NULL AUTO_INCREMENT,
+   ID_PL                int NOT NULL AUTO_INCREMENT,
    NOMBRE_PL            VARCHAR(100) NOT NULL,
+   CATEGORIA_PL            VARCHAR(100),
    PRECIO_PL            FLOAT NOT NULL,
    FOTO_PL              LONGBLOB NOT NULL,
    DESCRIPCION_PL       TEXT NOT NULL,
@@ -131,7 +132,7 @@ CREATE TABLE PLATO
 /*==============================================================*/
 create table PROVEEDOR
 (
-   ID_PR                smallint not null,
+   ID_PR                int not null,
    NOMBRE_PR            text not null,
    DESCRIPCION_I        text not null,
    primary key (ID_PR)
@@ -142,9 +143,9 @@ create table PROVEEDOR
 /*==============================================================*/
 create table RECETA
 (
-   ID_RE                smallint not null,
-   ID_I                 smallint not null,
-   ID_PL                smallint not null,
+   ID_RE                int not null,
+   ID_I                 int not null,
+   ID_PL                int not null,
    PESO_RE              float not null,
    DESCRIPCION_RE       text not null,
    NOMBRE_RE            text not null,

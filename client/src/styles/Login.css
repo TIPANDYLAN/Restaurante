@@ -1,0 +1,75 @@
+.loginForm{
+    padding: 15px 60px;
+    color: white;
+}
+
+.loginForm .logo{
+    width: 100%;
+    height: 230px;
+    background: url("../images/Logo.png") center / 400px no-repeat;
+    margin-bottom: -25px;
+}
+
+.loginForm .titulo{
+    font-size: 40px;
+}
+
+.loginForm p{
+    font-size: 20px;
+    margin-top: 0;
+}
+
+.loginForm input{
+    background-color: #F6F2E9;
+    border-radius: 10px;
+    width: 75%;
+    padding: 15px 5px;
+}
+
+.loginForm .Form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.loginForm .Form p{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 200;
+    margin-bottom: 4px;
+    margin-top: 8px;
+}
+
+.loginForm .Form input:focus{
+    outline: none;
+}
+
+.loginForm button{
+    background: #DF964A;
+    color: white;
+    border: none;
+    padding: 8px 50px;
+    border-radius: 20px;
+    font-size: 18px;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.loginForm .Registrarse a{
+    color: #DF964A;
+    cursor: pointer;
+}
+
+.gridModal{
+    background-color: #424242;
+    display: grid;
+    grid-template-columns: 55% auto;
+    border-radius: 15px;
+}
+
+.gridModal .imagen{
+    background: url('../images/Parrilla.webp') center / cover no-repeat;
+    border-radius: 15px;
+}

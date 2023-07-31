@@ -1,0 +1,81 @@
+/* Inicio.css */
+
+/* Variables de colores */
+:root {
+    --color-naranja: #DF964A;
+    --color-blanco: #FFFFFF;
+    --color-gris-claro: rgba(0, 0, 0, 0.2);
+    background-color: #faead9;
+  }
+  
+  /* Estilos para el contenedor principal */
+  .container {
+    padding: 20px;
+    background-color: var(--color-naranja);
+    color: var(--color-blanco);
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Estilos para el título */
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos para la lista de platos */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* Estilos para cada ítem de plato */
+  li {
+    background-color: var(--color-blanco);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px var(--color-gris-claro);
+  }
+  
+  /* Estilos para el botón */
+  .button {
+    padding: 10px 20px;
+    background-color: var(--color-naranja);
+    color: var(--color-blanco);
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #E07A36; /* Color naranja un poco más claro en el hover */
+  }
+
+  /* Estilos para el grid */
+
+
+.platos-container {
+  /* Estilos para el contenedor de los platos */
+}
+
+.order-container {
+  /* Estilos para el contenedor de la orden */
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.order-container h2 {
+  margin-bottom: 10px;
+}
+
+.order-container p {
+  font-size: 16px;
+  color: #666;
+}
+
+
+  

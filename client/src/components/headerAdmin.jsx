@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import Modal from "./Modal.jsx";
 import "../styles/Header.css";
 import { useNavigate } from "react-router-dom";
-import Lupa from "../images/search-icon.png";
-import Login from "../images/login.png"
 
 export const HeaderAdmin = ({titulo,Buscar}) =>{
     const navigate = useNavigate();

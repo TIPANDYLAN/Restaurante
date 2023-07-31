@@ -12,6 +12,7 @@ const CrudPlatos = () => {
   const [foto, setFoto] = useState(null);
 
   const [mostrar, setMostrar] = useState(false);
+  const [mostrarSegundoModal, setMostrarSegundoModal] = useState(false);
 
   useEffect(() => {
     // Hacer la solicitud a la API para obtener los platos
@@ -108,8 +109,17 @@ const CrudPlatos = () => {
       });
   };
 
+  const handleAbrirSegundoModal = () => {
+    setMostrarSegundoModal(true);
+  };
+  
+  const handleCerrarSegundoModal = () => {
+    setMostrarSegundoModal(false);
+  };
+  
   return (
     <div className="Crud">
+      <button className="AgregarPlato" onClick={() => setMostrarSegundoModal(true)}>Agregar Nuevo Plato</button>
       <h2>Platos disponibles:</h2>
       <ul>
         <div className="Platos">
@@ -125,25 +135,6 @@ const CrudPlatos = () => {
         ))}
         </div>
       </ul>
-      <h2>Agregar nuevo plato:</h2>
-      
-      <form>
-        <label>Nombre:</label>
-        <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-        <br />
-        <label>Precio:</label>
-        <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
-        <br />
-        <label>Descripción:</label>
-        <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-        <br />
-        <label>Foto:</label>
-        <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
-        <br />
-        <button type="button" onClick={handleAgregarPlato}>
-          Agregar Plato
-        </button>
-      </form>
       {platos.length === 0 && <p>No hay platos disponibles.</p>}
 
       <Modal isOpen={mostrar} onClose={() => setMostrar(false)}>
@@ -169,6 +160,28 @@ const CrudPlatos = () => {
             </form>
           </div>
         )}
+      </Modal>
+      <Modal isOpen={mostrarSegundoModal} onClose={handleCerrarSegundoModal}>
+        <div className="SegundoModal">
+          <h2>Agregar nuevo plato:</h2>
+          <form>
+            <label>Nombre:</label>
+            <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+            <br />
+            <label>Precio:</label>
+            <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+            <br />
+            <label>Descripción:</label>
+            <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+            <br />
+            <label>Foto:</label>
+            <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
+            <br />
+            <button type="button" onClick={handleAgregarPlato}>
+              Agregar Plato
+            </button>
+          </form>
+        </div>
       </Modal>
     </div>
   );

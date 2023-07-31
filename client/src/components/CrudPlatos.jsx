@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
+import  Ingredientes  from "../components/Ingredientes.jsx";
 import "../styles/CrudPlatos.css";
 
 const CrudPlatos = () => {
@@ -75,6 +76,7 @@ const CrudPlatos = () => {
     axios
       .post("http://localhost:4000/api/platos", formData)
       .then((response) => {
+
         console.log("Plato creado exitosamente");
         // Actualizar la lista de platos después de crear uno nuevo
         setPlatos([...platos, response.data]);
@@ -123,6 +125,7 @@ const CrudPlatos = () => {
         ))}
       </ul>
       <h2>Agregar nuevo plato:</h2>
+      
       <form>
         <label>Nombre:</label>
         <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />

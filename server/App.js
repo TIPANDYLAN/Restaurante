@@ -119,7 +119,23 @@ app.delete('/api/platos/:id', (req, res) => {
   });
 });
 
-// Resto de las rutas para CRUD de ingredientes...
+
+// Agregar un nuevo ingrediente
+app.post('/api/ingredientes', (req, res) => {
+  const { NOMBRE_I, DESCRIPCION_I, PRECIO_I } = req.body;
+  
+  const query = 'INSERT INTO Restaurant.ingredientes (NOMBRE_I, DESCRIPCION_I, PRECIO_I) VALUES (?, ?, ?)';
+
+  connection.query(query, [NOMBRE_I, DESCRIPCION_I, PRECIO_I], (error, result) => {
+    if (error) {
+      console.error('Error al agregar el ingrediente:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Ingrediente agregado exitosamente');
+      res.json({ ID_I: result.insertId, NOMBRE_I, DESCRIPCION_I, PRECIO_I });
+    }
+  });
+});
 
 
 //Loguin

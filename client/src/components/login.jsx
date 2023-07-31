@@ -35,7 +35,7 @@ export const Login = () => {
   };
 
   return (
-    <>
+    <div className="gridModal">
       <div className="loginForm">
         <div className="logo" />
         <div className="titulo">Bienvenido</div>
@@ -68,6 +68,7 @@ export const Login = () => {
           </div>
         </div>
       </div>
-    </>
+      <div className="imagen"/>
+    </div>
   );
 };

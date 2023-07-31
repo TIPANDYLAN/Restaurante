@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
-import "../styles/CrudPlatos.css";
+import "../styles/Platos/CrudPlatos.css";
 
 const CrudPlatos = () => {
   const [platos, setPlatos] = useState([]);
@@ -108,12 +108,13 @@ const CrudPlatos = () => {
   };
 
   return (
-    <>
+    <div className="Crud">
       <h2>Platos disponibles:</h2>
       <ul>
+        <div className="Platos">
         {platos.map((plato) => (
-          <li key={plato.ID_PL}>
-            <p>Nombre: {plato.NOMBRE_PL}</p>
+          <li key={plato.ID_PL} className="Plato">
+            <p className="NombrePlato">{plato.NOMBRE_PL}</p>
             <p>Precio: {plato.PRECIO_PL}</p>
             <p>Descripción: {plato.DESCRIPCION_PL}</p>
             <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
@@ -121,6 +122,7 @@ const CrudPlatos = () => {
             <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
           </li>
         ))}
+        </div>
       </ul>
       <h2>Agregar nuevo plato:</h2>
       <form>
@@ -166,7 +168,7 @@ const CrudPlatos = () => {
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 };
 

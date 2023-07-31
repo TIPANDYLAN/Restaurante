@@ -12,7 +12,6 @@ export const HeaderAdmin = ({titulo,Buscar}) =>{
     return(
         <>
             <div className="Header"/>
-            <div className="titulo">Bienvenido Admin</div>
             <div className="Menu">
                 <div className="MenuNav">
                     <nav>

@@ -1,7 +1,39 @@
-.CrudPlatos{
-    width: 100%;
-    height: 100%;
+.Crud{
+    padding: 5px 40px;
 }
 .Editar{
     background-color: #faead9;
+    border-radius: 15px;
+}
+.Platos{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 47%);
+    justify-content: center;
+}
+.Plato img{
+    max-width: 250px;
+    height: 150px;
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    padding: 10px;
+    justify-self: center;
+}
+
+.Plato{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin: 0 20px;
+    padding: 10px 30px;
+}
+
+.Plato button{
+    padding: 5px;
+    margin: 0 5px;
+}
+
+.NombrePlato{
+    font-weight: bold;
+    font-size: 35px;
+    margin-bottom: 0px;
+    margin-top: 20px;
 }

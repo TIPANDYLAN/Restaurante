@@ -320,3 +320,11 @@
 .Platos-en-Orden p{
   text-align: center;
 }
+
+.Cliente{
+  display: flex;
+}
+
+.Cliente p{
+  margin-left: 15px;
+}

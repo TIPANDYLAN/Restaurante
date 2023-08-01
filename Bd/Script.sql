@@ -10,13 +10,13 @@ USE Restaurant;
 /* Created on:     30/7/2023 12:15:41                           */
 /*==============================================================*/
 
-drop table if exists PEDIDO_PLATO;
+drop table if exists PEDIDO;
 drop table if exists RECETA;
 drop table if exists PLATO;
 drop table if exists PROVEEDOR;
 drop table if exists INVENTARIO;
 drop table if exists RECETA;
-drop table if exists PEDIDO;
+drop table if exists ORDEN;
 drop table if exists INGREDIENTES;
 drop table if exists ENTREGA;
 drop table if exists EMPLEADO;
@@ -29,9 +29,9 @@ create table CLIENTE
 (
    CEDULA_CL            int not null,
    NOMBRE_CL            text not null,
-   CORREO_CL            text not null,
-   TELEFONO_CL          numeric(8,0) not null,
-   DIRECCION_CL         text not null,
+   CORREO_CL            text,
+   TELEFONO_CL          numeric(8,0),
+   DIRECCION_CL         text,
    primary key (CEDULA_CL)
 );
 

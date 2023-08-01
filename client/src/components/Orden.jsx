@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Orden.css";
+import CrudCliente from "./CrudCliente";
 
 const Orden = () => {
   const [platos, setPlatos] = useState([]);
@@ -62,6 +63,16 @@ const Orden = () => {
     setPlatoIdAEliminar(null);
   };
 
+  // Nueva función para eliminar los platos con cantidad 0 de la orden
+  const eliminarPlatosConCantidadCero = () => {
+    setOrden((prevOrden) => prevOrden.filter((item) => item.cantidad > 0));
+  };
+
+  // Llamamos a la función para eliminar los platos con cantidad 0 cada vez que se actualice la orden
+  useEffect(() => {
+    eliminarPlatosConCantidadCero();
+  }, [orden]);
+
   return (
     <>
       <div className="Inicio">
@@ -76,51 +87,57 @@ const Orden = () => {
                   <br></br>
                   <br></br>
                   <div className="gridAbajo">
-                  <p  className="recipe-desco" >{plato.PRECIO_PL}$ </p>
-                  <button  className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
+                    <p className="recipe-desco" >{plato.PRECIO_PL}$ </p>
+                    <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
                   </div>
                 </div>
               </li>
             ))}
           </ul>
         </div>
-      <div className="orden-container">
-        <h2>Orden</h2>
-        <br></br>
-        <div className="Platos-en-Orden">
-        <div className="grid-orden">
-          {orden.map((plato) => (
-            <div key={plato.ID_PL} className="orden-item">
-              <p className="recipe-desc2" >{plato.NOMBRE_PL}</p>
-              <p className="recipe-desc" >{plato.PRECIO_PL}$</p>
-              <p className="recipe-desc" >x{plato.cantidad}</p>
-              <button className="recipe-desc"  onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
-            </div>
-          ))}
-        </div>
-        
-        {orden.length === 0 && <p>No hay platos en la orden</p>}
-        {platosAEliminar > 0 && (
-          <div className="eliminar-platos">
-            <p>
-              ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas
-              eliminar?
-            </p>
-            <input
-              type="number"
-              min="1"
-              max={Math.min(platosAEliminar, 100)}
-              value={platosAEliminar}
-              onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
-            />
-            <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
+        <div className="orden-container">
+          <h2>Orden</h2>
+          <br></br>
+          <div className="Cliente">
+          <button className="AddCliente">Agregar Cliente</button>
+          <p>Cliente:</p>
           </div>
-        )}</div>
-        <div className="total-orden">
-          <h3>Total de la Orden: ${totalOrden}</h3>
+          <div className="Platos-en-Orden">
+            <div className="grid-orden">
+              {orden.map((plato) => (
+                <div key={plato.ID_PL} className="orden-item">
+                  <p className="recipe-desc2" >{plato.NOMBRE_PL}</p>
+                  <p className="recipe-desc" >{plato.PRECIO_PL}$</p>
+                  <p className="recipe-desc" >x{plato.cantidad}</p>
+                  <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
+                </div>
+              ))}
+            </div>
+
+            {orden.length === 0 && <p>No hay platos en la orden</p>}
+            {platosAEliminar > 0 && (
+              <div className="eliminar-platos">
+                <p>
+                  ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas
+                  eliminar?
+                </p>
+                <input
+                  type="number"
+                  min="1"
+                  max={Math.min(platosAEliminar, 100)}
+                  value={platosAEliminar}
+                  onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
+                />
+                <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
+              </div>
+            )}
+          </div>
+          <div className="total-orden">
+            <h3>Total de la Orden: ${totalOrden}</h3>
+          </div>
         </div>
-      </div>
-    </div >
+      </div >
+      <CrudCliente/>
     </>
   );
 };

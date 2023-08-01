@@ -44,10 +44,23 @@
     background-color: #e16d14;
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 30px;
     cursor: pointer;
   }
   
+  .gridAbajo{
+    display: grid;
+    grid-template-columns: auto 30%;
+    font-family: Glacial Indifference;
+  }
+
+  .gridAbajo .recipe-desco{
+    font-weight: 500;
+    font-size: 26px;
+    text-align: end;
+    margin-right: 15px;
+  }
+
   .orden-container {
     flex: 1;
     padding-left: 20px;
@@ -59,28 +72,33 @@
   
   .grid-orden {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
   }
   
   .orden-item {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 20% 40% 20% 20%;
+    padding: 20px 0px 15px 0;
+    margin: 0 20px;
+    margin-bottom: -6px;
+    border-bottom:0.5px solid rgba(181, 181, 181, 0.649) ;
+    font-family: Glacial Indifference;
   }
   
   .orden-item p {
     margin: 0;
+    font-family: Glacial Indifference;
+    font-size: 18px;
   }
   
   .orden-item button {
-    margin-top: 8px;
     padding: 4px 8px;
     background-color: #dc3545;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-family: Glacial Indifference;
   }
   
   .eliminar-platos {
@@ -106,10 +124,7 @@
   
   .total-orden {
     margin-top: 20px;
-  }
-  
-  .total-orden h3 {
-    margin: 0;
+    right: 0;
   }
   
   .no-platos {
@@ -172,7 +187,8 @@
   .recipe-title {
     margin: 0;
     font-size: clamp(1.4em, 2.1vw, 2.1em);
-    font-family: "Roboto Slab";
+    font-family: Glacial Indifference;
+    margin-bottom: 10px;
   }
   
   .recipe-title a {
@@ -187,7 +203,7 @@
   .recipe-rating {
     font-size: 1.5em;
     letter-spacing: 0.05em;
-    color:#e16d14
+    color:#f1bb0b
   }
   
   .recipe-rating span {
@@ -219,6 +235,12 @@
   font-size: clamp(0.5em, 1vw, 1em);
   font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
 }
+
+#descripcion{
+  margin-top: 10px;
+  margin-bottom: -15px;
+}
+
 .recipe-desc2{
   margin: 0;
   font-size: clamp(0.7em, 1.2vw, 1.3em);
@@ -238,10 +260,12 @@
 /* Estilo para la imagen en cada elemento 'li' */
 .platos-container li img {
   flex: 1; /* La imagen ocupará el 50% del espacio disponible */
-  max-width: 50%;
-  height: auto;
+  width: 250px;
+  height: 150px;
   object-fit: cover;
   object-position: 50% 50%;
+  margin:0 20px;
+  border-radius: 5px;
 }
 
 /* Estilo para el contenido de la receta en cada elemento 'li' */
@@ -284,4 +308,15 @@
 .Plato button:hover {
   background-color: #e7a139;
 
+}
+
+.Platos-en-Orden{
+  background: white;
+  padding: 5px;
+  border-radius: 15px;
+  box-shadow: 0 2px 3px rgba(159, 159, 159, 0.436);
+}
+
+.Platos-en-Orden p{
+  text-align: center;
 }

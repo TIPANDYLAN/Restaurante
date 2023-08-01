@@ -10,13 +10,13 @@ USE Restaurant;
 /* Created on:     30/7/2023 12:15:41                           */
 /*==============================================================*/
 
-drop table if exists PEDIDO;
+drop table if exists PEDIDO_PLATO;
 drop table if exists RECETA;
 drop table if exists PLATO;
 drop table if exists PROVEEDOR;
 drop table if exists INVENTARIO;
 drop table if exists RECETA;
-drop table if exists ORDEN;
+drop table if exists PEDIDO;
 drop table if exists INGREDIENTES;
 drop table if exists ENTREGA;
 drop table if exists EMPLEADO;
@@ -27,13 +27,12 @@ drop table if exists CLIENTE;
 /*==============================================================*/
 create table CLIENTE
 (
-   ID_CL                int not null,
+   CEDULA_CL            int not null,
    NOMBRE_CL            text not null,
    CORREO_CL            text not null,
-   TELEFONO_CL          bigint not null,
+   TELEFONO_CL          numeric(8,0) not null,
    DIRECCION_CL         text not null,
-   CEDULA_CL            bigint  not null,
-   primary key (ID_CL)
+   primary key (CEDULA_CL)
 );
 
 /*==============================================================*/
@@ -88,11 +87,10 @@ create table INVENTARIO
 /*==============================================================*/
 /* Table: ORDEN                                                 */
 /*==============================================================*/
-create table ORDEN
+create table PEDIDO
 (
    ID_OR                int not null,
-   ID_CL                int not null,
-   ID_EMP               int not null,
+   ID_EMP               int,
    FECHA_OR             date not null,
    NMESA_OR             numeric(20,0) not null,
    DESCRIPCION_OR       text not null,
@@ -102,10 +100,11 @@ create table ORDEN
 /*==============================================================*/
 /* Table: PEDIDO                                                */
 /*==============================================================*/
-create table PEDIDO
+create table PEDIDO_PLATO
 (
    ID_PE                int not null,
    ID_PL                int not null,
+   CEDULA_CL                int not null,
    ID_OR                int not null,
    ID_INV               int not null,
    PRECIO_PE            real,
@@ -117,7 +116,7 @@ create table PEDIDO
 /*==============================================================*/
 CREATE TABLE PLATO
 (
-   ID_PL                int NOT NULL AUTO_INCREMENT,
+   ID_PL                INT NOT NULL AUTO_INCREMENT,
    NOMBRE_PL            VARCHAR(100) NOT NULL,
    CATEGORIA_PL            VARCHAR(100),
    PRECIO_PL            FLOAT NOT NULL,
@@ -161,19 +160,19 @@ alter table ENTREGA add constraint FK_REALIZA foreign key (ID_PR)
 alter table INVENTARIO add constraint FK_LLENA foreign key (ID_EN)
       references ENTREGA (ID_EN) on delete restrict on update restrict;
 
-alter table ORDEN add constraint FK_ATIENDE foreign key (ID_EMP)
+alter table PEDIDO add constraint FK_ATIENDE foreign key (ID_EMP)
       references EMPLEADO (ID_EMP) on delete restrict on update restrict;
 
-alter table ORDEN add constraint FK_PIDE foreign key (ID_CL)
-      references CLIENTE (ID_CL) on delete restrict on update restrict;
+alter table PEDIDO_PLATO add constraint FK_PIDE foreign key (CEDULA_CL)
+      references CLIENTE (CEDULA_CL) on delete restrict on update restrict;
 
-alter table PEDIDO add constraint FK_CONTIENE foreign key (ID_OR)
-      references ORDEN (ID_OR) on delete restrict on update restrict;
+alter table PEDIDO_PLATO add constraint FK_CONTIENE foreign key (ID_OR)
+      references PEDIDO (ID_OR) on delete restrict on update restrict;
 
-alter table PEDIDO add constraint FK_GENERAN foreign key (ID_PL)
+alter table PEDIDO_PLATO add constraint FK_GENERAN foreign key (ID_PL)
       references PLATO (ID_PL) on delete restrict on update restrict;
 
-alter table PEDIDO add constraint FK_REDUCE_AUMENTA foreign key (ID_INV)
+alter table PEDIDO_PLATO add constraint FK_REDUCE_AUMENTA foreign key (ID_INV)
       references INVENTARIO (ID_INV) on delete restrict on update restrict;
 
 alter table RECETA add constraint FK_CONFORMAN foreign key (ID_I)

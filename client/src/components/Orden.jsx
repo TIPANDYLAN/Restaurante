@@ -66,23 +66,19 @@ const Orden = () => {
     <>
       <div className="Inicio">
         <div className="platos-container">
-          <h2>Platos disponibles</h2>
           <ul>
             {platos.map((plato) => (
               <li key={plato.ID_PL}>
                 <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
                 <div className="recipe-content">
                   <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
-                  <p  className="recipe-desc" >Precio: {plato.PRECIO_PL} $ </p>
-                  <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p> 
-                  <p className="recipe-metadata">
-                    <span className="recipe-rating">★★★★<span>☆</span></span>
-                    <span className="recipe-votes">(12 votes)</span>
-                  </p>
+                  <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p> 
                   <br></br>
                   <br></br>
-                  <button  className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar a la Orden</button>
-                  
+                  <div className="gridAbajo">
+                  <p  className="recipe-desco" >{plato.PRECIO_PL}$ </p>
+                  <button  className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
+                  </div>
                 </div>
               </li>
             ))}
@@ -91,16 +87,18 @@ const Orden = () => {
       <div className="orden-container">
         <h2>Orden</h2>
         <br></br>
+        <div className="Platos-en-Orden">
         <div className="grid-orden">
           {orden.map((plato) => (
             <div key={plato.ID_PL} className="orden-item">
               <p className="recipe-desc2" >{plato.NOMBRE_PL}</p>
-              <p className="recipe-desc" >Precio: {plato.PRECIO_PL}</p>
-              <p className="recipe-desc" >Cantidad: {plato.cantidad}</p>
+              <p className="recipe-desc" >{plato.PRECIO_PL}$</p>
+              <p className="recipe-desc" >x{plato.cantidad}</p>
               <button className="recipe-desc"  onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
             </div>
           ))}
         </div>
+        
         {orden.length === 0 && <p>No hay platos en la orden</p>}
         {platosAEliminar > 0 && (
           <div className="eliminar-platos">
@@ -117,7 +115,7 @@ const Orden = () => {
             />
             <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
           </div>
-        )}
+        )}</div>
         <div className="total-orden">
           <h3>Total de la Orden: ${totalOrden}</h3>
         </div>

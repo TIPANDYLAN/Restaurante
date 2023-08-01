@@ -10,7 +10,7 @@
 }
 .Platos{
     display: grid;
-    grid-template-columns: repeat(auto-fill, 37%);
+    grid-template-columns: repeat(auto-fill, 44%);
     justify-content: center;
 }
 .Plato img{

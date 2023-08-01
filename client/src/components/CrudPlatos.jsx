@@ -127,12 +127,8 @@ const CrudPlatos = () => {
         {platos.map((plato) => (
           <li key={plato.ID_PL} className="Plato">
             <p className="recipe-title">{plato.NOMBRE_PL}</p>
-            <p className="recipe-desc">Precio: {plato.PRECIO_PL}</p>
+            <p className="recipe-desc">Precio: {plato.PRECIO_PL} $ </p>
             <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
-            <p className="recipe-metadata">
-                    <span className="recipe-rating">★★★★<span>☆</span></span>
-                    <span className="recipe-votes">(12 votes)</span>
-                  </p>
             
             <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
             <br></br>

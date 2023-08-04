@@ -29,7 +29,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: 'password',
-  database: 'Restaurant' // Nombre de la base de datos "Restaurant"
+  database: 'Restaurant'
 });
 
 connection.connect((error) => {
@@ -66,7 +66,7 @@ app.get('/api/platos', (req, res) => {
 
 // Crear un nuevo plato
 app.post('/api/platos', fileUpload, (req, res) => {
-  const { Nombre, Categoria,Precio, Descripcion } = req.body;
+  const { Nombre, Categoria, Precio, Descripcion } = req.body;
   const Foto = fs.readFileSync(
     path.join(__dirname, "./uploads/" + req.file.filename)
   );
@@ -79,7 +79,7 @@ app.post('/api/platos', fileUpload, (req, res) => {
       res.sendStatus(500);
     } else {
       console.log('Plato creado exitosamente');
-      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre,  CATEGORIA_PL: Categoria ,PRECIO_PL: Precio, FOTO_PL: Foto, DESCRIPCION_PL: Descripcion });
+      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre, CATEGORIA_PL: Categoria, PRECIO_PL: Precio, FOTO_PL: Foto, DESCRIPCION_PL: Descripcion });
     }
   });
 });
@@ -102,7 +102,6 @@ app.put('/api/platos/:id', fileUpload, (req, res) => {
   });
 });
 
-
 // Eliminar un plato por ID
 app.delete('/api/platos/:id', (req, res) => {
   const id = req.params.id;
@@ -119,11 +118,10 @@ app.delete('/api/platos/:id', (req, res) => {
   });
 });
 
-
 // Agregar un nuevo ingrediente
 app.post('/api/ingredientes', (req, res) => {
   const { NOMBRE_I, DESCRIPCION_I, PRECIO_I } = req.body;
-  
+
   const query = 'INSERT INTO Restaurant.ingredientes (NOMBRE_I, DESCRIPCION_I, PRECIO_I) VALUES (?, ?, ?)';
 
   connection.query(query, [NOMBRE_I, DESCRIPCION_I, PRECIO_I], (error, result) => {
@@ -137,37 +135,100 @@ app.post('/api/ingredientes', (req, res) => {
   });
 });
 
+// Obtener todos los clientes
+app.get('/api/clientes', (req, res) => {
+  const query = 'SELECT * FROM cliente';
 
-//Loguin
-app.listen(PORT, () => {
-  console.log(`La API está en funcionamiento en el puerto ${PORT}`);
-});
-
-
-app.get("/api/get", (req, res) => {
-  const sqlSelect = "SELECT * FROM EMPLEADO";
-  connection.query(sqlSelect, (err, rows, results) => {
-    res.send(rows);
+  connection.query(query, (error, rows) => {
+    if (error) {
+      console.error('Error al obtener los clientes:', error);
+      res.sendStatus(500);
+    } else {
+      res.send(rows);
+    }
   });
 });
 
-app.post("/api/login", (req, res) => {
-  const USUARIO_EMP = req.body.USUARIO_EMP;
-  const CONTRASENA_EMP = req.body.CONTRASENA_EMP;
+// Obtener datos de un cliente por cédula
+app.get('/api/clientes/:cedula', (req, res) => {
+  const cedula = req.params.cedula;
 
-  connection.query(
-    "SELECT * FROM EMPLEADO WHERE USUARIO_EMP = ? AND CONTRASENA_EMP = ?",
-    [USUARIO_EMP, CONTRASENA_EMP],
-    (err, result) => {
-      if (err) {
-        res.send({ err: err });
-      }
+  const query = 'SELECT * FROM cliente WHERE CEDULA_CL = ?';
 
-      if (result.length > 0) {
-        res.send(result);
+  connection.query(query, [cedula], (error, rows) => {
+    if (error) {
+      console.error('Error al obtener los datos del cliente:', error);
+      res.sendStatus(500);
+    } else {
+      if (rows.length > 0) {
+        // Si se encontró un cliente con la cédula especificada, envía los datos del cliente
+        res.status(200).json(rows[0]);
       } else {
-        res.send({ message: "Usuario o contraseña incorrecta!" });
+        // Si no se encontró ningún cliente con la cédula especificada, envía una respuesta vacía
+        res.status(204).end();
       }
     }
-  );
+  });
+});
+
+// Crear un nuevo cliente o actualizar si la cédula ya existe
+app.post('/api/clientes', (req, res) => {
+  const { CEDULA_CLI, NOMBRE_CLI, DIRECCION_CLI, TELEFONO_CLI, NO_PROPORCIONA } = req.body;
+
+  // Validar que se ingresen los datos requeridos (cedula y nombre) si NO_PROPORCIONA es false
+  if (!NO_PROPORCIONA && (!CEDULA_CLI || !NOMBRE_CLI)) {
+    return res.status(400).json({ error: 'La cédula y el nombre del cliente son obligatorios' });
+  }
+
+  // Consultar si el cliente ya existe por cédula
+  const queryBuscarCliente = 'SELECT * FROM cliente WHERE CEDULA_CL = ?';
+  connection.query(queryBuscarCliente, [CEDULA_CLI], (error, result) => {
+    if (error) {
+      console.error('Error al buscar el cliente:', error);
+      return res.sendStatus(500);
+    }
+
+    if (result.length > 0) {
+      // Si el cliente ya existe, actualizar sus datos si NO_PROPORCIONA es false
+      if (!NO_PROPORCIONA) {
+        const queryActualizarCliente = 'UPDATE cliente SET NOMBRE_CL = ?, DIRECCION_CL = ?, TELEFONO_CL = ? WHERE CEDULA_CL = ?';
+        connection.query(queryActualizarCliente, [NOMBRE_CLI, DIRECCION_CLI, TELEFONO_CLI, CEDULA_CLI], (error, result) => {
+          if (error) {
+            console.error('Error al actualizar el cliente:', error);
+            res.sendStatus(500);
+          } else {
+            console.log('Cliente actualizado exitosamente');
+            res.sendStatus(200);
+          }
+        });
+      } else {
+        // Si NO_PROPORCIONA es true, no se hacen cambios en el cliente existente
+        console.log('Cliente existente, no se realizaron cambios');
+        res.sendStatus(200);
+      }
+    } else {
+      // Si el cliente no existe, crearlo
+      let query;
+      if (NO_PROPORCIONA) {
+        query = 'INSERT INTO cliente (CEDULA_CL, NOMBRE_CL) VALUES (?, ?)';
+      } else {
+        query = 'INSERT INTO cliente (CEDULA_CL, NOMBRE_CL, DIRECCION_CL, TELEFONO_CL) VALUES (?, ?, ?, ?)';
+      }
+
+      connection.query(query, [CEDULA_CLI, NOMBRE_CLI, DIRECCION_CLI, TELEFONO_CLI], (error, result) => {
+        if (error) {
+          console.error('Error al crear el cliente:', error);
+          res.sendStatus(500);
+        } else {
+          console.log('Cliente creado exitosamente');
+          res.sendStatus(200);
+        }
+      });
+    }
+  });
+});
+
+
+app.listen(PORT, () => {
+  console.log(`Servidor en ejecución en http://localhost:${PORT}`);
 });

@@ -328,3 +328,62 @@
 .Cliente p{
   margin-left: 15px;
 }
+
+.CrudCliente .Proporciona{
+  display: flex;
+}
+
+.OpcionesCliente{
+  display: flex;
+  text-align: center;
+}
+
+.OpcionesCliente .AgregarCliente{
+  background-color: white;
+  padding: 10px;
+  border: 1px solid black;
+  cursor: pointer;
+  flex:50%;
+}
+
+.OpcionesCliente .BuscarCliente{
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
+  border: 1px solid black;
+  cursor: pointer;
+  flex: 50%;
+}
+
+.tarjetaCliente{
+  display: flex;
+  cursor: pointer;
+  padding: 8px;
+  margin: 10px 20px;
+  background-color: #ffffff;
+}
+
+.tarjetaCliente .nombreCliente, .tarjetaCliente .cedulaCliente{
+  flex: 30%;
+}
+
+.tarjetaCliente .direccionCliente, .tarjetaCliente .telefonoCliente{
+  flex: 20%;
+}
+
+.modalCliente .Buscar{
+  padding: 5px;
+  padding-left: 30px;
+  width: 30%;
+  margin: 15px;
+  margin-left: 20px;
+  margin-bottom: 0;
+}
+
+.imgBoton{
+  width: 26px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: absolute;
+  margin: 20px 0 0 22px;
+}

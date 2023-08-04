@@ -60,12 +60,7 @@ export const Login = () => {
             }}
           />
           <button onClick={log}>Iniciar Sesión</button>
-          <div className="Registrarse">
-            <p>
-              No tienes una cuenta ? <a>Regístrate</a>
-            </p>
             <p>{loginStatus}</p>
-          </div>
         </div>
       </div>
       <div className="imagen"/>

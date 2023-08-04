@@ -179,7 +179,7 @@ const CrudPlatos = () => {
             <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
             <br />
             <label>Foto:</label>
-            <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
+            <input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files[0])} />
             <br />
             <button type="button" onClick={handleAgregarPlato}>
               Agregar Plato

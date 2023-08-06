@@ -354,6 +354,7 @@ const enviarPedidos = () => {
     CEDULA_CL: CedulaCliente,
     NMESA_OR: NumMesa,
     DESCRIPCION_OR: Observacion,
+    ESTADO_OR: "En proceso",
   };
 
   axios
@@ -361,6 +362,7 @@ const enviarPedidos = () => {
     .then((response) => {
       console.log("Datos de la orden actualizados con éxito!!!");
       console.log(response);
+      limpiarOrden();
     })
     .catch((error) => {
       console.error("Error al actualizar los datos de la orden:", error);
@@ -385,6 +387,23 @@ const enviarPedidos = () => {
 
   }
 
+  const limpiarOrden = () => {
+    setGenerarOrden(false);
+    setOrden([]);
+    setClienteData({
+      CEDULA_CLI: "",
+      NOMBRE_CLI: "",
+      DIRECCION_CLI: "",
+      TELEFONO_CLI: "",
+      PERSONALIZA: true,
+    });
+    setCLienteSubido(false);
+    setPlatosAEliminar(0);
+    setPlatoIdAEliminar(null);
+    setSearchQuery("");
+    setIDOrdenActual(0);
+  };
+  
   return (
     <>
       <div className="Inicio">
@@ -450,7 +469,10 @@ const enviarPedidos = () => {
               <input type="text" id="Mesa" placeholder="Agregar mesa..."/>
               <input type="text" id="Observaciones" placeholder="Observaciones"/>
               <button onClick={enviarPedidos}>Enviar Orden</button>
-              <button onClick={CancelarOrden}>Cancelar</button>
+              <button onClick={() => {
+                CancelarOrden();
+                limpiarOrden();
+              }}>Cancelar</button>
               </div>
             </>
           ) : (

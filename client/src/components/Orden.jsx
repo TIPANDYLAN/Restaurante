@@ -64,16 +64,22 @@ const Orden = () => {
   }, []);
 
   useEffect(() => {
-    const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad, 0);
-    setTotalOrden(total);
+    setTotalOrden((prevTotal) => {
+      const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad, 0);
+      return total;
+    });
   }, [orden]);
+  
 
   const actualizarCedulaOrden = (cedulaCliente) => {
-    setOrden((prevOrden) => ({
-      ...prevOrden,
-      CEDULA_CL: cedulaCliente,
-    }));
+    setOrden((prevOrden) =>
+      prevOrden.map((plato) => ({
+        ...plato,
+        CEDULA_CL: cedulaCliente,
+      }))
+    );
   };
+  
 
 
   const handleAgregarPlato = (platoId) => {
@@ -222,77 +228,61 @@ const verificarCedulaExistente = (cedula) => {
     });
 };
 
-const handleAgregarCliente = () => {
-  // Prepare the data to be sent to the server
+const handleAgregarCliente = async () => {
   const confirmation = window.confirm("¿Desea agregar el cliente?");
-  if (confirmation) {
-  const dataToSend = {
-    CEDULA_CLI: clienteData.CEDULA_CLI,
-    NOMBRE_CLI: clienteData.NOMBRE_CLI,
-    // Only send the dirección and teléfono if PERSONALIZA is true
-    ...(clienteData.PERSONALIZA
-      ? {
-          DIRECCION_CLI: clienteData.DIRECCION_CLI,
-          TELEFONO_CLI: clienteData.TELEFONO_CLI,
-        }
-      : {
-          // If PERSONALIZA is false, set the dirección and teléfono to their default values
-          DIRECCION_CLI: clienteData.DIRECCION_CLI || "", // Use an empty string if DIRECCION_CLI is falsy
-          TELEFONO_CLI: clienteData.TELEFONO_CLI || "",   // Use an empty string if TELEFONO_CLI is falsy
-        }),
-    PERSONALIZA: clienteData.PERSONALIZA,
-  };
-
-  // Only send the dirección and teléfono if PERSONALIZA is true and they have values
-  if (clienteData.PERSONALIZA) {
-    dataToSend.DIRECCION_CLI = clienteData.DIRECCION_CLI;
-    dataToSend.TELEFONO_CLI = clienteData.TELEFONO_CLI;
+  if (!confirmation) {
+    return;
   }
 
-  // Verificar si la cédula ya existe en la base de datos
-  verificarCedulaExistente(clienteData.CEDULA_CLI).then((existingClientData) => {
+  try {
+    const existingClientData = await verificarCedulaExistente(clienteData.CEDULA_CLI);
+    const dataToSend = {
+      CEDULA_CLI: clienteData.CEDULA_CLI,
+      NOMBRE_CLI: clienteData.NOMBRE_CLI,
+      DIRECCION_CLI: clienteData.DIRECCION_CLI,
+      TELEFONO_CLI: clienteData.TELEFONO_CLI,
+      PERSONALIZA: clienteData.PERSONALIZA,
+    };
+
     if (existingClientData) {
-      // Si la cédula ya existe, utilizamos los datos existentes del cliente
       dataToSend.NOMBRE_CLI = dataToSend.NOMBRE_CLI || existingClientData.NOMBRE_CLI;
       dataToSend.DIRECCION_CLI = dataToSend.DIRECCION_CLI || existingClientData.DIRECCION_CLI;
       dataToSend.TELEFONO_CLI = dataToSend.TELEFONO_CLI || existingClientData.TELEFONO_CLI;
-
-      // Realizar la solicitud para agregar el cliente con los datos existentes y los nuevos datos
-      axios
-        .post("http://localhost:4000/api/clientes", dataToSend)
-        .then((response) => {
-          setMostrarModal(false); // Cerrar el modal después de agregar el cliente
-          setClienteData((prevData) => ({
-            ...prevData,
-            NOMBRE_CLI: dataToSend.NOMBRE_CLI,
-          }));
-          actualizarCedulaOrden(clienteData.CEDULA_CLI);
-          setCLienteSubido(true);
-        })
-        .catch((error) => {
-          console.error("Error al agregar el cliente:", error);
-          alert("Hubo un error al agregar el cliente");
-          setCLienteSubido(false);
-        });
-    } else {
-      // Si la cédula no existe, entonces procedemos a crear un nuevo cliente
-      axios
-        .post("http://localhost:4000/api/clientes", dataToSend)
-        .then((response) => {
-          setMostrarModal(false); // Cerrar el modal después de agregar el cliente
-          setCLienteSubido(true);
-          actualizarCedulaOrden(clienteData.CEDULA_CLI);
-        })
-        .catch((error) => {
-          console.error("Error al agregar el cliente:", error);
-          alert("Hubo un error al agregar el cliente");
-          setCLienteSubido(false);
-        });
     }
-  });
-}
+
+    await axios.post("http://localhost:4000/api/clientes", dataToSend);
+
+    setMostrarModal(false);
+    setCLienteSubido(true);
+    actualizarCedulaOrden(clienteData.CEDULA_CLI);
+  } catch (error) {
+    console.error("Error al agregar el cliente:", error);
+    alert("Hubo un error al agregar el cliente");
+    setCLienteSubido(false);
+  }
 };
 
+const verificarClienteConsumidorFinal = async () => {
+  try {
+    const existingClientData = await verificarCedulaExistente("9999999999");
+    if (!existingClientData) {
+      // Si no existe el cliente, agrégalo
+      await axios.post("http://localhost:4000/api/clientes", {
+        CEDULA_CLI: "9999999999",
+        NOMBRE_CLI: "CONSUMIDOR FINAL",
+        DIRECCION_CLI: "",
+        TELEFONO_CLI: "",
+        PERSONALIZA: true,
+      });
+    }
+  } catch (error) {
+    console.error("Error al verificar el cliente 'CONSUMIDOR FINAL':", error);
+  }
+};
+
+useEffect(() => {
+  verificarClienteConsumidorFinal();
+}, []);
 
 const handleCrearOrden = () => {
   // Crear una nueva orden con el estado activo y la fecha actual
@@ -302,9 +292,9 @@ const handleCrearOrden = () => {
       FECHA_OR: new Date().toISOString().slice(0, 10), // Fecha actual en formato 'YYYY-MM-DD'
     })
     .then((response) => {
-  
       // Actualizar el estado con la nueva orden creada
-      setIDOrdenActual(response.data.ID_OR);
+      const orderId = response.data.ID_OR;
+      setIDOrdenActual(orderId);
       setGenerarOrden(true);
       setOrden((prevOrden) => []);
       setClienteData((prevData) => ({
@@ -319,17 +309,64 @@ const handleCrearOrden = () => {
       // Guardar el ID de la nueva orden para utilizarlo luego
       // Puedes usar este ID para realizar operaciones adicionales relacionadas con esta orden
       // Por ejemplo, agregar los platos seleccionados a esta orden en una tabla de detalles de orden.
-      console.log("ID de la nueva orden creada:", IDordenActual);
+      console.log("ID de la nueva orden creada:", orderId);
     })
     .catch((error) => {
       console.error("Error al crear la orden:", error);
     });
 };
 
-const enviarPedidos = () => {
 
-  
+const enviarPedidos = () => {
+  // Iterate through each plato in the orden and send the pedido data to the server
+  orden.forEach((pedido) => {
+    const dataToSend = {
+      ID_OR: IDordenActual,
+      ID_PL: pedido.ID_PL,
+      PRECIO_PE: pedido.total,
+      CANTXPLA_PE: pedido.cantidad,
+      ESTADO_PE: "Por Hacer",
+    };
+
+    // Send the pedido data for this plato to the server
+    axios
+      .post("http://localhost:4000/api/pedidos", dataToSend)
+      .then((response) => {
+        console.log("Pedido subido con éxito!!!");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error al agregar el pedido:", error);
+      });
+  });
+
+  const Mesa = document.getElementById("Mesa");
+  const NumMesa = parseInt(Mesa.value) || null;
+  const Observaciones = document.getElementById("Observaciones");
+  const Observacion = Observaciones.value;
+  let CedulaCliente =clienteData.CEDULA_CLI;
+
+  if(CedulaCliente === ""){
+    CedulaCliente="9999999999"
+  }
+
+  const dataToUpdate = {
+    CEDULA_CL: CedulaCliente,
+    NMESA_OR: NumMesa,
+    DESCRIPCION_OR: Observacion,
+  };
+
+  axios
+    .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
+    .then((response) => {
+      console.log("Datos de la orden actualizados con éxito!!!");
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error("Error al actualizar los datos de la orden:", error);
+    });
 };
+
 
   return (
     <>
@@ -359,6 +396,9 @@ const enviarPedidos = () => {
           {generarOrden ? (
             <>
               <div className="Platos-en-Orden">
+              <div className="Cliente">
+                  {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>):(<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>  ) }
+                </div>
                 <div className="grid-orden">
                   {orden.map((plato) => (
                     <div key={plato.ID_PL} className="orden-item">
@@ -390,16 +430,15 @@ const enviarPedidos = () => {
                 <div className="total-orden">
                 <h3>Total de la Orden: ${totalOrden}</h3>
               </div>
-              <input type="text" name="" id="" placeholder="Agregar mesa..."/>
-              <input type="text" name="" id="" placeholder="Observaciones"/>
-              <button>Enviar Orden</button>
+              <input type="text" id="Mesa" placeholder="Agregar mesa..."/>
+              <input type="text" id="Observaciones" placeholder="Observaciones"/>
+              <button onClick={enviarPedidos}>Enviar Orden</button>
               </div>
             </>
           ) : (
             <>
               <div className="tipoOrden">
                 <button onClick={handleCrearOrden}>Nueva Orden</button>
-                <button>Editar Orden</button>
               </div>
             </>
           )}

@@ -160,28 +160,53 @@ app.get('/api/ordenes/:id', (req, res) => {
 app.post('/api/ordenes', (req, res) => {
   const { CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR } = req.body;
 
-  const query = 'INSERT INTO ORDEN (CEDULA_CL, ID_EMP, NMESA_OR, DESCRIPCION_OR, ESTADO_OR) VALUES (?, ?, ?, ?, ?)';
-
-  connection.query(query, [CEDULA_CL, ID_EMP, NMESA_OR, DESCRIPCION_OR, ESTADO_OR], (error, result) => {
+  // Verificar si ya existe una orden para esta mesa (NumMesa)
+  const selectQuery = 'SELECT * FROM ORDEN WHERE NMESA_OR = ? AND ESTADO_OR = ?';
+  connection.query(selectQuery, [NMESA_OR, 'En proceso'], (error, results) => {
     if (error) {
-      console.error('Error al crear la orden:', error);
+      console.error('Error al verificar la orden existente:', error);
       res.sendStatus(500);
+      return;
+    }
+
+    if (results.length > 0) {
+      // Actualizar la orden existente
+      const orderId = results[0].ID_OR;
+      const updateQuery = 'UPDATE ORDEN SET CEDULA_CL = ?, FECHA_OR = ?, DESCRIPCION_OR = ? WHERE ID_OR = ?';
+      connection.query(updateQuery, [CEDULA_CL, FECHA_OR, DESCRIPCION_OR, orderId], (error, result) => {
+        if (error) {
+          console.error('Error al actualizar la orden:', error);
+          res.sendStatus(500);
+        } else {
+          console.log('Orden actualizada exitosamente');
+          res.json({ ID_OR: orderId, CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR });
+        }
+      });
     } else {
-      console.log('Orden creada exitosamente');
-      res.json({ ID_OR: result.insertId, CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR });
+      // Crear una nueva orden
+      const insertQuery = 'INSERT INTO ORDEN (CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR) VALUES (?, ?, ?, ?, ?, ?)';
+      connection.query(insertQuery, [CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR], (error, result) => {
+        if (error) {
+          console.error('Error al crear la orden:', error);
+          res.sendStatus(500);
+        } else {
+          console.log('Orden creada exitosamente');
+          res.json({ ID_OR: result.insertId, CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR });
+        }
+      });
     }
   });
 });
 
 
-// Actualizar una orden por ID
+
 app.put('/api/ordenes/:id', (req, res) => {
   const idOrden = req.params.id;
-  const { CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR } = req.body;
+  const { CEDULA_CL, NMESA_OR, DESCRIPCION_OR } = req.body;
 
-  const query = 'UPDATE ORDEN SET CEDULA_CL = ?, ID_EMP = ?, FECHA_OR = ?, NMESA_OR = ?, DESCRIPCION_OR = ?, ESTADO_OR = ? WHERE ID_OR = ?';
+  const query = 'UPDATE ORDEN SET CEDULA_CL = ?, NMESA_OR = ?, DESCRIPCION_OR = ? WHERE ID_OR = ?';
 
-  connection.query(query, [CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR, idOrden], (error, result) => {
+  connection.query(query, [CEDULA_CL, NMESA_OR, DESCRIPCION_OR, idOrden], (error, result) => {
     if (error) {
       console.error('Error al actualizar la orden:', error);
       res.sendStatus(500);

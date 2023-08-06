@@ -118,6 +118,166 @@ app.delete('/api/platos/:id', (req, res) => {
   });
 });
 
+// CRUD de "Orden"
+
+// Obtener todas las órdenes
+app.get('/api/ordenes', (req, res) => {
+  const query = 'SELECT * FROM ORDEN';
+
+  connection.query(query, (error, rows) => {
+    if (error) {
+      console.error('Error al obtener las órdenes:', error);
+      res.sendStatus(500);
+    } else {
+      res.send(rows);
+    }
+  });
+});
+
+// Obtener datos de una orden por su ID
+app.get('/api/ordenes/:id', (req, res) => {
+  const idOrden = req.params.id;
+
+  const query = 'SELECT * FROM ORDEN WHERE ID_OR = ?';
+
+  connection.query(query, [idOrden], (error, rows) => {
+    if (error) {
+      console.error('Error al obtener los datos de la orden:', error);
+      res.sendStatus(500);
+    } else {
+      if (rows.length > 0) {
+        // Si se encontró una orden con el ID especificado, envía los datos de la orden
+        res.status(200).json(rows[0]);
+      } else {
+        // Si no se encontró ninguna orden con el ID especificado, envía una respuesta vacía
+        res.status(204).end();
+      }
+    }
+  });
+});
+
+// Crear una nueva orden
+app.post('/api/ordenes', (req, res) => {
+  const { CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR } = req.body;
+
+  const query = 'INSERT INTO ORDEN (CEDULA_CL, ID_EMP, NMESA_OR, DESCRIPCION_OR, ESTADO_OR) VALUES (?, ?, ?, ?, ?)';
+
+  connection.query(query, [CEDULA_CL, ID_EMP, NMESA_OR, DESCRIPCION_OR, ESTADO_OR], (error, result) => {
+    if (error) {
+      console.error('Error al crear la orden:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Orden creada exitosamente');
+      res.json({ ID_OR: result.insertId, CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR });
+    }
+  });
+});
+
+
+// Actualizar una orden por ID
+app.put('/api/ordenes/:id', (req, res) => {
+  const idOrden = req.params.id;
+  const { CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR } = req.body;
+
+  const query = 'UPDATE ORDEN SET CEDULA_CL = ?, ID_EMP = ?, FECHA_OR = ?, NMESA_OR = ?, DESCRIPCION_OR = ?, ESTADO_OR = ? WHERE ID_OR = ?';
+
+  connection.query(query, [CEDULA_CL, ID_EMP, FECHA_OR, NMESA_OR, DESCRIPCION_OR, ESTADO_OR, idOrden], (error, result) => {
+    if (error) {
+      console.error('Error al actualizar la orden:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Orden actualizada exitosamente');
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.post('/api/pedidos', (req, res) => {
+  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE } = req.body;
+
+  const query = 'INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE) VALUES (?, ?, ?, ?, ?)';
+
+  connection.query(query, [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE], (error, result) => {
+    if (error) {
+      console.error('Error al crear el pedido:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Pedido creado exitosamente');
+      res.json({
+        ID_PL,
+        ID_OR,
+        PRECIO_PE,
+        CANTXPLA_PE,
+        ESTADO_PE,
+      });
+    }
+  });
+});
+
+app.get('/api/pedidos', (req, res) => {
+  const query = 'SELECT * FROM PEDIDO';
+
+  connection.query(query, (error, rows) => {
+    if (error) {
+      console.error('Error al obtener los pedidos:', error);
+      res.sendStatus(500);
+    } else {
+      res.send(rows);
+    }
+  });
+});
+app.get('/api/pedidos/:id', (req, res) => {
+  const idPedido = req.params.id;
+
+  const query = 'SELECT * FROM PEDIDO WHERE ID_PL = ?';
+
+  connection.query(query, [idPedido], (error, rows) => {
+    if (error) {
+      console.error('Error al obtener el pedido:', error);
+      res.sendStatus(500);
+    } else {
+      if (rows.length > 0) {
+        res.status(200).json(rows[0]);
+      } else {
+        res.status(204).end();
+      }
+    }
+  });
+});
+app.put('/api/pedidos/:id', (req, res) => {
+  const idPedido = req.params.id;
+  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE } = req.body;
+
+  const query = 'UPDATE PEDIDO SET ID_PL = ?, ID_OR = ?, PRECIO_PE = ?, CANTXPLA_PE = ?, ESTADO_PE = ? WHERE ID_PL = ?';
+
+  connection.query(query, [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, idPedido], (error, result) => {
+    if (error) {
+      console.error('Error al actualizar el pedido:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Pedido actualizado exitosamente');
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.delete('/api/pedidos/:id', (req, res) => {
+  const idPedido = req.params.id;
+
+  const query = 'DELETE FROM PEDIDO WHERE ID_PL = ?';
+
+  connection.query(query, idPedido, (error, result) => {
+    if (error) {
+      console.error('Error al eliminar el pedido:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Pedido eliminado exitosamente');
+      res.sendStatus(200);
+    }
+  });
+});
+
+
 // Agregar un nuevo ingrediente
 app.post('/api/ingredientes', (req, res) => {
   const { NOMBRE_I, DESCRIPCION_I, PRECIO_I } = req.body;

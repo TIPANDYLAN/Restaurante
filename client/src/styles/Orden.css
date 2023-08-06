@@ -387,3 +387,11 @@
   position: absolute;
   margin: 20px 0 0 22px;
 }
+
+.tipoOrden{
+  width: 100%;
+  background-color: #f3a34d;
+  height: 300px;
+  border-radius: 15px;
+  box-shadow: 0 2px 3px rgba(159, 159, 159, 0.436);
+}

@@ -94,7 +94,7 @@ create table INVENTARIO
 /*==============================================================*/
 create table ORDEN
 (
-   ID_OR                int not null,
+   ID_OR                int auto_increment not null,
    CEDULA_CL            varchar(15),
    ID_EMP               int,
    FECHA_OR             date not null,
@@ -113,6 +113,7 @@ create table PEDIDO
    ID_OR                int not null,
    PRECIO_PE            real,
    CANTXPLA_PE          numeric(50,0) not null,
+   ESTADO_PE			varchar(20) not null,
    primary key (ID_PL, ID_OR)
 );
 

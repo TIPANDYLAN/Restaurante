@@ -1,36 +1,41 @@
-/* Crear la base de datos */
-CREATE DATABASE Restaurant;
-
-/* Seleccionar la base de datos */
-USE Restaurant;
-
-
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     30/7/2023 12:15:41                           */
+/* Created on:     4/8/2023 10:14:19                            */
 /*==============================================================*/
 
-drop table if exists PEDIDO;
-drop table if exists RECETA;
-drop table if exists PLATO;
-drop table if exists PROVEEDOR;
-drop table if exists INVENTARIO;
-drop table if exists RECETA;
-drop table if exists ORDEN;
-drop table if exists INGREDIENTES;
-drop table if exists ENTREGA;
-drop table if exists EMPLEADO;
+create database Restaurant;
+
+use Restaurant;
+
 drop table if exists CLIENTE;
+
+drop table if exists EMPLEADO;
+
+drop table if exists ENTREGA;
+
+drop table if exists INGREDIENTES;
+
+drop table if exists INVENTARIO;
+
+drop table if exists ORDEN;
+
+drop table if exists PEDIDO;
+
+drop table if exists PLATO;
+
+drop table if exists PROVEEDOR;
+
+drop table if exists RECETA;
 
 /*==============================================================*/
 /* Table: CLIENTE                                               */
 /*==============================================================*/
 create table CLIENTE
 (
-   CEDULA_CL            int not null,
+   CEDULA_CL            varchar(15) not null,
    NOMBRE_CL            text not null,
    CORREO_CL            text,
-   TELEFONO_CL          numeric(8,0),
+   TELEFONO_CL          varchar(15),
    DIRECCION_CL         text,
    primary key (CEDULA_CL)
 );
@@ -53,8 +58,8 @@ create table EMPLEADO
 create table ENTREGA
 (
    ID_EN                int not null,
-   ID_I                 int not null,
-   ID_PR                int not null,
+   ID_I                 int,
+   ID_PR                int,
    FECHA_EN             date not null,
    TIPO_EN              text not null,
    CANTIDAD_EN          float not null,
@@ -78,7 +83,7 @@ create table INGREDIENTES
 /*==============================================================*/
 create table INVENTARIO
 (
-   ID_EN                int not null,
+   ID_EN                int,
    ID_INV               int not null,
    DESCRIPCION_INV      text not null,
    primary key (ID_INV)
@@ -87,44 +92,44 @@ create table INVENTARIO
 /*==============================================================*/
 /* Table: ORDEN                                                 */
 /*==============================================================*/
-create table PEDIDO
+create table ORDEN
 (
    ID_OR                int not null,
+   CEDULA_CL            varchar(15),
    ID_EMP               int,
    FECHA_OR             date not null,
-   NMESA_OR             numeric(20,0) not null,
-   DESCRIPCION_OR       text not null,
+   NMESA_OR             numeric(20,0),
+   DESCRIPCION_OR       text,
+   ESTADO_OR            varchar(20),
    primary key (ID_OR)
 );
 
 /*==============================================================*/
 /* Table: PEDIDO                                                */
 /*==============================================================*/
-create table PEDIDO_PLATO
+create table PEDIDO
 (
-   ID_PE                int not null,
    ID_PL                int not null,
-   CEDULA_CL                int not null,
    ID_OR                int not null,
-   ID_INV               int not null,
    PRECIO_PE            real,
-   primary key (ID_PE)
+   CANTXPLA_PE          numeric(50,0) not null,
+   primary key (ID_PL, ID_OR)
 );
 
 /*==============================================================*/
 /* Table: PLATO                                                 */
 /*==============================================================*/
-CREATE TABLE PLATO
+create table PLATO
 (
-   ID_PL                INT NOT NULL AUTO_INCREMENT,
-   NOMBRE_PL            VARCHAR(100) NOT NULL,
-   CATEGORIA_PL            VARCHAR(100),
-   PRECIO_PL            FLOAT NOT NULL,
-   FOTO_PL              LONGBLOB NOT NULL,
-   DESCRIPCION_PL       TEXT NOT NULL,
-   PRIMARY KEY (ID_PL)
+   ID_PL                int auto_increment not null,
+   NOMBRE_PL            varchar(100) not null,
+   PRECIO_PL            float not null,
+   FOTO_PL              longblob not null,
+   DESCRIPCION_PL       text not null,
+   CATEGORIA_PL         varchar(40),
+   ESTADO_PL            bool,
+   primary key (ID_PL)
 );
-
 
 /*==============================================================*/
 /* Table: PROVEEDOR                                             */
@@ -144,7 +149,7 @@ create table RECETA
 (
    ID_RE                int not null,
    ID_I                 int not null,
-   ID_PL                int not null,
+   ID_PL                int,
    PESO_RE              float not null,
    DESCRIPCION_RE       text not null,
    NOMBRE_RE            text not null,
@@ -160,23 +165,21 @@ alter table ENTREGA add constraint FK_REALIZA foreign key (ID_PR)
 alter table INVENTARIO add constraint FK_LLENA foreign key (ID_EN)
       references ENTREGA (ID_EN) on delete restrict on update restrict;
 
-alter table PEDIDO add constraint FK_ATIENDE foreign key (ID_EMP)
+alter table ORDEN add constraint FK_ATIENDE foreign key (ID_EMP)
       references EMPLEADO (ID_EMP) on delete restrict on update restrict;
 
-alter table PEDIDO_PLATO add constraint FK_PIDE foreign key (CEDULA_CL)
+alter table ORDEN add constraint FK_PIDE foreign key (CEDULA_CL)
       references CLIENTE (CEDULA_CL) on delete restrict on update restrict;
 
-alter table PEDIDO_PLATO add constraint FK_CONTIENE foreign key (ID_OR)
-      references PEDIDO (ID_OR) on delete restrict on update restrict;
+alter table PEDIDO add constraint FK_CONTIENE foreign key (ID_OR)
+      references ORDEN (ID_OR) on delete restrict on update restrict;
 
-alter table PEDIDO_PLATO add constraint FK_GENERAN foreign key (ID_PL)
+alter table PEDIDO add constraint FK_GENERAN foreign key (ID_PL)
       references PLATO (ID_PL) on delete restrict on update restrict;
-
-alter table PEDIDO_PLATO add constraint FK_REDUCE_AUMENTA foreign key (ID_INV)
-      references INVENTARIO (ID_INV) on delete restrict on update restrict;
 
 alter table RECETA add constraint FK_CONFORMAN foreign key (ID_I)
       references INGREDIENTES (ID_I) on delete restrict on update restrict;
 
 alter table RECETA add constraint FK_TIENE foreign key (ID_PL)
       references PLATO (ID_PL) on delete restrict on update restrict;
+

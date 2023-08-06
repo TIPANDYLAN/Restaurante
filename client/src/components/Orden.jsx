@@ -55,10 +55,6 @@ const Orden = () => {
 
   const handleAgregarPlato = (platoId) => {
     // Check if a customer exists before adding plates to the order
-    if (!clienteSubido) {
-      alert("Necesita agregar un cliente primero");
-      return;
-    }
 
     const platoSeleccionado = platos.find((plato) => plato.ID_PL === platoId);
     if (platoSeleccionado) {

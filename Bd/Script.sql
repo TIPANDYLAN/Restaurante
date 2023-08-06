@@ -98,7 +98,7 @@ create table ORDEN
    CEDULA_CL            varchar(15),
    ID_EMP               int,
    FECHA_OR             date not null,
-   NMESA_OR             numeric(20,0),
+   NMESA_OR             bigint,
    DESCRIPCION_OR       text,
    ESTADO_OR            varchar(20),
    primary key (ID_OR)

@@ -202,11 +202,11 @@ app.post('/api/ordenes', (req, res) => {
 
 app.put('/api/ordenes/:id', (req, res) => {
   const idOrden = req.params.id;
-  const { CEDULA_CL, NMESA_OR, DESCRIPCION_OR } = req.body;
+  const { CEDULA_CL, NMESA_OR, DESCRIPCION_OR, ESTADO_OR } = req.body;
 
-  const query = 'UPDATE ORDEN SET CEDULA_CL = ?, NMESA_OR = ?, DESCRIPCION_OR = ? WHERE ID_OR = ?';
+  const query = 'UPDATE ORDEN SET CEDULA_CL = ?, NMESA_OR = ?, DESCRIPCION_OR = ?, ESTADO_OR = ? WHERE ID_OR = ?';
 
-  connection.query(query, [CEDULA_CL, NMESA_OR, DESCRIPCION_OR, idOrden], (error, result) => {
+  connection.query(query, [CEDULA_CL, NMESA_OR, DESCRIPCION_OR, ESTADO_OR, idOrden], (error, result) => {
     if (error) {
       console.error('Error al actualizar la orden:', error);
       res.sendStatus(500);

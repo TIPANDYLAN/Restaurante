@@ -367,6 +367,23 @@ const enviarPedidos = () => {
     });
 };
 
+  const CancelarOrden = ()=>{
+    const dataToUpdate = {
+      ID_OR: IDordenActual,
+      ESTADO_OR: "Cancelada",
+    };
+
+    axios
+    .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
+    .then((response) => {
+      console.log("Datos de la orden actualizados con éxito!!!");
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error("Error al actualizar los datos de la orden:", error);
+    });
+
+  }
 
   return (
     <>
@@ -433,6 +450,7 @@ const enviarPedidos = () => {
               <input type="text" id="Mesa" placeholder="Agregar mesa..."/>
               <input type="text" id="Observaciones" placeholder="Observaciones"/>
               <button onClick={enviarPedidos}>Enviar Orden</button>
+              <button onClick={CancelarOrden}>Cancelar</button>
               </div>
             </>
           ) : (

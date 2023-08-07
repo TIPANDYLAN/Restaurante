@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import "../styles/Orden.css";
 
@@ -49,6 +51,10 @@ const Cocina = () => {
               <p>Fecha: {orden.FECHA_OR}</p>
               <p>Descripción: {orden.DESCRIPCION_OR}</p>
               <p>Estado: {orden.ESTADO_OR}</p>
+              <div className="loader-container">
+                <FontAwesomeIcon icon={faUtensils} spin size="3x" />
+                <p>Cargando...</p>
+              </div>
               {orden.ESTADO_OR === 'En proceso' ? (
                 <button className="cancelar-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'Cancelado')}>
                   Marcar como Entregado
@@ -57,6 +63,7 @@ const Cocina = () => {
                 <button className="en-proceso-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'En proceso')}>
                   Marcar como en proceso
                 </button>
+
               )}
             </div>
           );

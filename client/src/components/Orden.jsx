@@ -477,8 +477,12 @@ const Orden = () => {
             </>
           ) : (
             <>
-              <div className="tipoOrden">
-                <button onClick={handleCrearOrden}>Nueva Orden</button>
+              <div className="tipoOrdenContainer">
+                <div className="tipoOrden">
+                  <button onClick={handleCrearOrden}>Nueva Orden</button>
+
+
+                </div>
               </div>
             </>
           )}

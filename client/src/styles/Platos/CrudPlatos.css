@@ -1,120 +1,158 @@
-.Crud{
-    padding: 5px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.Editar{
-    background-color: #faead9;
-    border-radius: 15px;
-}
-.Platos{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 44%);
-    justify-content: center;
-}
-.Plato img{
-    height: 80%;
-    grid-column: 2;
-    grid-row: 1 / span 3;
-    padding: 10px;
-    justify-self: center;
-    width: 100%;
-}
-
-.Plato{
-    display: grid;
-    grid-template-columns: 50% 50%;
-    margin: 0 20px;
-    padding: 10px 30px;
-}
+/* Estilos para el contenedor principal */
 
 
-.NombrePlato{
-    font-weight: bold;
-    font-size: 35px;
-    margin-bottom: 0px;
-    margin-top: 20px;
+
+/* Estilos para la imagen 
+
+/* Resto de los estilos previamente proporcionados */
+.Crud {
+  padding: 5px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.SegundoModal, .Editar{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 0 20px 0;
+
+.Editar {
+  background-color: #faead9;
+  border-radius: 15px;
 }
-.SegundoModal label, .Editar label{
-    padding: 0 10px;
+
+.Platos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 44%);
+  justify-content: center;
+}
+
+.Plato img {
+  height: 80%;
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  padding: 10px;
+  justify-self: center;
+  width: 100%;
+}
+
+.Plato {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  margin: 0 20px;
+  padding: 10px 30px;
+}
+
+.NombrePlato {
+  font-weight: bold;
+  font-size: 35px;
+  margin-bottom: 0px;
+  margin-top: 20px;
+}
+
+.Editar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 20px 0;
+}
+
+.Editar label {
+  padding: 0 10px;
 }
 
 .AgregarPlato {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 4px;
-    background-color: #30ac0e;
-    color: rgb(255, 255, 255);
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.3s ease;
-    font-size: clamp(0.7em, 1.2vw, 1.3em);
-    font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
-    font-weight: bold;
-  }
-  
-  /* Estilo para el adorno */
-  .AgregarPlato::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 4px;
-    pointer-events: none;
-  }
-  
-  /* Estilo para el efecto hover */
-  .AgregarPlato:hover {
-    background-color: #dfa53b;
-  }
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #30ac0e;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease;
+  font-size: clamp(0.7em, 1.2vw, 1.3em);
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
 
- /* Estilos para el formulario dentro de SegundoModal */
+/* Estilo para el adorno */
+.AgregarPlato::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Estilo para el efecto hover */
+.AgregarPlato:hover {
+  background-color: #dfa53b;
+}
+
+/* Estilos para el formulario dentro de SegundoModal */
 .SegundoModal form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Dos columnas, el primer elemento ocupa 1 fracción y el segundo 2 fracciones */
+  gap: 10px; /* Espacio entre las columnas */
+  width: 70%;
+}
+.SegundoModal .formcontainer{
+  width: 60%;
+
+}
+
+/* Estilos para las etiquetas del formulario */
+.SegundoModal form label {
+  margin-bottom: 10px;
+  text-align: right;
+  height: 40px;
+  margin-top: 10PX;
+  font-size: 20px;
+  margin-left: 20px;
+}
+
+/* Estilos para los inputs del formulario */
+.SegundoModal form input,
+.SegundoModal form textarea {
+  width: 100%;
+  padding-left: 0%;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  margin-bottom: 10px;
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+}
+.SegundoModal .imagenContainer {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Estilos para el botón del formulario */
+.SegundoModal form button {
+  grid-column: 1 / span 2; /* El botón ocupa las dos columnas del formulario */
+  justify-self: center; /* Centrar el botón horizontalmente */
+  padding: 10px 50px;
+  font-size: 25px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
   
-  /* Estilos para las etiquetas del formulario */
-  .SegundoModal form label {
-    margin-bottom: 5px;
-  }
-  
-  /* Estilos para los inputs del formulario */
-  .SegundoModal form input,
-  .SegundoModal form textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  
-  /* Estilos para el botón del formulario */
-  .SegundoModal form button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Estilo para el efecto hover en el botón */
-  .SegundoModal form button:hover {
-    background-color: #45a049;
-  }
+}
+
+/* Estilo para el efecto hover en el botón */
+.SegundoModal form button:hover {
+  background-color: #45a049;
+}
+
+.agregarpl{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 5;
+}

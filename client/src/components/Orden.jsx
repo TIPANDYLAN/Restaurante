@@ -69,7 +69,7 @@ const Orden = () => {
       return total;
     });
   }, [orden]);
-  
+
 
   const actualizarCedulaOrden = (cedulaCliente) => {
     setOrden((prevOrden) =>
@@ -79,7 +79,7 @@ const Orden = () => {
       }))
     );
   };
-  
+
 
 
   const handleAgregarPlato = (platoId) => {
@@ -137,12 +137,12 @@ const Orden = () => {
   // Función para manejar el cambio de inputs del formulario de cliente
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Validar que el valor ingresado sea un número
     if (name === "CEDULA_CLI" && isNaN(value)) {
       return;
     }
-    
+
     setSearchQuery(value);
     setClienteData((prevData) => ({
       ...prevData,
@@ -151,13 +151,13 @@ const Orden = () => {
   };
 
   const filteredClients = clientes.filter((cliente) =>
-  cliente.CEDULA_CL.toString().includes(searchQuery)
+    cliente.CEDULA_CL.toString().includes(searchQuery)
   );
 
   // Función para manejar el cambio del checkbox del formulario de cliente
   const handleCheckboxChange = (e) => {
     const { checked } = e.target;
-  
+
     if (clienteData.PERSONALIZA && !checked) {
       localStorage.setItem("clienteData", JSON.stringify(clienteData));
     }
@@ -173,17 +173,17 @@ const Orden = () => {
       });
     } else {
       const storedClienteData = localStorage.getItem("clienteData");
-    if (storedClienteData) {
-      setClienteData(JSON.parse(storedClienteData));
-    } else {
-      setClienteData((prevData) => ({
-        CEDULA_CLI: "",
-        NOMBRE_CLI: "",
-        DIRECCION_CLI: "",
-        TELEFONO_CLI: "",
-        PERSONALIZA: checked,
-      }));
-    }
+      if (storedClienteData) {
+        setClienteData(JSON.parse(storedClienteData));
+      } else {
+        setClienteData((prevData) => ({
+          CEDULA_CLI: "",
+          NOMBRE_CLI: "",
+          DIRECCION_CLI: "",
+          TELEFONO_CLI: "",
+          PERSONALIZA: checked,
+        }));
+      }
     }
   };
 
@@ -217,173 +217,173 @@ const Orden = () => {
   };
 
 
-const verificarCedulaExistente = (cedula) => {
-  // Realizar la solicitud para obtener los datos del cliente por su cédula
-  return axios
-    .get(`http://localhost:4000/api/clientes/${cedula}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Error al obtener los datos del cliente:", error);
-      return null;
-    });
-};
-
-const handleAgregarCliente = async () => {
-  const confirmation = window.confirm("¿Desea agregar el cliente?");
-  if (!confirmation) {
-    return;
-  }
-
-  try {
-    const existingClientData = await verificarCedulaExistente(clienteData.CEDULA_CLI);
-    const dataToSend = {
-      CEDULA_CLI: clienteData.CEDULA_CLI,
-      NOMBRE_CLI: clienteData.NOMBRE_CLI,
-      DIRECCION_CLI: clienteData.DIRECCION_CLI,
-      TELEFONO_CLI: clienteData.TELEFONO_CLI,
-      PERSONALIZA: clienteData.PERSONALIZA,
-    };
-
-    if (existingClientData) {
-      dataToSend.NOMBRE_CLI = dataToSend.NOMBRE_CLI || existingClientData.NOMBRE_CLI;
-      dataToSend.DIRECCION_CLI = dataToSend.DIRECCION_CLI || existingClientData.DIRECCION_CLI;
-      dataToSend.TELEFONO_CLI = dataToSend.TELEFONO_CLI || existingClientData.TELEFONO_CLI;
-    }
-
-    await axios.post("http://localhost:4000/api/clientes", dataToSend);
-
-    setMostrarModal(false);
-    setCLienteSubido(true);
-    actualizarCedulaOrden(clienteData.CEDULA_CLI);
-  } catch (error) {
-    console.error("Error al agregar el cliente:", error);
-    alert("Hubo un error al agregar el cliente");
-    setCLienteSubido(false);
-  }
-};
-
-const verificarClienteConsumidorFinal = async () => {
-  try {
-    const existingClientData = await verificarCedulaExistente("9999999999");
-    if (!existingClientData) {
-      // Si no existe el cliente, agrégalo
-      await axios.post("http://localhost:4000/api/clientes", {
-        CEDULA_CLI: "9999999999",
-        NOMBRE_CLI: "CONSUMIDOR FINAL",
-        DIRECCION_CLI: "",
-        TELEFONO_CLI: "",
-        PERSONALIZA: true,
-      });
-    }
-  } catch (error) {
-    console.error("Error al verificar el cliente 'CONSUMIDOR FINAL':", error);
-  }
-};
-
-useEffect(() => {
-  verificarClienteConsumidorFinal();
-}, []);
-
-const handleCrearOrden = () => {
-  // Crear una nueva orden con el estado activo y la fecha actual
-  axios
-    .post("http://localhost:4000/api/ordenes", {
-      ESTADO_OR: "En proceso",
-      FECHA_OR: new Date().toISOString().slice(0, 10), // Fecha actual en formato 'YYYY-MM-DD'
-    })
-    .then((response) => {
-      // Actualizar el estado con la nueva orden creada
-      const orderId = response.data.ID_OR;
-      setIDOrdenActual(orderId);
-      setGenerarOrden(true);
-      setOrden((prevOrden) => []);
-      setClienteData((prevData) => ({
-        CEDULA_CLI: "",
-        NOMBRE_CLI: "",
-        DIRECCION_CLI: "",
-        TELEFONO_CLI: "",
-        PERSONALIZA: true,
-      }));
-      setCLienteSubido(false);
-
-      // Guardar el ID de la nueva orden para utilizarlo luego
-      // Puedes usar este ID para realizar operaciones adicionales relacionadas con esta orden
-      // Por ejemplo, agregar los platos seleccionados a esta orden en una tabla de detalles de orden.
-      console.log("ID de la nueva orden creada:", orderId);
-    })
-    .catch((error) => {
-      console.error("Error al crear la orden:", error);
-    });
-};
-
-
-const enviarPedidos = () => {
-  // Iterate through each plato in the orden and send the pedido data to the server
-  orden.forEach((pedido) => {
-    const dataToSend = {
-      ID_OR: IDordenActual,
-      ID_PL: pedido.ID_PL,
-      PRECIO_PE: pedido.total,
-      CANTXPLA_PE: pedido.cantidad,
-      ESTADO_PE: "Por Hacer",
-    };
-
-    // Send the pedido data for this plato to the server
-    axios
-      .post("http://localhost:4000/api/pedidos", dataToSend)
-      .then((response) => {
-        console.log("Pedido subido con éxito!!!");
-        console.log(response);
-      })
+  const verificarCedulaExistente = (cedula) => {
+    // Realizar la solicitud para obtener los datos del cliente por su cédula
+    return axios
+      .get(`http://localhost:4000/api/clientes/${cedula}`)
+      .then((response) => response.data)
       .catch((error) => {
-        console.error("Error al agregar el pedido:", error);
+        console.error("Error al obtener los datos del cliente:", error);
+        return null;
       });
-  });
-
-  const Mesa = document.getElementById("Mesa");
-  const NumMesa = parseInt(Mesa.value) || null;
-  const Observaciones = document.getElementById("Observaciones");
-  const Observacion = Observaciones.value;
-  let CedulaCliente =clienteData.CEDULA_CLI;
-
-  if(CedulaCliente === ""){
-    CedulaCliente="9999999999"
-  }
-
-  const dataToUpdate = {
-    CEDULA_CL: CedulaCliente,
-    NMESA_OR: NumMesa,
-    DESCRIPCION_OR: Observacion,
-    ESTADO_OR: "En proceso",
   };
 
-  axios
-    .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
-    .then((response) => {
-      console.log("Datos de la orden actualizados con éxito!!!");
-      console.log(response);
-      limpiarOrden();
-    })
-    .catch((error) => {
-      console.error("Error al actualizar los datos de la orden:", error);
-    });
-};
+  const handleAgregarCliente = async () => {
+    const confirmation = window.confirm("¿Desea agregar el cliente?");
+    if (!confirmation) {
+      return;
+    }
 
-  const CancelarOrden = ()=>{
+    try {
+      const existingClientData = await verificarCedulaExistente(clienteData.CEDULA_CLI);
+      const dataToSend = {
+        CEDULA_CLI: clienteData.CEDULA_CLI,
+        NOMBRE_CLI: clienteData.NOMBRE_CLI,
+        DIRECCION_CLI: clienteData.DIRECCION_CLI,
+        TELEFONO_CLI: clienteData.TELEFONO_CLI,
+        PERSONALIZA: clienteData.PERSONALIZA,
+      };
+
+      if (existingClientData) {
+        dataToSend.NOMBRE_CLI = dataToSend.NOMBRE_CLI || existingClientData.NOMBRE_CLI;
+        dataToSend.DIRECCION_CLI = dataToSend.DIRECCION_CLI || existingClientData.DIRECCION_CLI;
+        dataToSend.TELEFONO_CLI = dataToSend.TELEFONO_CLI || existingClientData.TELEFONO_CLI;
+      }
+
+      await axios.post("http://localhost:4000/api/clientes", dataToSend);
+
+      setMostrarModal(false);
+      setCLienteSubido(true);
+      actualizarCedulaOrden(clienteData.CEDULA_CLI);
+    } catch (error) {
+      console.error("Error al agregar el cliente:", error);
+      alert("Hubo un error al agregar el cliente");
+      setCLienteSubido(false);
+    }
+  };
+
+  const verificarClienteConsumidorFinal = async () => {
+    try {
+      const existingClientData = await verificarCedulaExistente("9999999999");
+      if (!existingClientData) {
+        // Si no existe el cliente, agrégalo
+        await axios.post("http://localhost:4000/api/clientes", {
+          CEDULA_CLI: "9999999999",
+          NOMBRE_CLI: "CONSUMIDOR FINAL",
+          DIRECCION_CLI: "",
+          TELEFONO_CLI: "",
+          PERSONALIZA: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error al verificar el cliente 'CONSUMIDOR FINAL':", error);
+    }
+  };
+
+  useEffect(() => {
+    verificarClienteConsumidorFinal();
+  }, []);
+
+  const handleCrearOrden = () => {
+    // Crear una nueva orden con el estado activo y la fecha actual
+    axios
+      .post("http://localhost:4000/api/ordenes", {
+        ESTADO_OR: "En proceso",
+        FECHA_OR: new Date().toISOString().slice(0, 10), // Fecha actual en formato 'YYYY-MM-DD'
+      })
+      .then((response) => {
+        // Actualizar el estado con la nueva orden creada
+        const orderId = response.data.ID_OR;
+        setIDOrdenActual(orderId);
+        setGenerarOrden(true);
+        setOrden((prevOrden) => []);
+        setClienteData((prevData) => ({
+          CEDULA_CLI: "",
+          NOMBRE_CLI: "",
+          DIRECCION_CLI: "",
+          TELEFONO_CLI: "",
+          PERSONALIZA: true,
+        }));
+        setCLienteSubido(false);
+
+        // Guardar el ID de la nueva orden para utilizarlo luego
+        // Puedes usar este ID para realizar operaciones adicionales relacionadas con esta orden
+        // Por ejemplo, agregar los platos seleccionados a esta orden en una tabla de detalles de orden.
+        console.log("ID de la nueva orden creada:", orderId);
+      })
+      .catch((error) => {
+        console.error("Error al crear la orden:", error);
+      });
+  };
+
+
+  const enviarPedidos = () => {
+    // Iterate through each plato in the orden and send the pedido data to the server
+    orden.forEach((pedido) => {
+      const dataToSend = {
+        ID_OR: IDordenActual,
+        ID_PL: pedido.ID_PL,
+        PRECIO_PE: pedido.total,
+        CANTXPLA_PE: pedido.cantidad,
+        ESTADO_PE: "Por Hacer",
+      };
+
+      // Send the pedido data for this plato to the server
+      axios
+        .post("http://localhost:4000/api/pedidos", dataToSend)
+        .then((response) => {
+          console.log("Pedido subido con éxito!!!");
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error("Error al agregar el pedido:", error);
+        });
+    });
+
+    const Mesa = document.getElementById("Mesa");
+    const NumMesa = parseInt(Mesa.value) || null;
+    const Observaciones = document.getElementById("Observaciones");
+    const Observacion = Observaciones.value;
+    let CedulaCliente = clienteData.CEDULA_CLI;
+
+    if (CedulaCliente === "") {
+      CedulaCliente = "9999999999"
+    }
+
+    const dataToUpdate = {
+      CEDULA_CL: CedulaCliente,
+      NMESA_OR: NumMesa,
+      DESCRIPCION_OR: Observacion,
+      ESTADO_OR: "En proceso",
+    };
+
+    axios
+      .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
+      .then((response) => {
+        console.log("Datos de la orden actualizados con éxito!!!");
+        console.log(response);
+        limpiarOrden();
+      })
+      .catch((error) => {
+        console.error("Error al actualizar los datos de la orden:", error);
+      });
+  };
+
+  const CancelarOrden = () => {
     const dataToUpdate = {
       ID_OR: IDordenActual,
       ESTADO_OR: "Cancelada",
     };
 
     axios
-    .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
-    .then((response) => {
-      console.log("Datos de la orden actualizados con éxito!!!");
-      console.log(response);
-    })
-    .catch((error) => {
-      console.error("Error al actualizar los datos de la orden:", error);
-    });
+      .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
+      .then((response) => {
+        console.log("Datos de la orden actualizados con éxito!!!");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error al actualizar los datos de la orden:", error);
+      });
 
   }
 
@@ -403,7 +403,7 @@ const enviarPedidos = () => {
     setSearchQuery("");
     setIDOrdenActual(0);
   };
-  
+
   return (
     <>
       <div className="Inicio">
@@ -432,8 +432,8 @@ const enviarPedidos = () => {
           {generarOrden ? (
             <>
               <div className="Platos-en-Orden">
-              <div className="Cliente">
-                  {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>):(<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>  ) }
+                <div className="Cliente">
+                  {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>) : (<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>)}
                 </div>
                 <div className="grid-orden">
                   {orden.map((plato) => (
@@ -464,15 +464,15 @@ const enviarPedidos = () => {
                   </div>
                 )}
                 <div className="total-orden">
-                <h3>Total de la Orden: ${totalOrden}</h3>
-              </div>
-              <input type="text" id="Mesa" placeholder="Agregar mesa..."/>
-              <input type="text" id="Observaciones" placeholder="Observaciones"/>
-              <button onClick={enviarPedidos}>Enviar Orden</button>
-              <button onClick={() => {
-                CancelarOrden();
-                limpiarOrden();
-              }}>Cancelar</button>
+                  <h3>Total de la Orden: ${totalOrden}</h3>
+                </div>
+                <input type="text" id="Mesa" placeholder="Agregar mesa..." />
+                <input type="text" id="Observaciones" placeholder="Observaciones" />
+                <button onClick={enviarPedidos}>Enviar Orden</button>
+                <button onClick={() => {
+                  CancelarOrden();
+                  limpiarOrden();
+                }}>Cancelar</button>
               </div>
             </>
           ) : (
@@ -485,90 +485,105 @@ const enviarPedidos = () => {
         </div>
       </div>
 
-      {/* Modal para agregar cliente */}
       <Modal isOpen={mostrarModal} onClose={() => setMostrarModal(false)}>
         <div className="OpcionesCliente">
           <div className="AgregarCliente" onClick={() => setOpcionCliente(false)}>
-              Nuevo Cliente
+            Nuevo Cliente
           </div>
           <div className="BuscarCliente" onClick={() => setOpcionCliente(true)}>
-              Buscar Cliente
+            Buscar Cliente
           </div>
         </div>
-        {OpcionCliente ? (<div className="modalCliente">
-        <button className="imgBoton"><img src={Lupa} style={{width:"15px"}} /></button>
-          <input type="text"
-            placeholder="Buscar por cédula..."
-            className="Buscar"
-            value={searchQuery}
-            onChange={handleInputChange}/>
-          <ul>
-              {filteredClients.map((cliente) => (
-              cliente.NOMBRE_CL !== "CONSUMIDOR FINAL" && (
-                <li
-                  key={cliente.CEDULA_CL}
-                  className="tarjetaCliente"
-                  onClick={() => handleSeleccionarCliente(cliente)}
-                >
-                  <p className="nombreCliente">{cliente.NOMBRE_CL}</p>
-                  <p className="cedulaCliente">{cliente.CEDULA_CL}</p>
-                  <p className="direccionCliente">{cliente.DIRECCION_CL}</p>
-                  <p className="telefonoCliente">{cliente.TELEFONO_CL}</p>
-                </li>
-              )
-            ))}
-          </ul>
-          </div>) 
-          : (<div className="CrudCliente">
-          <div className="Proporciona">
-            <p>Personalizar Datos:</p>
-            <input
-              type="checkbox"
-              checked={clienteData.PERSONALIZA}
-              id="ProporcionaCheckbox"
-              onChange={handleCheckboxChange}
-            />
-          </div>
-          <p>Cedula: </p>
-            <input
-              type="text"
-              name="CEDULA_CLI"
-              value={clienteData.CEDULA_CLI}
-              onChange={handleInputChange}
-              maxLength="10"
-              disabled={!clienteData.PERSONALIZA}
-              placeholder={clienteData.PERSONALIZA ? "" : "9999999999"}
-            />
-            <p>Nombre: </p>
-            <input
-              type="text"
-              name="NOMBRE_CLI"
-              value={clienteData.NOMBRE_CLI}
-              onChange={handleInputChange}
-              disabled={!clienteData.PERSONALIZA}
-              placeholder={clienteData.PERSONALIZA ? "" : "CONSUMIDOR FINAL"}
-            />
-            {clienteData.PERSONALIZA && (
+
+        {/* Formulario para agregar o buscar cliente */}
+        <form className="formularioCliente" onSubmit={handleAgregarCliente}>
+          <div className="modalCliente">
+            {OpcionCliente ? (
               <>
-                <p>Direccion:</p>
+                <button className="imgBoton">
+                  <img src={Lupa} style={{ width: "15px" }} alt="Buscar" />
+                </button>
                 <input
                   type="text"
-                  name="DIRECCION_CLI"
-                  value={clienteData.DIRECCION_CLI}
+                  placeholder="Buscar por cédula..."
+                  className="Buscar"
+                  value={searchQuery}
                   onChange={handleInputChange}
                 />
-                <p>Telefono:</p>
-                <input
-                  type="text"
-                  name="TELEFONO_CLI"
-                  value={clienteData.TELEFONO_CLI}
-                  onChange={handleInputChange}
-                />
+                <ul>
+                  {filteredClients.map((cliente) => (
+                    cliente.NOMBRE_CL !== "CONSUMIDOR FINAL" && (
+                      <li
+                        key={cliente.CEDULA_CL}
+                        className="tarjetaCliente"
+                        onClick={() => handleSeleccionarCliente(cliente)}
+                      >
+                        <p className="nombreCliente">{cliente.NOMBRE_CL}</p>
+                        <p className="cedulaCliente">{cliente.CEDULA_CL}</p>
+                        <p className="direccionCliente">{cliente.DIRECCION_CL}</p>
+                        <p className="telefonoCliente">{cliente.TELEFONO_CL}</p>
+                      </li>
+                    )
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <>
+                <div className="CrudCliente">
+                  <div className="Proporciona">
+                    <p>Personalizar Datos:</p>
+                    <input className="check"
+                      type="checkbox"
+                      checked={clienteData.PERSONALIZA}
+                      id="ProporcionaCheckbox"
+                      onChange={handleCheckboxChange}
+                    />
+                  </div>
+                  <p>Cedula: </p>
+                  <input
+                    type="text"
+                    name="CEDULA_CLI"
+                    value={clienteData.CEDULA_CLI}
+                    onChange={handleInputChange}
+                    maxLength="10"
+                    disabled={!clienteData.PERSONALIZA}
+                    placeholder={clienteData.PERSONALIZA ? "" : "9999999999"}
+                  />
+                  <p>Nombre: </p>
+                  <input
+                    type="text"
+                    name="NOMBRE_CLI"
+                    value={clienteData.NOMBRE_CLI}
+                    onChange={handleInputChange}
+                    disabled={!clienteData.PERSONALIZA}
+                    placeholder={clienteData.PERSONALIZA ? "" : "CONSUMIDOR FINAL"}
+                  />
+                  {clienteData.PERSONALIZA && (
+                    <>
+                      <p>Direccion:</p>
+                      <input
+                        type="text"
+                        name="DIRECCION_CLI"
+                        value={clienteData.DIRECCION_CLI}
+                        onChange={handleInputChange}
+                      />
+                      <p>Telefono:</p>
+                      <input
+                        type="text"
+                        name="TELEFONO_CLI"
+                        value={clienteData.TELEFONO_CLI}
+                        onChange={handleInputChange}
+                      />
+                    </>
+                  )}
+                </div>
+                <button type="submit" className="AgregarPlato">
+                  Agregar Usuario
+                </button>
               </>
             )}
-         <button onClick={handleAgregarCliente}>Agregar Usuario</button>
-        </div>)}
-        
+          </div>
+        </form>
       </Modal>
     </>
   );

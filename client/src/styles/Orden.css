@@ -72,17 +72,15 @@
   
   .grid-orden {
     display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    justify-items: center;
   }
   
   .orden-item {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    grid-template-columns: 20% 40% 20% 20%;
-    padding: 20px 0px 15px 0;
-    margin: 0 20px;
-    margin-bottom: -6px;
-    border-bottom:0.5px solid rgba(181, 181, 181, 0.649) ;
-    font-family: Glacial Indifference;
   }
   
   .orden-item p {
@@ -103,14 +101,24 @@
   
   .eliminar-platos {
     margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .eliminar-platos p {
+    font-size: 16px;
+    font-weight: bold;
     margin-bottom: 10px;
   }
   
   .eliminar-platos input {
-    width: 60px;
+    width: 100px;
+    font-size: 14px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
   }
   
   .eliminar-platos button {
@@ -124,7 +132,11 @@
   
   .total-orden {
     margin-top: 20px;
-    right: 0;
+  }
+  
+  .total-orden h3 {
+    font-size: 24px;
+    font-weight: bold;
   }
   
   .no-platos {
@@ -236,6 +248,22 @@
   font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
 }
 
+.recipe-desc.button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #e53935;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+.recipe-desc.button:hover {
+  background-color: #c62828;
+}
+
 #descripcion{
   margin-top: 10px;
   margin-bottom: -15px;
@@ -315,18 +343,32 @@
   padding: 5px;
   border-radius: 15px;
   box-shadow: 0 2px 3px rgba(159, 159, 159, 0.436);
+  flex-direction: column;
+  align-items: center;
 }
 
-.Platos-en-Orden p{
-  text-align: center;
+.AddCliente {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #30ac0e;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+.AddCliente:hover {
+  background-color: #dfa53b;
+}
+.Cliente {
+  margin-bottom: 20px;
 }
 
-.Cliente{
-  display: flex;
-}
-
-.Cliente p{
-  margin-left: 15px;
+.Cliente p {
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .CrudCliente .Proporciona{
@@ -339,19 +381,22 @@
 }
 
 .OpcionesCliente .AgregarCliente{
-  background-color: white;
+  background-color: rgb(214, 129, 8);
   padding: 10px;
-  border: 1px solid black;
+  border: 1px solid rgb(252, 251, 251);
   cursor: pointer;
   flex:50%;
+  color: #ffffff;
 }
 
 .OpcionesCliente .BuscarCliente{
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(15, 96, 2);
   padding: 10px;
-  border: 1px solid black;
+  border: 1px solid rgb(252, 251, 251);
   cursor: pointer;
+  color: #fff;
   flex: 50%;
+  width: 60%;
 }
 
 .tarjetaCliente{
@@ -372,8 +417,9 @@
 
 .modalCliente .Buscar{
   padding: 5px;
+  font-size: 12px;
   padding-left: 30px;
-  width: 30%;
+  width: 55%;
   margin: 15px;
   margin-left: 20px;
   margin-bottom: 0;
@@ -394,4 +440,91 @@
   height: 300px;
   border-radius: 15px;
   box-shadow: 0 2px 3px rgba(159, 159, 159, 0.436);
+}
+
+/* Estilos para el formulario */
+.formularioCliente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilos para los campos de entrada */
+.formularioCliente input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+}
+
+/* Estilos para el botón "Agregar Usuario" */
+.formularioCliente button {
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease;
+  font-size: clamp(0.7em, 1.2vw, 1.3em);
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+
+/* Estilo para el adorno */
+.formularioCliente button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Estilo para el efecto hover */
+.formularioCliente button:hover {
+  background-color: #209c3f;
+  color: #ccc;
+}
+.check{
+  transform: scale(0.5);
+}
+#Mesa,
+#Observaciones {
+  width: 90%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  outline: none;
+}
+.Platos-en-Orden button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilo para el efecto hover en los botones */
+.Platos-en-Orden button:hover {
+  background-color: #1d7b22;
+}
+
+/* Estilo para el botón de "Cancelar" */
+.Platos-en-Orden button:last-child {
+  background-color: #b51c1c;
+}
+
+/* Estilo para el efecto hover en el botón de "Cancelar" */
+.Platos-en-Orden button:last-child:hover {
+  background-color: #5d0505;
 }

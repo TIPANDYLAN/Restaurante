@@ -33,14 +33,14 @@ const CrudPlatos = () => {
       console.error("Todos los campos son requeridos");
       return;
     }
-  
+
     // Crear un objeto FormData solo con los campos que han sido modificados
     const formData = new FormData();
     formData.append("Nombre", nombre);
     formData.append("Precio", precio.toString());
     formData.append("Descripcion", descripcion);
     formData.append("Foto", foto);
-  
+
     // Hacer la solicitud PUT a la API solo si hay cambios
     if (
       nombre !== platoSeleccionado.NOMBRE_PL ||
@@ -63,7 +63,7 @@ const CrudPlatos = () => {
       setMostrar(false);
     }
   };
-  
+
 
   const handleAgregarPlato = () => {
     // Crear un objeto FormData para enviar la imagen al servidor
@@ -113,30 +113,30 @@ const CrudPlatos = () => {
   const handleAbrirSegundoModal = () => {
     setMostrarSegundoModal(true);
   };
-  
+
   const handleCerrarSegundoModal = () => {
     setMostrarSegundoModal(false);
   };
-  
+
   return (
     <div className="Crud">
       <button className="AgregarPlato" onClick={() => setMostrarSegundoModal(true)}>Agregar Nuevo Plato</button>
       <h2>Platos disponibles:</h2>
       <ul>
         <div className="Platos">
-        {platos.map((plato) => (
-          <li key={plato.ID_PL} className="Plato">
-            <p className="recipe-title">{plato.NOMBRE_PL}</p>
-            <p className="recipe-desc">Precio: {plato.PRECIO_PL} $ </p>
-            <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
-            
-            <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
-            <br></br>
+          {platos.map((plato) => (
+            <li key={plato.ID_PL} className="Plato">
+              <p className="recipe-title">{plato.NOMBRE_PL}</p>
+              <p className="recipe-desc">Precio: {plato.PRECIO_PL} $ </p>
+              <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
 
-            <button onClick={() => handleEditarPlato(plato)}>Editar</button>
-            <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
-          </li>
-        ))}
+              <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
+              <br></br>
+
+              <button onClick={() => handleEditarPlato(plato)}>Editar</button>
+              <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
+            </li>
+          ))}
         </div>
       </ul>
       {platos.length === 0 && <p>No hay platos disponibles.</p>}
@@ -165,28 +165,39 @@ const CrudPlatos = () => {
           </div>
         )}
       </Modal>
-      <Modal isOpen={mostrarSegundoModal} onClose={handleCerrarSegundoModal}>
-        <div className="SegundoModal">
-          <h2>Agregar nuevo plato:</h2>
-          <form>
-            <label>Nombre:</label>
-            <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-            <br />
-            <label>Precio:</label>
-            <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
-            <br />
-            <label>Descripción:</label>
-            <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-            <br />
-            <label>Foto:</label>
-            <input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files[0])} />
-            <br />
-            <button type="button" onClick={handleAgregarPlato}>
-              Agregar Plato
-            </button>
-          </form>
-        </div>
-      </Modal>
+      <div className="modalContainer">
+        <Modal isOpen={mostrarSegundoModal} onClose={handleCerrarSegundoModal}>
+          <div className="SegundoModal agregarpl">
+            <div className="formContainer">
+              <form>
+                <label>Nombre:</label>
+                <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+
+                <label>Precio:</label>
+                <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+
+                <label>Descripción:</label>
+                <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+
+                <label>Foto:</label>
+                <input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files[0])} />
+
+                <button type="button" onClick={handleAgregarPlato}>
+                  Agregar Plato
+                </button>
+              </form>
+            </div>
+            <div className="imagenContainer">
+              <img
+                src="https://parrilladanesa.com.mx/wp-content/uploads/2019/04/slider-1-parrilla-danesa-1.jpg
+                "
+                alt="Imagen"
+                style={{ width: "100%", height: "auto" }}
+              />
+            </div>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 };

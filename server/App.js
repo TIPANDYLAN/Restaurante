@@ -84,6 +84,7 @@ app.post('/api/platos', fileUpload, (req, res) => {
   });
 });
 
+//Actualizar los datos
 app.put('/api/platos/:id', fileUpload, (req, res) => {
   const id = req.params.id;
   const { Nombre, Categoria, Precio, Descripcion } = req.body;
@@ -134,6 +135,7 @@ app.get('/api/ordenes', (req, res) => {
   });
 });
 
+
 // Obtener datos de una orden por su ID
 app.get('/api/ordenes/:id', (req, res) => {
   const idOrden = req.params.id;
@@ -155,6 +157,7 @@ app.get('/api/ordenes/:id', (req, res) => {
     }
   });
 });
+
 
 // Crear una nueva orden
 app.post('/api/ordenes', (req, res) => {
@@ -251,6 +254,7 @@ app.get('/api/pedidos', (req, res) => {
     }
   });
 });
+
 app.get('/api/pedidos/:id', (req, res) => {
   const idPedido = req.params.id;
 
@@ -269,6 +273,8 @@ app.get('/api/pedidos/:id', (req, res) => {
     }
   });
 });
+
+
 app.put('/api/pedidos/:id', (req, res) => {
   const idPedido = req.params.id;
   const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE } = req.body;

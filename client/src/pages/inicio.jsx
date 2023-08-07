@@ -1,5 +1,6 @@
 import { Header } from "../components/header.jsx";
 import  Orden  from "../components/Orden.jsx";
+import  Cocina  from "../components/Cocina.jsx";
 import "../styles/Inicio.css";
 
 const Inicio = () => {
@@ -9,6 +10,8 @@ const Inicio = () => {
       <div className="grid-container">
         <Orden />
       </div>
+      <br></br><hr/>
+        <Cocina/>
     </>
   );
 };

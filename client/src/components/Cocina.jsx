@@ -2,27 +2,61 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import "../styles/Orden.css";
+import "../styles/Cocina.css";
 
-const Cocina = () => {
+const CocinaCrud = () => {
   const [ordenes, setOrdenes] = useState([]);
 
   useEffect(() => {
-    // Obtener las órdenes desde el servidor cuando el componente se monte
     fetchOrdenes();
   }, []);
 
+
+  // Función para agrupar los platos por orden
+  const groupPlatosByOrden = (ordenes) => {
+    const ordenesConPlatos = {};
+
+    ordenes.forEach((orden) => {
+      if (!ordenesConPlatos[orden.ID_OR]) {
+        ordenesConPlatos[orden.ID_OR] = {
+          ...orden,
+          platos: []
+        };
+      }
+
+      if (orden.ID_PLATO_PEDIDO) {
+        ordenesConPlatos[orden.ID_OR].platos.push({
+          ID_PLATO_PEDIDO: orden.ID_PLATO_PEDIDO,
+          NOMBRE_PLATO_PEDIDO: orden.NOMBRE_PLATO_PEDIDO,
+          CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS
+        });
+      }
+    });
+
+    return Object.values(ordenesConPlatos);
+  };
+
   const fetchOrdenes = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/ordenes');
-      setOrdenes(response.data);
+      const response = await axios.get('http://localhost:4000/api/ordenescocina');
+      if (Array.isArray(response.data)) {
+        setOrdenes(response.data);
+      } else {
+        console.error('La respuesta no es un array:', response.data);
+      }
     } catch (error) {
       console.error('Error al obtener las órdenes:', error);
     }
   };
 
+  const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
+
+  const ordenesFiltradas = ordenesConPlatosAgrupados.filter(
+    (orden) => orden.ESTADO_OR === 'Por hacer' || orden.ESTADO_OR === 'En proceso' || orden.ESTADO_OR === 'Terminado'
+  );
+  
   const handleEstadoClick = async (idOrden, nuevoEstado) => {
-    if (nuevoEstado === 'Cancelado') {
+    if (nuevoEstado === 'Entregado') {
       // Mostrar una confirmación antes de cancelar la orden
       const confirmacion = window.confirm('¿Estás seguro que deseas entregar esta orden?');
       if (!confirmacion) {
@@ -30,8 +64,16 @@ const Cocina = () => {
       }
     }
 
+    if (nuevoEstado === 'Cancelada') {
+      // Mostrar una confirmación antes de cancelar la orden
+      const confirmacion = window.confirm('¿Estás seguro que deseas cancelar esta orden?');
+      if (!confirmacion) {
+        return; // Si el usuario cancela la confirmación, no se cambia el estado
+      }
+    }
+
     try {
-      await axios.put(`http://localhost:4000/api/ordenes/${idOrden}`, { ESTADO_OR: nuevoEstado });
+      await axios.put(`http://localhost:4000/api/ordenesEstado/${idOrden}`, { ESTADO_OR: nuevoEstado });
       // Actualizar las órdenes después de cambiar el estado
       fetchOrdenes();
     } catch (error) {
@@ -40,38 +82,42 @@ const Cocina = () => {
   };
 
   return (
-    <div className="ordenes-container">
+    <>
       <h2>Órdenes</h2>
-      {ordenes.map((orden) => {
-        // Solo mostrar las órdenes que no estén canceladas
-        if (orden.ESTADO_OR !== 'Cancelado') {
-          return (
-            <div key={orden.ID_OR} className="orden-item">
-              <p>Orden ID: {orden.ID_OR}</p>
-              <p>Fecha: {orden.FECHA_OR}</p>
-              <p>Descripción: {orden.DESCRIPCION_OR}</p>
-              <p>Estado: {orden.ESTADO_OR}</p>
-              <div className="loader-container">
-                <FontAwesomeIcon icon={faUtensils} spin size="3x" />
-                <p>Cargando...</p>
-              </div>
-              {orden.ESTADO_OR === 'En proceso' ? (
-                <button className="cancelar-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'Cancelado')}>
-                  Marcar como Entregado
-                </button>
-              ) : (
-                <button className="en-proceso-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'En proceso')}>
-                  Marcar como en proceso
-                </button>
-
-              )}
+      <div className="ContainerCocina">
+        {ordenesFiltradas.map((orden) => (
+          <div key={orden.ID_OR} className="OrdenCocina">
+            <p className='MesaOrden'>Mesa {orden.NMESA_OR}</p>
+            <p className='DescripcionPlato'>{orden.DESCRIPCION_OR || 'Vacío'}</p>
+            <div className="PlatosContainer"> {/* Nuevo div para contener los platos */}
+              {orden.platos.map((plato) => (
+                <div key={plato.ID_PLATO_PEDIDO} className='PlatoOrden'>
+                  <p className='nombrePlato'>{plato.NOMBRE_PLATO_PEDIDO}</p>
+                  <p className='cantidadPlato'>x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
+                </div>
+              ))}
             </div>
-          );
-        }
-        return null; // Si la orden está cancelada, no se muestra en el interfaz
-      })}
-    </div>
+            <div className="botonPlato">
+            <p style={{color: orden.ESTADO_OR === 'Por hacer' ? 'rgb(168, 37, 37)': orden.ESTADO_OR === 'En proceso' ? 'rgb(241, 175, 52)': 'green'}} className='EstadoOrden'>{orden.ESTADO_OR}</p>
+            <button className='CancelarOrden' onClick={() => handleEstadoClick(orden.ID_OR, 'Cancelada')}>Cancelar Orden</button>
+            {orden.ESTADO_OR === 'En proceso' ? (
+              <button className="cancelar-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'Terminado')}>
+                Marcar como Terminado
+              </button>
+            ) : orden.ESTADO_OR === 'Por hacer' ? (
+              <button className="en-proceso-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'En proceso')}>
+                Marcar como en proceso
+              </button>
+            ) : (<button className="en-proceso-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'Entregado')}>
+            Marcar como Entregado
+          </button>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
-export default Cocina;
+
+export default CocinaCrud;

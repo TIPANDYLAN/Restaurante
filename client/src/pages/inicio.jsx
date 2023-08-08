@@ -10,8 +10,6 @@ const Inicio = () => {
       <div className="grid-container">
         <Orden />
       </div>
-      <br></br><hr/>
-        <Cocina/>
     </>
   );
 };

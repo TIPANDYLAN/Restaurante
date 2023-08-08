@@ -151,8 +151,9 @@ const Orden = () => {
   };
 
   const filteredClients = clientes.filter((cliente) =>
-    cliente.CEDULA_CL.toString().includes(searchQuery)
-  );
+  cliente.CEDULA_CL.toString().includes(searchQuery) || cliente.NOMBRE_CL === "CONSUMIDOR FINAL"
+);
+
 
   // Función para manejar el cambio del checkbox del formulario de cliente
   const handleCheckboxChange = (e) => {
@@ -228,11 +229,13 @@ const Orden = () => {
       });
   };
 
-  const handleAgregarCliente = async () => {
-    const confirmation = window.confirm("¿Desea agregar el cliente?");
-    if (!confirmation) {
-      return;
-    }
+  const handleAgregarCliente = async (event) => {
+    event.preventDefault(); // Evitar comportamiento por defecto del formulario
+
+  const confirmation = window.confirm("¿Desea agregar el cliente?");
+  if (!confirmation) {
+    return;
+  }
 
     try {
       const existingClientData = await verificarCedulaExistente(clienteData.CEDULA_CLI);
@@ -288,7 +291,7 @@ const Orden = () => {
     // Crear una nueva orden con el estado activo y la fecha actual
     axios
       .post("http://localhost:4000/api/ordenes", {
-        ESTADO_OR: "En proceso",
+        ESTADO_OR: "Por Hacer",
         FECHA_OR: new Date().toISOString().slice(0, 10), // Fecha actual en formato 'YYYY-MM-DD'
       })
       .then((response) => {
@@ -354,7 +357,7 @@ const Orden = () => {
       CEDULA_CL: CedulaCliente,
       NMESA_OR: NumMesa,
       DESCRIPCION_OR: Observacion,
-      ESTADO_OR: "En proceso",
+      ESTADO_OR: "Por hacer",
     };
 
     axios

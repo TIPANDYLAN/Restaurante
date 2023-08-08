@@ -16,7 +16,7 @@ export const HeaderAdmin = ({titulo,Buscar}) =>{
                 <div className="MenuNav">
                     <nav>
                     <ul>
-                        <li>
+                        <li className="botoncito">
                         <Link to="/">Inicio</Link>
                         </li>
                     </ul>

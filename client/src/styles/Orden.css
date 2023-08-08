@@ -332,6 +332,7 @@
 }
 
 /* Estilo para el efecto hover en los botones */
+
 .AgregarPlato:hover,
 .Plato button:hover {
   background-color: #e7a139;
@@ -371,6 +372,15 @@
   font-weight: bold;
 }
 
+.CrudCliente {
+  width: 40%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: initial;
+  margin: auto;
+}
+
 .CrudCliente .Proporciona{
   display: flex;
 }
@@ -405,6 +415,7 @@
   padding: 8px;
   margin: 10px 20px;
   background-color: #ffffff;
+  width: 100%;
 }
 
 .tarjetaCliente .nombreCliente, .tarjetaCliente .cedulaCliente{
@@ -413,6 +424,10 @@
 
 .tarjetaCliente .direccionCliente, .tarjetaCliente .telefonoCliente{
   flex: 20%;
+}
+
+.modalCliente{
+  width: 80%;
 }
 
 .modalCliente .Buscar{
@@ -462,7 +477,6 @@
   background-color: #30ac0e;
   color: rgb(255, 255, 255);
   cursor: pointer;
-  position: relative;
   transition: background-color 0.3s ease;
   font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
   font-weight: bold;
@@ -486,6 +500,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 /* Estilos para los campos de entrada */

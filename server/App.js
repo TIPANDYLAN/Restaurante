@@ -220,6 +220,23 @@ app.put('/api/ordenes/:id', (req, res) => {
   });
 });
 
+app.put('/api/ordenesEstado/:id', (req, res) => {
+  const idOrden = req.params.id;
+  const { ESTADO_OR } = req.body;
+
+  const query = 'UPDATE ORDEN SET ESTADO_OR = ? WHERE ID_OR = ?';
+
+  connection.query(query, [ ESTADO_OR, idOrden], (error, result) => {
+    if (error) {
+      console.error('Error al actualizar la orden:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Orden actualizada exitosamente');
+      res.sendStatus(200);
+    }
+  });
+});
+
 app.post('/api/pedidos', (req, res) => {
   const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE } = req.body;
 
@@ -255,14 +272,14 @@ app.get('/api/pedidos', (req, res) => {
   });
 });
 
-app.get('/api/pedidos/:id', (req, res) => {
-  const idPedido = req.params.id;
+app.get('/api/ordenes/:id', (req, res) => {
+  const idOrden = req.params.id;
 
-  const query = 'SELECT * FROM PEDIDO WHERE ID_PL = ?';
+  const query = 'SELECT * FROM ORDEN WHERE ID_OR = ?';
 
-  connection.query(query, [idPedido], (error, rows) => {
+  connection.query(query, [idOrden], (error, rows) => {
     if (error) {
-      console.error('Error al obtener el pedido:', error);
+      console.error('Error al obtener la orden:', error);
       res.sendStatus(500);
     } else {
       if (rows.length > 0) {
@@ -273,6 +290,7 @@ app.get('/api/pedidos/:id', (req, res) => {
     }
   });
 });
+
 
 
 app.put('/api/pedidos/:id', (req, res) => {
@@ -304,6 +322,32 @@ app.delete('/api/pedidos/:id', (req, res) => {
     } else {
       console.log('Pedido eliminado exitosamente');
       res.sendStatus(200);
+    }
+  });
+});
+
+// Obtener todas las órdenes con información de los platos pedidos
+app.get('/api/ordenescocina', (req, res) => {
+  const query = `
+    SELECT
+      O.ID_OR,
+      O.DESCRIPCION_OR,
+      O.ESTADO_OR,
+      NMESA_OR,
+      P.ID_PL AS ID_PLATO_PEDIDO,
+      P.NOMBRE_PL AS NOMBRE_PLATO_PEDIDO,
+      PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS
+    FROM ORDEN O
+    JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
+    JOIN PLATO P ON PE.ID_PL = P.ID_PL
+  `;
+
+  connection.query(query, (error, rows) => {
+    if (error) {
+      console.error('Error al obtener las órdenes con información de platos:', error);
+      res.sendStatus(500);
+    } else {
+      res.send(rows);
     }
   });
 });

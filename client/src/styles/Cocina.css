@@ -1,0 +1,66 @@
+.ContainerCocina {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Usar fr en lugar de porcentajes para mejor manejo */
+    gap: 10px; /* Agregar espacio entre las columnas */
+    margin: 0 10px;
+    margin-bottom: 15px;
+  }
+  
+  .OrdenCocina {
+    display: flex;
+    flex-direction: column;
+    background-color: aliceblue;
+    margin: 5px 5px;
+    padding: 5px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.164);
+  }
+  
+  .PlatosContainer {
+    grid-column: span 3; /* Ocupar todas las columnas disponibles */
+  }
+  
+  .PlatoOrden {
+    display: flex;
+    align-items: center; /* Centrar contenido verticalmente */
+    border-bottom: 1px solid rgba(128, 128, 128, 0.336);
+  }
+  
+  .PlatoOrden .nombrePlato,
+  .PlatoOrden .cantidadPlato {
+    flex: 1; /* Distribuir espacio en partes iguales */
+  }
+  
+  .ContainerCocina .botonPlato{
+    display: flex;
+    margin-top: auto;
+    justify-content: space-between;
+  }
+
+  .ContainerCocina .DescripcionPlato{
+    border: 1px dashed red;
+    background-color: rgb(248, 247, 213);
+    padding: 10px 5px;
+  }
+
+  .ContainerCocina .MesaOrden{
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+    border-bottom: 1px solid black;
+    margin: 5px 0;
+    padding-bottom: 5px;
+  }
+
+  .ContainerCocina .CancelarOrden{
+    margin-left: auto;
+    margin-right: 10px;
+  }
+
+  .botonPlato button{
+    height: 30px;
+    align-self: center;
+  }
+
+  .botonPlato .EstadoOrden{
+    margin: 15px auto;
+  }

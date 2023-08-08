@@ -131,7 +131,7 @@ const CrudPlatos = () => {
               <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
 
               <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
-              <br></br>
+
 
               <button onClick={() => handleEditarPlato(plato)}>Editar</button>
               <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
@@ -148,16 +148,16 @@ const CrudPlatos = () => {
             <form>
               <label>Nombre:</label>
               <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-              <br />
+
               <label>Precio:</label>
-              <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
-              <br />
+              <input type="number" value={precio} min={0} onChange={(e) => setPrecio(e.target.value)} />
+
               <label>Descripción:</label>
               <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-              <br />
+
               <label>Foto:</label>
               <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
-              <br />
+
               <button type="button" onClick={() => handleActualizarPlato(platoSeleccionado.ID_PL)}>
                 Actualizar Plato
               </button>
@@ -174,7 +174,7 @@ const CrudPlatos = () => {
                 <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
 
                 <label>Precio:</label>
-                <input type="number" value={precio} onChange={(e) => setPrecio(e.target.value)} />
+                <input type="number" value={precio} min={0} onChange={(e) => setPrecio(e.target.value)} />
 
                 <label>Descripción:</label>
                 <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />

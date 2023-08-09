@@ -414,7 +414,7 @@ const Orden = () => {
           <ul>
             {platos.map((plato) => (
               <li key={plato.ID_PL}>
-                <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
+                <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
                 <div className="recipe-content">
                   <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
                   <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>

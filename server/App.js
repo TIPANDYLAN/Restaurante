@@ -11,13 +11,14 @@ const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "dbuploads")));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Configuración de Multer para manejar la carga de imágenes
 const diskstorage = multer.diskStorage({
   destination: path.join(__dirname, "./uploads"),
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-kandela-" + file.originalname);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + "-" + file.originalname);
   },
 });
 
@@ -49,50 +50,40 @@ app.get('/api/platos', (req, res) => {
       console.error('Error al obtener los platos:', error);
       res.sendStatus(500);
     } else {
-      rows.map((img) => {
-        if (img.FOTO_PL) {
-          const imagePath = path.join(__dirname, "dbuploads", img.ID_PL + "-kandela.png");
-          fs.writeFile(imagePath, img.FOTO_PL, "binary", (writeError) => {
-            if (writeError) {
-              console.error('Error al guardar la imagen:', writeError);
-            }
-          });
-        }
-      });
       res.send(rows);
     }
   });
 });
 
+
 // Crear un nuevo plato
 app.post('/api/platos', fileUpload, (req, res) => {
-  const { Nombre, Categoria, Precio, Descripcion } = req.body;
-  const Foto = fs.readFileSync(
-    path.join(__dirname, "./uploads/" + req.file.filename)
-  );
+  const { Nombre, Categoria, Precio } = req.body;
+  const FotoPath = req.file ? `/uploads/${req.file.filename}` : null;
 
-  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL) VALUES (?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL) VALUES (?, ?, ?, ?)';
 
-  connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion], (error, result) => {
+  connection.query(query, [Nombre, Categoria, Precio, FotoPath], (error, result) => {
     if (error) {
       console.error('Error al crear el plato:', error);
       res.sendStatus(500);
     } else {
       console.log('Plato creado exitosamente');
-      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre, CATEGORIA_PL: Categoria, PRECIO_PL: Precio, FOTO_PL: Foto, DESCRIPCION_PL: Descripcion });
+      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre, CATEGORIA_PL: Categoria, PRECIO_PL: Precio, FOTO_PL: FotoPath});
     }
   });
 });
 
-//Actualizar los datos
+
+// Actualizar los datos de un plato por ID
 app.put('/api/platos/:id', fileUpload, (req, res) => {
   const id = req.params.id;
-  const { Nombre, Categoria, Precio, Descripcion } = req.body;
-  const Foto = req.file ? fs.readFileSync(path.join(__dirname, "./uploads/" + req.file.filename)) : null;
+  const { Nombre, Categoria, Precio } = req.body;
+  const FotoPath = req.file ? `/uploads/${req.file.filename}` : null;
 
-  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?, CATEGORIA_PL = ?, PRECIO_PL = ?, FOTO_PL = ?, DESCRIPCION_PL = ? WHERE ID_PL = ?';
+  const query = 'UPDATE Restaurant.PLATO SET NOMBRE_PL = ?, CATEGORIA_PL = ?, PRECIO_PL = ?, FOTO_PL = ? WHERE ID_PL = ?';
 
-  connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion, id], (error, result) => {
+  connection.query(query, [Nombre, Categoria, Precio, FotoPath, id], (error, result) => {
     if (error) {
       console.error('Error al actualizar el plato:', error);
       res.sendStatus(500);
@@ -103,12 +94,13 @@ app.put('/api/platos/:id', fileUpload, (req, res) => {
   });
 });
 
+
 // Eliminar un plato por ID
 app.delete('/api/platos/:id', (req, res) => {
   const id = req.params.id;
-  const query = 'DELETE FROM Restaurant.plato WHERE ID_PL = ?';
+  const query = 'DELETE FROM Restaurant.PLATO WHERE ID_PL = ?';
 
-  connection.query(query, id, (error, result) => {
+  connection.query(query, [id], (error, result) => {
     if (error) {
       console.error('Error al eliminar el plato:', error);
       res.sendStatus(500);
@@ -118,6 +110,7 @@ app.delete('/api/platos/:id', (req, res) => {
     }
   });
 });
+
 
 // CRUD de "Orden"
 

@@ -83,7 +83,7 @@ const CocinaCrud = () => {
 
   return (
     <>
-      <h2>Órdenes</h2>
+      <h2 style={{marginLeft: "1rem"}}>Órdenes</h2>
       <div className="ContainerCocina">
         {ordenesFiltradas.map((orden) => (
           <div key={orden.ID_OR} className="OrdenCocina">

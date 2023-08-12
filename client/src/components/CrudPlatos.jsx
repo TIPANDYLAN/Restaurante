@@ -10,6 +10,9 @@ const CrudPlatos = () => {
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [estado, setEstado] = useState("");
+
   const [foto, setFoto] = useState(null);
 
   const [mostrar, setMostrar] = useState(false);
@@ -34,11 +37,14 @@ const CrudPlatos = () => {
       return;
     }
 
+
     // Crear un objeto FormData solo con los campos que han sido modificados
     const formData = new FormData();
     formData.append("Nombre", nombre);
     formData.append("Precio", precio.toString());
     formData.append("Descripcion", descripcion);
+    formData.append("Categoria", categoria);
+    //formData.append("Estado", estado);
     formData.append("Foto", foto);
 
     // Hacer la solicitud PUT a la API solo si hay cambios
@@ -46,12 +52,15 @@ const CrudPlatos = () => {
       nombre !== platoSeleccionado.NOMBRE_PL ||
       precio !== platoSeleccionado.PRECIO_PL ||
       descripcion !== platoSeleccionado.DESCRIPCION_PL ||
+      categoria !== platoSeleccionado.CATEGORIA_PL ||
+      //estado !== platoSeleccionado.ESTADO_PL ||
       foto !== null
     ) {
       axios
         .put(`http://localhost:4000/api/platos/${id}`, formData)
         .then((response) => {
           console.log("Plato actualizado exitosamente");
+          window.location.reload();
           // Resto del código para actualizar los platos
         })
         .catch((error) => {
@@ -71,6 +80,8 @@ const CrudPlatos = () => {
     formData.append("Nombre", nombre);
     formData.append("Precio", precio);
     formData.append("Descripcion", descripcion);
+    formData.append("Categoria", categoria);
+    formData.append("Estado", estado);
     formData.append("Foto", foto);
 
     // Hacer la solicitud POST a la API para crear un nuevo plato
@@ -79,6 +90,7 @@ const CrudPlatos = () => {
       .then((response) => {
 
         console.log("Plato creado exitosamente");
+        window.location.reload();
         // Actualizar la lista de platos después de crear uno nuevo
         setPlatos([...platos, response.data]);
       })
@@ -92,31 +104,42 @@ const CrudPlatos = () => {
     setNombre(plato.NOMBRE_PL);
     setPrecio(plato.PRECIO_PL);
     setDescripcion(plato.DESCRIPCION_PL);
+    setCategoria(plato.CATEGORIA_PL);
+    //setEstado(plato.ESTADO_PL);
     setFoto(null); // Clear the image selection when editing
     setMostrar(true);
   };
+  
 
-  const handleEliminarPlato = (id) => {
-    axios
-      .delete(`http://localhost:4000/api/platos/${id}`)
-      .then(() => {
-        console.log("Plato eliminado exitosamente");
-        // Actualizar la lista de platos después de la eliminación
-        setPlatos(platos.filter((plato) => plato.ID_PL !== id));
-        setPlatoSeleccionado(null);
-      })
-      .catch((error) => {
-        console.error("Error al eliminar el plato:", error);
-      });
-  };
-
-  const handleAbrirSegundoModal = () => {
-    setMostrarSegundoModal(true);
-  };
-
+  
   const handleCerrarSegundoModal = () => {
     setMostrarSegundoModal(false);
   };
+
+
+  const handleActualizarEstadoPlato = (idPlato, estadoActual) => {
+    console.log('Intentando actualizar estado del plato...');
+    
+    const nuevoEstado = estadoActual === 1 ? 0 : 1; // Cambiar el estado actual
+  
+    console.log('Nuevo estado:', nuevoEstado);
+    
+    // Realizar la solicitud PUT a la API para actualizar solo el estado del plato
+    axios
+      .put(`http://localhost:4000/api/platos/${idPlato}/estado`, { Estado: nuevoEstado })
+      .then((response) => {
+        console.log("Estado del plato actualizado exitosamente");
+        window.location.reload();
+        // Aquí podrías actualizar la lista de platos o realizar las acciones necesarias
+      })
+      .catch((error) => {
+        console.error("Error al actualizar el estado del plato:", error);
+      });
+  };
+  
+  
+  
+  
 
   return (
     <div className="Crud">
@@ -124,19 +147,23 @@ const CrudPlatos = () => {
       <h2>Platos disponibles:</h2>
       <ul>
         <div className="Platos">
-          {platos.map((plato) => (
-            <li key={plato.ID_PL} className="Plato">
-              <p className="recipe-title">{plato.NOMBRE_PL}</p>
-              <p className="recipe-desc">Precio: {plato.PRECIO_PL} $ </p>
-              <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
+        {platos.map((plato) => (
+          <li key={plato.ID_PL} className="Plato">
+            <p className="recipe-title">{plato.NOMBRE_PL}</p>
+            <p className="recipe-desc">Precio: {plato.PRECIO_PL} $</p>
+            <p className="recipe-desc">Descripción: {plato.DESCRIPCION_PL}</p>
+            <p className="recipe-desc">Categoria: {plato.CATEGORIA_PL}</p>
+            <p className="recipe-desc">Estado: {plato.ESTADO_PL ? "Habilitado" : "Deshabilitado"}</p>
 
-              <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
+            <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
 
+            <button onClick={() => handleEditarPlato(plato)}>Editar</button>
+            <button onClick={() => handleActualizarEstadoPlato(plato.ID_PL, plato.ESTADO_PL)}>
+              {plato.ESTADO_PL === 1 ? "Deshabilitar" : "Habilitar"} Plato
+            </button>
+          </li>
+        ))}
 
-              <button onClick={() => handleEditarPlato(plato)}>Editar</button>
-              <button onClick={() => handleEliminarPlato(plato.ID_PL)}>Eliminar</button>
-            </li>
-          ))}
         </div>
       </ul>
       {platos.length === 0 && <p>No hay platos disponibles.</p>}
@@ -154,6 +181,11 @@ const CrudPlatos = () => {
 
               <label>Descripción:</label>
               <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+
+              <label>Categoria:</label>
+              <textarea value={categoria} onChange={(e) => setCategoria(e.target.value)} />
+              
+
 
               <label>Foto:</label>
               <input type="file" onChange={(e) => setFoto(e.target.files[0])} />
@@ -178,6 +210,17 @@ const CrudPlatos = () => {
 
                 <label>Descripción:</label>
                 <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
+
+                <label>Categoria:</label>
+                <textarea value={categoria} onChange={(e) => setCategoria(e.target.value)} />
+
+                <label>Estado:</label>
+                <select value={estado} onChange={(e) => setEstado(e.target.value)}>
+                  <option value="">Seleccione el estado</option>
+                  <option value="1">Habilitado</option>
+                  <option value="0">Deshabilitado</option>
+                </select>
+
 
                 <label>Foto:</label>
                 <input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files[0])} />

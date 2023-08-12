@@ -7,6 +7,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const app = express();
 const PORT = 4000;
+app.use(express.json({ limit: '10mb' })); 
 
 app.use(cors());
 app.use(express.json());
@@ -58,18 +59,33 @@ app.get('/api/platos', (req, res) => {
 
 // Crear un nuevo plato
 app.post('/api/platos', fileUpload, (req, res) => {
+<<<<<<< HEAD
   const { Nombre, Categoria, Precio } = req.body;
   const FotoPath = req.file ? `/uploads/${req.file.filename}` : null;
 
   const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL) VALUES (?, ?, ?, ?)';
 
   connection.query(query, [Nombre, Categoria, Precio, FotoPath], (error, result) => {
+=======
+  const { Nombre, Categoria, Precio, Descripcion, Estado } = req.body;
+  const Foto = fs.readFileSync(
+    path.join(__dirname, "./uploads/" + req.file.filename)
+  );
+
+  const query = 'INSERT INTO Restaurant.plato (NOMBRE_PL, CATEGORIA_PL, PRECIO_PL, FOTO_PL, DESCRIPCION_PL, ESTADO_PL) VALUES (?, ?, ?, ?, ?, ?)';
+
+  connection.query(query, [Nombre, Categoria, Precio, Foto, Descripcion, Estado ], (error, result) => {
+>>>>>>> c0f64bee71f8aa7702fb8b93258c9e8f1529a3eb
     if (error) {
       console.error('Error al crear el plato:', error);
       res.sendStatus(500);
     } else {
       console.log('Plato creado exitosamente');
+<<<<<<< HEAD
       res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre, CATEGORIA_PL: Categoria, PRECIO_PL: Precio, FOTO_PL: FotoPath});
+=======
+      res.json({ ID_PL: result.insertId, NOMBRE_PL: Nombre, CATEGORIA_PL: Categoria, PRECIO_PL: Precio, FOTO_PL: Foto, DESCRIPCION_PL: Descripcion, ESTADO_PL:Estado });
+>>>>>>> c0f64bee71f8aa7702fb8b93258c9e8f1529a3eb
     }
   });
 });
@@ -95,6 +111,29 @@ app.put('/api/platos/:id', fileUpload, (req, res) => {
 });
 
 
+<<<<<<< HEAD
+=======
+// Actualizar solo el estado del plato
+app.put('/api/platos/:id/estado', (req, res) => {
+  const id = req.params.id;
+  const { Estado } = req.body;
+
+  const query = 'UPDATE Restaurant.PLATO SET ESTADO_PL = ? WHERE ID_PL = ?';
+
+  connection.query(query, [Estado, id], (error, result) => {
+    if (error) {
+      console.error('Error al actualizar el estado del plato:', error);
+      res.sendStatus(500);
+    } else {
+      console.log('Estado del plato actualizado exitosamente');
+      res.sendStatus(200);
+    }
+  });
+});
+
+
+
+>>>>>>> c0f64bee71f8aa7702fb8b93258c9e8f1529a3eb
 // Eliminar un plato por ID
 app.delete('/api/platos/:id', (req, res) => {
   const id = req.params.id;

@@ -425,37 +425,22 @@ const Orden = () => {
     <>
       <div className="Inicio">
         <div className="platos-container">
-<<<<<<< HEAD
-          <ul>
-            {platos.map((plato) => (
-              <li key={plato.ID_PL}>
-                <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
-                <div className="recipe-content">
-                  <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
-                  <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
-                  <br></br>
-                  <br></br>
-                  <div className="gridAbajo">
-                    <p className="recipe-desco" >{plato.PRECIO_PL}$ </p>
-                    <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
-=======
         {Object.keys(platosPorCategoria).map((categoria) => (
           <div key={categoria}>
             <h2>{categoria}</h2>
             <ul>
               {platosPorCategoria[categoria].map((plato) => (
                 <li key={plato.ID_PL}>
-                  <img src={`http://localhost:4000/${plato.ID_PL}-kandela.png`} alt={plato.NOMBRE_PL} />
-                  <div className="recipe-content">
-                    <h1 className="recipe-title">{plato.NOMBRE_PL}</h1>
-                    <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
-                    <br />
-                    <br />
+                  <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
+                <div className="recipe-content">
+                  <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
+                  <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
+                  <br></br>
+                  <br></br>
                     <div className="gridAbajo">
                       <p className="recipe-desco">{plato.PRECIO_PL}$ </p>
                       <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
                     </div>
->>>>>>> c0f64bee71f8aa7702fb8b93258c9e8f1529a3eb
                   </div>
                 </li>
               ))}

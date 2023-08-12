@@ -18,6 +18,7 @@ const Orden = () => {
     NOMBRE_CLI: "",
     DIRECCION_CLI: "",
     TELEFONO_CLI: "",
+    CORREO_CLI: "",
     PERSONALIZA: true,
   });
   const [clienteSubido, setCLienteSubido] = useState(false);
@@ -175,6 +176,7 @@ const Orden = () => {
         NOMBRE_CLI: "",
         DIRECCION_CLI: "",
         TELEFONO_CLI: "",
+        CORREO_CLI: "",
         PERSONALIZA: checked,
       });
     } else {
@@ -187,6 +189,7 @@ const Orden = () => {
           NOMBRE_CLI: "",
           DIRECCION_CLI: "",
           TELEFONO_CLI: "",
+          CORREO_CLI: "",
           PERSONALIZA: checked,
         }));
       }
@@ -202,6 +205,7 @@ const Orden = () => {
         CEDULA_CLI: "9999999999",
         NOMBRE_CLI: "CONSUMIDOR FINAL",
         DIRECCION_CLI: "",
+        CORREO_CLI: "",
         TELEFONO_CLI: "",
       }));
     }
@@ -213,6 +217,7 @@ const Orden = () => {
       NOMBRE_CLI: cliente.NOMBRE_CL,
       DIRECCION_CLI: cliente.DIRECCION_CL,
       TELEFONO_CLI: cliente.TELEFONO_CL,
+      CORREO_CLI: cliente.CORREO_CL,
       PERSONALIZA: true,
     });
     setMostrarModal(false); // Cerrar el modal después de seleccionar el cliente
@@ -249,6 +254,7 @@ const Orden = () => {
         NOMBRE_CLI: clienteData.NOMBRE_CLI,
         DIRECCION_CLI: clienteData.DIRECCION_CLI,
         TELEFONO_CLI: clienteData.TELEFONO_CLI,
+        CORREO_CLI: clienteData.CORREO_CLI,
         PERSONALIZA: clienteData.PERSONALIZA,
       };
 
@@ -256,6 +262,7 @@ const Orden = () => {
         dataToSend.NOMBRE_CLI = dataToSend.NOMBRE_CLI || existingClientData.NOMBRE_CLI;
         dataToSend.DIRECCION_CLI = dataToSend.DIRECCION_CLI || existingClientData.DIRECCION_CLI;
         dataToSend.TELEFONO_CLI = dataToSend.TELEFONO_CLI || existingClientData.TELEFONO_CLI;
+        dataToSend.CORREO_CLI = dataToSend.CORREO_CLI || existingClientData.CORREO_CLI;
       }
 
       await axios.post("http://localhost:4000/api/clientes", dataToSend);
@@ -280,6 +287,7 @@ const Orden = () => {
           NOMBRE_CLI: "CONSUMIDOR FINAL",
           DIRECCION_CLI: "",
           TELEFONO_CLI: "",
+          CORREO_CLI: "",
           PERSONALIZA: true,
         });
       }
@@ -310,6 +318,7 @@ const Orden = () => {
           NOMBRE_CLI: "",
           DIRECCION_CLI: "",
           TELEFONO_CLI: "",
+          CORREO_CLI: "",
           PERSONALIZA: true,
         }));
         setCLienteSubido(false);
@@ -403,6 +412,7 @@ const Orden = () => {
       NOMBRE_CLI: "",
       DIRECCION_CLI: "",
       TELEFONO_CLI: "",
+      CORREO_CLI: "",
       PERSONALIZA: true,
     });
     setCLienteSubido(false);
@@ -459,59 +469,57 @@ const Orden = () => {
             <br></br>
             {generarOrden ? (
               <>
-                  <div className="Platos-en-Orden">
-                    <div className="Cliente">
-                      {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>) : (<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>)}
-                    </div>
-                    <div className="grid-orden">
-                      {orden.map((plato) => (
-                        <div key={plato.ID_PL} className="orden-item">
-                          <p className="recipe-desc2">{plato.NOMBRE_PL}</p>
-                          <p className="recipe-desc">{plato.PRECIO_PL}$</p>
-                          <p className="recipe-desc">x{plato.cantidad}</p>
-                          <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
-                            Eliminar
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    {orden.length === 0 && <p>No hay platos en la orden</p>}
-                    {platosAEliminar > 0 && (
-                      <div className="eliminar-platos">
-                        <p>
-                          ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
-                        </p>
-                        <input
-                          type="number"
-                          min="1"
-                          max={Math.min(platosAEliminar, 100)}
-                          value={platosAEliminar}
-                          onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
-                        />
-                        <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
-                      </div>
-                    )}
-                    <div className="total-orden">
-                      <h3>Total de la Orden: ${totalOrden}</h3>
-                    </div>
-                    <input type="text" id="Mesa" placeholder="Agregar mesa..." />
-                    <input type="text" id="Observaciones" placeholder="Observaciones" />
-                    {orden.length > 0 && (
-                      <button onClick={enviarPedidos}>Enviar Orden</button>
-                    )}
-                    <button onClick={() => {
-                      CancelarOrden();
-                      limpiarOrden();
-                    }}>Cancelar</button>
+                <div className="Platos-en-Orden">
+                  <div className="Cliente">
+                    {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>) : (<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>)}
                   </div>
+                  <div className="grid-orden">
+                    {orden.map((plato) => (
+                      <div key={plato.ID_PL} className="orden-item">
+                        <p className="recipe-desc2">{plato.NOMBRE_PL}</p>
+                        <p className="recipe-desc">{plato.PRECIO_PL}$</p>
+                        <p className="recipe-desc">x{plato.cantidad}</p>
+                        <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
+                          Eliminar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {orden.length === 0 && <p>No hay platos en la orden</p>}
+                  {platosAEliminar > 0 && (
+                    <div className="eliminar-platos">
+                      <p>
+                        ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
+                      </p>
+                      <input
+                        type="number"
+                        min="1"
+                        max={Math.min(platosAEliminar, 100)}
+                        value={platosAEliminar}
+                        onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
+                      />
+                      <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
+                    </div>
+                  )}
+                  <div className="total-orden">
+                    <h3>Total de la Orden: ${totalOrden}</h3>
+                  </div>
+                  <input type="text" id="Mesa" placeholder="Agregar mesa..." />
+                  <input type="text" id="Observaciones" placeholder="Observaciones" />
+                  {orden.length > 0 && (
+                    <button onClick={enviarPedidos}>Enviar Orden</button>
+                  )}
+                  <button onClick={() => {
+                    CancelarOrden();
+                    limpiarOrden();
+                  }}>Cancelar</button>
+                </div>
               </>
             ) : (
               <>
                 <div className="tipoOrdenContainer">
                   <div className="tipoOrden">
                     <button onClick={handleCrearOrden}>Nueva Orden</button>
-
-
                   </div>
                 </div>
               </>
@@ -556,6 +564,7 @@ const Orden = () => {
                         <p className="nombreCliente">{cliente.NOMBRE_CL}</p>
                         <p className="cedulaCliente">{cliente.CEDULA_CL}</p>
                         <p className="direccionCliente">{cliente.DIRECCION_CL}</p>
+                        <p className="correoCliente">{cliente.CORREO_CL}</p>
                         <p className="telefonoCliente">{cliente.TELEFONO_CL}</p>
                       </li>
                     )
@@ -590,7 +599,6 @@ const Orden = () => {
                     name="NOMBRE_CLI"
                     value={clienteData.NOMBRE_CLI}
                     onChange={handleInputChange}
-                    disabled={!clienteData.PERSONALIZA}
                     placeholder={clienteData.PERSONALIZA ? "" : "CONSUMIDOR FINAL"}
                   />
                   {clienteData.PERSONALIZA && (
@@ -600,6 +608,13 @@ const Orden = () => {
                         type="text"
                         name="DIRECCION_CLI"
                         value={clienteData.DIRECCION_CLI}
+                        onChange={handleInputChange}
+                      />
+                      <p>Correo Electrónico:</p>
+                      <input
+                        type="text"
+                        name="CORREO_CLI"
+                        value={clienteData.CORREO_CLI}
                         onChange={handleInputChange}
                       />
                       <p>Telefono:</p>

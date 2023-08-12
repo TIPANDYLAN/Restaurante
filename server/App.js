@@ -423,7 +423,8 @@ app.get('/api/clientes/:cedula', (req, res) => {
 
 // Crear un nuevo cliente o actualizar si la cédula ya existe
 app.post('/api/clientes', (req, res) => {
-  const { CEDULA_CLI, NOMBRE_CLI, DIRECCION_CLI, TELEFONO_CLI, NO_PROPORCIONA } = req.body;
+  const { CEDULA_CLI, NOMBRE_CLI, CORREO_CLI, DIRECCION_CLI, TELEFONO_CLI, NO_PROPORCIONA } = req.body;
+  console.log(CEDULA_CLI, NOMBRE_CLI, CORREO_CLI, DIRECCION_CLI, TELEFONO_CLI, NO_PROPORCIONA )
 
   // Validar que se ingresen los datos requeridos (cedula y nombre) si NO_PROPORCIONA es false
   if (!NO_PROPORCIONA && (!CEDULA_CLI || !NOMBRE_CLI)) {
@@ -441,8 +442,8 @@ app.post('/api/clientes', (req, res) => {
     if (result.length > 0) {
       // Si el cliente ya existe, actualizar sus datos si NO_PROPORCIONA es false
       if (!NO_PROPORCIONA) {
-        const queryActualizarCliente = 'UPDATE cliente SET NOMBRE_CL = ?, DIRECCION_CL = ?, TELEFONO_CL = ? WHERE CEDULA_CL = ?';
-        connection.query(queryActualizarCliente, [NOMBRE_CLI, DIRECCION_CLI, TELEFONO_CLI, CEDULA_CLI], (error, result) => {
+        const queryActualizarCliente = 'UPDATE cliente SET NOMBRE_CL = ?, CORREO_CL = ?,DIRECCION_CL = ?, TELEFONO_CL = ? WHERE CEDULA_CL = ?';
+        connection.query(queryActualizarCliente, [NOMBRE_CLI, CORREO_CLI, DIRECCION_CLI, TELEFONO_CLI, CEDULA_CLI], (error, result) => {
           if (error) {
             console.error('Error al actualizar el cliente:', error);
             res.sendStatus(500);
@@ -462,15 +463,16 @@ app.post('/api/clientes', (req, res) => {
       if (NO_PROPORCIONA) {
         query = 'INSERT INTO cliente (CEDULA_CL, NOMBRE_CL) VALUES (?, ?)';
       } else {
-        query = 'INSERT INTO cliente (CEDULA_CL, NOMBRE_CL, DIRECCION_CL, TELEFONO_CL) VALUES (?, ?, ?, ?)';
+        query = 'INSERT INTO cliente (CEDULA_CL, NOMBRE_CL, CORREO_CL, DIRECCION_CL, TELEFONO_CL) VALUES (? ,? ,?, ?, ?)';
       }
 
-      connection.query(query, [CEDULA_CLI, NOMBRE_CLI, DIRECCION_CLI, TELEFONO_CLI], (error, result) => {
+      connection.query(query, [CEDULA_CLI, NOMBRE_CLI, CORREO_CLI, DIRECCION_CLI, TELEFONO_CLI], (error, result) => {
+         
         if (error) {
           console.error('Error al crear el cliente:', error);
           res.sendStatus(500);
         } else {
-          console.log('Cliente creado exitosamente');
+          console.log('Cliente creado exitosamenteS');
           res.sendStatus(200);
         }
       });

@@ -257,14 +257,14 @@ const Orden = () => {
         CORREO_CLI: clienteData.CORREO_CLI,
         PERSONALIZA: clienteData.PERSONALIZA,
       };
-
+      console.log(dataToSend)
       if (existingClientData) {
         dataToSend.NOMBRE_CLI = dataToSend.NOMBRE_CLI || existingClientData.NOMBRE_CLI;
         dataToSend.DIRECCION_CLI = dataToSend.DIRECCION_CLI || existingClientData.DIRECCION_CLI;
         dataToSend.TELEFONO_CLI = dataToSend.TELEFONO_CLI || existingClientData.TELEFONO_CLI;
         dataToSend.CORREO_CLI = dataToSend.CORREO_CLI || existingClientData.CORREO_CLI;
       }
-
+      console.log(dataToSend)
       await axios.post("http://localhost:4000/api/clientes", dataToSend);
 
       setMostrarModal(false);

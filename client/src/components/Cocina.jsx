@@ -28,7 +28,8 @@ const CocinaCrud = () => {
         ordenesConPlatos[orden.ID_OR].platos.push({
           ID_PLATO_PEDIDO: orden.ID_PLATO_PEDIDO,
           NOMBRE_PLATO_PEDIDO: orden.NOMBRE_PLATO_PEDIDO,
-          CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS
+          CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS,
+          ESTADO_PLATO: orden.ESTADO_PLATO
         });
       }
     });
@@ -94,6 +95,10 @@ const CocinaCrud = () => {
                 <div key={plato.ID_PLATO_PEDIDO} className='PlatoOrden'>
                   <p className='nombrePlato'>{plato.NOMBRE_PLATO_PEDIDO}</p>
                   <p className='cantidadPlato'>x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
+                  <div className="PlatoActivo" style={{backgroundColor: plato.ESTADO_PLATO==="Por Hacer" ? "red":"rgba(168, 36, 36,0.550)"}}/>
+                  <div className="PlatoActivo" style={{backgroundColor: plato.ESTADO_PLATO==="Realizando" ? "rgb(228, 221, 91)":"rgba(188, 183, 83,0.550)"}}/>
+                  <div className="PlatoActivo" style={{backgroundColor: plato.ESTADO_PLATO==="Terminado" ? "rgb(228, 221, 91)":"rgba(67, 113, 65,0.550)"}}/>
+                  <button>Entregado</button>
                 </div>
               ))}
             </div>
@@ -105,12 +110,8 @@ const CocinaCrud = () => {
                 Marcar como Terminado
               </button>
             ) : orden.ESTADO_OR === 'Por hacer' ? (
-              <button className="en-proceso-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'En proceso')}>
-                Marcar como en proceso
-              </button>
-            ) : (<button className="en-proceso-btn" onClick={() => handleEstadoClick(orden.ID_OR, 'Entregado')}>
-            Marcar como Entregado
-          </button>)}
+              <></>
+            ) : (<></>)}
             </div>
           </div>
         ))}

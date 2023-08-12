@@ -430,6 +430,7 @@ const Orden = () => {
           </ul>
         </div>
         <div className="orden-container">
+          <div className="FixOrden">
           <h2>Orden</h2>
           <br></br>
           {generarOrden ? (
@@ -489,6 +490,7 @@ const Orden = () => {
               </div>
             </>
           )}
+        </div>
         </div>
       </div>
 

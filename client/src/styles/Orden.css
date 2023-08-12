@@ -61,6 +61,13 @@
     margin-right: 15px;
   }
 
+  .FixOrden{
+    position: sticky;
+    top: 80px;
+    min-height: 53vh;
+    height: auto;
+  }
+
   .orden-container {
     flex: 1;
     padding-left: 20px;
@@ -452,12 +459,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 53vh;
+  height: auto;
 }
 
 .tipoOrden {
   width: 100%;
   background-color: #f3a34d;
-  height: 300px;
+  min-height: 53vh;
+  height: auto;
   margin-bottom: 20px;
   border-radius: 15px;
   box-shadow: 0 2px 3px rgba(159, 159, 159, 0.436);

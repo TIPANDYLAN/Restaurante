@@ -26,6 +26,8 @@ const Orden = () => {
   const [ordenes, setOrdenes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [IDordenActual, setIDOrdenActual] = useState(0);
+  const [platoAgregado, setPlatoAgregado] = useState(false);
+
 
 
   useEffect(() => {
@@ -80,28 +82,31 @@ const Orden = () => {
     );
   };
 
-
-
   const handleAgregarPlato = (platoId) => {
-    // Check if a customer exists before adding plates to the order
-    if (!generarOrden) {
-      alert("Genere una orden primero");
-      return;
-    }
-
     const platoSeleccionado = platos.find((plato) => plato.ID_PL === platoId);
     if (platoSeleccionado) {
-      if (orden.some((item) => item.ID_PL === platoId)) {
+      setPlatoAgregado(true); // Marcar que se ha agregado al menos un plato
+
+      // Verificar si el plato ya está en la orden
+      const platoEnOrden = orden.find((item) => item.ID_PL === platoId);
+
+      if (platoEnOrden) {
         setOrden((prevOrden) =>
           prevOrden.map((item) =>
-            item.ID_PL === platoId ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL } : item
+            item.ID_PL === platoId
+              ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL }
+              : item
           )
         );
       } else {
-        setOrden((prevOrden) => [...prevOrden, { ...platoSeleccionado, cantidad: 1, total: platoSeleccionado.PRECIO_PL }]);
+        setOrden((prevOrden) => [
+          ...prevOrden,
+          { ...platoSeleccionado, cantidad: 1, total: platoSeleccionado.PRECIO_PL },
+        ]);
       }
     }
   };
+
 
   const handleEliminarPlato = (platoId) => {
     const platoAEliminar = orden.find((plato) => plato.ID_PL === platoId);
@@ -151,8 +156,8 @@ const Orden = () => {
   };
 
   const filteredClients = clientes.filter((cliente) =>
-  cliente.CEDULA_CL.toString().includes(searchQuery) || cliente.NOMBRE_CL === "CONSUMIDOR FINAL"
-);
+    cliente.CEDULA_CL.toString().includes(searchQuery) || cliente.NOMBRE_CL === "CONSUMIDOR FINAL"
+  );
 
 
   // Función para manejar el cambio del checkbox del formulario de cliente
@@ -232,10 +237,10 @@ const Orden = () => {
   const handleAgregarCliente = async (event) => {
     event.preventDefault(); // Evitar comportamiento por defecto del formulario
 
-  const confirmation = window.confirm("¿Desea agregar el cliente?");
-  if (!confirmation) {
-    return;
-  }
+    const confirmation = window.confirm("¿Desea agregar el cliente?");
+    if (!confirmation) {
+      return;
+    }
 
     try {
       const existingClientData = await verificarCedulaExistente(clienteData.CEDULA_CLI);
@@ -425,91 +430,93 @@ const Orden = () => {
     <>
       <div className="Inicio">
         <div className="platos-container">
-        {Object.keys(platosPorCategoria).map((categoria) => (
-          <div key={categoria}>
-            <h2>{categoria}</h2>
-            <ul>
-              {platosPorCategoria[categoria].map((plato) => (
-                <li key={plato.ID_PL}>
-                  <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
-                <div className="recipe-content">
-                  <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
-                  <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
-                  <br></br>
-                  <br></br>
-                    <div className="gridAbajo">
-                      <p className="recipe-desco">{plato.PRECIO_PL}$ </p>
-                      <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
+          {Object.keys(platosPorCategoria).map((categoria) => (
+            <div key={categoria}>
+              <h2>{categoria}</h2>
+              <ul>
+                {platosPorCategoria[categoria].map((plato) => (
+                  <li key={plato.ID_PL}>
+                    <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
+                    <div className="recipe-content">
+                      <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
+                      <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
+                      <br></br>
+                      <br></br>
+                      <div className="gridAbajo">
+                        <p className="recipe-desco">{plato.PRECIO_PL}$ </p>
+                        <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
+                      </div>
                     </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
         <div className="orden-container">
           <div className="FixOrden">
-          <h2>Orden</h2>
-          <br></br>
-          {generarOrden ? (
-            <>
-              <div className="Platos-en-Orden">
-                <div className="Cliente">
-                  {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>) : (<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>)}
-                </div>
-                <div className="grid-orden">
-                  {orden.map((plato) => (
-                    <div key={plato.ID_PL} className="orden-item">
-                      <p className="recipe-desc2">{plato.NOMBRE_PL}</p>
-                      <p className="recipe-desc">{plato.PRECIO_PL}$</p>
-                      <p className="recipe-desc">x{plato.cantidad}</p>
-                      <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
-                        Eliminar
-                      </button>
+            <h2>Orden</h2>
+            <br></br>
+            {generarOrden ? (
+              <>
+                  <div className="Platos-en-Orden">
+                    <div className="Cliente">
+                      {clienteSubido ? (<p>Cliente: {clienteData.NOMBRE_CLI}</p>) : (<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>)}
                     </div>
-                  ))}
-                </div>
-                {orden.length === 0 && <p>No hay platos en la orden</p>}
-                {platosAEliminar > 0 && (
-                  <div className="eliminar-platos">
-                    <p>
-                      ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
-                    </p>
-                    <input
-                      type="number"
-                      min="1"
-                      max={Math.min(platosAEliminar, 100)}
-                      value={platosAEliminar}
-                      onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
-                    />
-                    <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
+                    <div className="grid-orden">
+                      {orden.map((plato) => (
+                        <div key={plato.ID_PL} className="orden-item">
+                          <p className="recipe-desc2">{plato.NOMBRE_PL}</p>
+                          <p className="recipe-desc">{plato.PRECIO_PL}$</p>
+                          <p className="recipe-desc">x{plato.cantidad}</p>
+                          <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
+                            Eliminar
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    {orden.length === 0 && <p>No hay platos en la orden</p>}
+                    {platosAEliminar > 0 && (
+                      <div className="eliminar-platos">
+                        <p>
+                          ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
+                        </p>
+                        <input
+                          type="number"
+                          min="1"
+                          max={Math.min(platosAEliminar, 100)}
+                          value={platosAEliminar}
+                          onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
+                        />
+                        <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
+                      </div>
+                    )}
+                    <div className="total-orden">
+                      <h3>Total de la Orden: ${totalOrden}</h3>
+                    </div>
+                    <input type="text" id="Mesa" placeholder="Agregar mesa..." />
+                    <input type="text" id="Observaciones" placeholder="Observaciones" />
+                    {orden.length > 0 && (
+                      <button onClick={enviarPedidos}>Enviar Orden</button>
+                    )}
+                    <button onClick={() => {
+                      CancelarOrden();
+                      limpiarOrden();
+                    }}>Cancelar</button>
                   </div>
-                )}
-                <div className="total-orden">
-                  <h3>Total de la Orden: ${totalOrden}</h3>
-                </div>
-                <input type="text" id="Mesa" placeholder="Agregar mesa..." />
-                <input type="text" id="Observaciones" placeholder="Observaciones" />
-                <button onClick={enviarPedidos}>Enviar Orden</button>
-                <button onClick={() => {
-                  CancelarOrden();
-                  limpiarOrden();
-                }}>Cancelar</button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="tipoOrdenContainer">
-                <div className="tipoOrden">
-                  <button onClick={handleCrearOrden}>Nueva Orden</button>
+              </>
+            ) : (
+              <>
+                <div className="tipoOrdenContainer">
+                  <div className="tipoOrden">
+                    <button onClick={handleCrearOrden}>Nueva Orden</button>
 
 
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
-        </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 

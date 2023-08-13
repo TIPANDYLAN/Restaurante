@@ -1,65 +1,91 @@
-.Header{
-    background: url("../images/Logo.png") top -7px left 20px / 370px no-repeat, url("../images/HeaderBackground.jpg") center / 1800px no-repeat;
+.Header {
+    background: url("../images/Logo.png") top -7px left 20px / 370px no-repeat,
+      url("../images/HeaderBackground.jpg") center / 1800px no-repeat;
     width: 100%;
     padding: 15px 0;
     height: 11rem;
-}
-
-.Menu{
-    background: #DF964A;
+  }
+  
+  .Menu {
+    background: #df964a;
     width: 100%;
     height: 4rem;
     color: white;
     display: flex;
     align-items: center;
-    flex-wrap: nowrap;
-    white-space: nowrap;
     justify-content: space-between;
     position: sticky;
     top: -1px;
-}
-
-.Menu .titulo{
+  }
+  
+  .Menu .titulo {
     font-size: 30px;
     margin-left: 40px;
-}
-
-.login{
+  }
+  
+  .login {
     background: none;
     border: none;
     color: white;
-    margin-left: auto;
     display: flex;
     cursor: pointer;
-    margin-right: 20px;
-}
-
-.login .texto{
+    margin-right: 20px; /* Cambiado a margin-right */
+  }
+  
+  .login .texto {
     margin-right: 10px;
     font-size: 15px;
-}
-
-.login img{
+  }
+  
+  .login img {
     width: 15px;
     height: auto;
     transform: scale(1.6);
-}
-
-.Busqueda button{
+  }
+  
+  .RightSection {
+    display: flex;
+    align-items: center;
+    margin-right: 20px; /* Alinear a la derecha */
+  }
+  
+  .Usuario {
+    display: flex;
+    align-items: center;
+    margin-right: 10px; /* Alinear a la derecha */
+  }
+  
+  .Usuario p {
+    font-size: 15px;
+    margin-right: 10px;
+  }
+  
+  .logout {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .logout .texto {
+    font-size: 15px;
+  }
+  
+  .Busqueda button {
     background: none;
     border: none;
     cursor: pointer;
     transform: translate(30px, 2px);
-}
-
-.Busqueda button img{
+  }
+  
+  .Busqueda button img {
     width: 15px;
     height: auto;
     filter: brightness(4) opacity(0.7);
     margin-left: -15px;
-}
-
-.Menu .Buscar{
+  }
+  
+  .Menu .Buscar {
     background: none;
     border: 1.5px solid white;
     border-radius: 5px;
@@ -68,20 +94,15 @@
     padding-left: 30px;
     margin-right: 50px;
     color: white;
-}
-
-.Menu .Buscar::placeholder{
+  }
+  
+  .Menu .Buscar::placeholder {
     color: white;
     filter: opacity(0.8);
-}
-
-.Menu .Buscar:focus{
+  }
+  
+  .Menu .Buscar:focus {
     outline: none;
     color: white;
-}
-.botoncito{
-    color: white !important;
-    background-color:#DF964A;
-    box-shadow: none;
-    font-size: 20px;
-}
+  }
+  

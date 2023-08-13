@@ -12,6 +12,8 @@ export const Header = ({titulo,Buscar}) =>{
     const navigate = useNavigate();
     const [mostrar, setMostrar] = useState(false);
     const isAuthenticated = localStorage.getItem("auth") === "yes";
+    const nombreUsuario = localStorage.getItem("nombreUsuario");
+    const cargoUsuario = localStorage.getItem("Cargo")
 
     return(
         <>
@@ -19,9 +21,18 @@ export const Header = ({titulo,Buscar}) =>{
             <div className="Menu">
                 <div className="titulo">{titulo}</div>
                 {isAuthenticated ? (
-                <button className="login" onClick={() => {localStorage.clear();navigate("/");}} >
-                    <div className="texto">Cerrar Sesión</div>
-                </button>
+                    <div className="Usuario">
+                    <p>{nombreUsuario} | {cargoUsuario}</p>
+                    <button
+                      className="login"
+                      onClick={() => {
+                        localStorage.clear();
+                        navigate("/");
+                      }}
+                    >
+                      <div className="texto">Cerrar Sesión</div>
+                    </button>
+                  </div>
                 ) : (
                 <button className="login" onClick={() => setMostrar(true)}>
                     <div className="texto">Iniciar Sesion</div>

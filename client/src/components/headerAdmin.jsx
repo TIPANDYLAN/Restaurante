@@ -22,11 +22,9 @@ export const HeaderAdmin = ({titulo,Buscar}) =>{
                     </ul>
                     </nav>
                 </div>
-                <button className="login" onClick={()=>setMostrar(true)}>
-                    <a className="texto" onClick={() => {localStorage.clear();navigate("/");}}>
-                    <h6>Log Out</h6>{" "}
-                    </a>
-                </button>  
+                <button className="login" onClick={() => {localStorage.clear();navigate("/");}} >
+                    <div className="texto">Cerrar Sesión</div>
+                </button> 
             </div>
             <Modal isOpen={mostrar} onClose={() => setMostrar(false)}/>
         </>

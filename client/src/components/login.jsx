@@ -22,11 +22,28 @@ export const Login = () => {
         if (response.data.message) {
           setLoginStatus(response.data.message);
         } else {
-          const USUARIO_EMP = nombreLog;
-          setLoginStatus("Bienvenido: " + USUARIO_EMP);
+          const usuario = response.data;
+          setLoginStatus("Bienvenido: " + usuario.USUARIO_EMP);
           localStorage.setItem("auth", "yes");
-          localStorage.setItem("nombreUsuario", USUARIO_EMP);
-          navigate("/admin");
+          localStorage.setItem("nombreUsuario", usuario.USUARIO_EMP);
+          localStorage.setItem("Cargo", usuario.CARGO_EMP);
+          switch (usuario.CARGO_EMP) {
+            case "admin":
+              navigate("/Admin");
+              break;
+            case "chef":
+              navigate("/Cocina");
+              break;
+            case "mesero":
+              navigate("/Mesero");
+              break;
+            case "caja":
+              navigate("/Caja");
+              break;
+            default:
+              navigate("/");
+              break;
+          }
         }
       })
       .catch((error) => {

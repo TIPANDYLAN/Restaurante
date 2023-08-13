@@ -16,6 +16,7 @@
     justify-content: space-between;
     position: sticky;
     top: -1px;
+    z-index: 2;
   }
   
   .Menu .titulo {

@@ -1,0 +1,37 @@
+.horizontal-menu {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: auto;
+    padding: 0;
+  }
+  
+  .menu-content {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    background-color: white;
+    justify-content: space-around;
+  }
+  
+  .menu-option {
+    padding: 10px;
+    transition: transform 0.3s;
+    cursor: pointer;
+    background-color: white;
+    font-weight: bolder;
+    font-size: 20px;
+  }
+  
+  .menu-option.active {
+    transform: scale(1.1);
+    color: rgb(211, 138, 42);
+  }
+  
+  button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  

@@ -4,6 +4,7 @@ import "../styles/Orden.css";
 import Modal from "./Modal";
 
 import Lupa from "../images/search-icon.png";
+import HorizontalMenu from "./MenuHorizontal";
 
 const Orden = () => {
   const [platos, setPlatos] = useState([]);
@@ -28,6 +29,8 @@ const Orden = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [IDordenActual, setIDOrdenActual] = useState(0);
   const [platoAgregado, setPlatoAgregado] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Parrilladas");
+
 
 
 
@@ -435,34 +438,39 @@ const Orden = () => {
     platosPorCategoria[categoria].push(plato);
   });
 
+  const categorias = Object.keys(platosPorCategoria);
+
+  const platosFiltrados = platosHabilitados.filter((plato) => plato.CATEGORIA_PL === categoriaSeleccionada);
 
   return (
     <>
       <div className="Inicio">
-        <div className="platos-container">
-          {Object.keys(platosPorCategoria).map((categoria) => (
-            <div key={categoria}>
-              <h2>{categoria}</h2>
-              <ul>
-                {platosPorCategoria[categoria].map((plato) => (
-                  <li key={plato.ID_PL}>
-                    <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
-                    <div className="recipe-content">
-                      <h1 className="recipe-title"> {plato.NOMBRE_PL}</h1>
-                      <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
-                      <br></br>
-                      <br></br>
-                      <div className="gridAbajo">
-                        <p className="recipe-desco">{plato.PRECIO_PL}$ </p>
-                        <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
-                      </div>
+      <div className="platos-container">
+      <HorizontalMenu options={categorias} onSelectCategoria={setCategoriaSeleccionada} categoriaActual={categoriaSeleccionada} />
+        {categorias.map((categoria) => (
+          <div key={categoria}>
+            {categoria === categoriaSeleccionada && (<>
+            <ul>
+            {platosFiltrados.map((plato) => (
+                <li key={plato.ID_PL}>
+                  <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL} />
+                  <div className="recipe-content">
+                    <h1 className="recipe-title">{plato.NOMBRE_PL}</h1>
+                    <p className="recipe-desc" id="descripcion">{plato.DESCRIPCION_PL}</p>
+                    <br></br>
+                    <br></br>
+                    <div className="gridAbajo">
+                      <p className="recipe-desco">{plato.PRECIO_PL}$ </p>
+                      <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+                  </div>
+                </li>
+              ))}
+            </ul></>
+            )}
+          </div>
+        ))}
+      </div>
         <div className="orden-container">
           <div className="FixOrden">
             <h2>Orden</h2>

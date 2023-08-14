@@ -30,7 +30,7 @@ const fileUpload = multer({
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "sebastian266",
   database: "Restaurant",
 });
 
@@ -615,4 +615,40 @@ app.post("/api/login", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Servidor en ejecución en http://localhost:${PORT}`);
+});
+
+app.get("/api/factura", (req, res) => {
+  const query = `
+  SELECT
+    O.ID_OR,
+    O.DESCRIPCION_OR,
+    O.ESTADO_OR,
+    O.NMESA_OR,
+    C.CEDULA_CL,
+    C.NOMBRE_CL,
+    C.CORREO_CL,
+    C.TELEFONO_CL,
+    C.DIRECCION_CL,
+    P.ID_PL AS ID_PLATO_PEDIDO,
+    P.NOMBRE_PL AS NOMBRE_PLATO_PEDIDO,
+    P.PRECIO_PL AS PRECIO_PE,
+    PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS,
+    PE.ESTADO_PE AS ESTADO_PLATO
+  FROM ORDEN O
+  JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
+  JOIN PLATO P ON PE.ID_PL = P.ID_PL
+  JOIN CLIENTE C ON O.CEDULA_CL = C.CEDULA_CL
+`;
+
+  connection.query(query, (error, rows) => {
+    if (error) {
+      console.error(
+        "Error al obtener las órdenes con información de platos y clientes:",
+        error
+      );
+      res.sendStatus(500);
+    } else {
+      res.send(rows);
+    }
+  });
 });

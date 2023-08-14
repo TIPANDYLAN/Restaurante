@@ -1,0 +1,56 @@
+.ContainerCaja {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  
+  .OrdenCaja {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px;
+    width: 300px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .MesaOrden {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Agrega aquí estilos adicionales para otros elementos en las órdenes si es necesario */
+  
+  .button-fac {
+  
+    bottom: 10px; /* Ajusta esta propiedad para cambiar la distancia desde el borde inferior */
+    right: 10px; /* Ajusta esta propiedad para cambiar la distancia desde el borde derecho */
+    padding: 8px 16px;
+    background-color: #f9cc83;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  
+  .button-fac:hover {
+    background-color: #3cb300;
+  }
+  
+  /* Estilos para el modal de la factura */
+  .ModalFactura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  

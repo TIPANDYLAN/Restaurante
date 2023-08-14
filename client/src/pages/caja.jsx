@@ -1,16 +1,17 @@
 import { Header } from "../components/header.jsx";
+import  Fact  from "../components/Caja.jsx";
 import React, { useEffect } from 'react';
 
 const Caja = ()=> {
 
     useEffect(() => {
-        document.title = 'Caja - Kandela';
+        document.title = 'Cocina - Kandela';
       }, []);
 
     return(
         <>
-            <Header titulo={"Bienvenido a Caja"}/>
-
+            <Header titulo={"Facturacion"}/>
+            <Fact/>
         </>
     );
 }

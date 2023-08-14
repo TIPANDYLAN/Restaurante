@@ -9,7 +9,7 @@
   .OrdenCocina {
     display: flex;
     flex-direction: column;
-    background-color: aliceblue;
+    background-color: rgb(255, 255, 255);
     margin: 5px 5px;
     padding: 5px 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.164);

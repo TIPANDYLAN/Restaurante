@@ -12,6 +12,10 @@
   align-items: center;
 }
 
+.Crud ul{
+  width: 100%;
+}
+
 .Editar {
   background-color: #faead9;
   border-radius: 15px;
@@ -21,6 +25,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, 44%);
   justify-content: center;
+  width: 100%;
 }
 
 .Plato img {

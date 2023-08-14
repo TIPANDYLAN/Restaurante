@@ -371,6 +371,29 @@ app.put("/api/pedidos/:id", (req, res) => {
   );
 });
 
+app.put("/api/pedidosEstado/:id1/:id2", (req, res) => {
+  const idPlato = req.params.id1;
+  const idOrden = req.params.id2;
+  const { ESTADO_PE } = req.body;
+
+  const query =
+    "UPDATE PEDIDO SET ESTADO_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+
+  connection.query(
+    query,
+    [ESTADO_PE, idPlato, idOrden],
+    (error, result) => {
+      if (error) {
+        console.error("Error al actualizar el pedido:", error);
+        res.sendStatus(500);
+      } else {
+        console.log("Pedido actualizado exitosamente");
+        res.sendStatus(200);
+      }
+    }
+  );
+});
+
 app.delete("/api/pedidos/:id", (req, res) => {
   const idPedido = req.params.id;
 

@@ -168,7 +168,17 @@ const CrudPlatos = () => {
   };
   
   
-  
+  const platosHabilitados = [];
+  const platosDeshabilitados = [];
+
+  // Filtrar los platos según su estado
+  platos.forEach((plato) => {
+    if (plato.ESTADO_PL === 1) {
+      platosHabilitados.push(plato);
+    } else {
+      platosDeshabilitados.push(plato);
+    }
+  });
   
 
   return (
@@ -181,8 +191,8 @@ const CrudPlatos = () => {
       <h2>Platos disponibles:</h2>
       <ul>
         <div className="Platos">
-          {platos.map((plato) => (
-            <li key={plato.ID_PL} className="Plato">
+        {platosHabilitados.map((plato) => (
+              <li key={plato.ID_PL} className="Plato">
               <p className="recipe-title">{plato.NOMBRE_PL}</p>
               <p className="recipe-desc">Precio: {plato.PRECIO_PL} $ </p>
 
@@ -193,8 +203,27 @@ const CrudPlatos = () => {
               {plato.ESTADO_PL === 1 ? "Deshabilitar" : "Habilitar"} Plato
             </button>
           </li>
-        ))}
+            ))}
+        
+        </div>
+      </ul>
+      <h2>Platos deshabilitados:</h2>
+      <ul>
+        <div className="Platos">
+        {platosDeshabilitados.map((plato) => (
+              <li key={plato.ID_PL} className="Plato">
+              <p className="recipe-title">{plato.NOMBRE_PL}</p>
+              <p className="recipe-desc">Precio: {plato.PRECIO_PL} $ </p>
 
+              <img src={`http://localhost:4000${plato.FOTO_PL}`} alt={plato.NOMBRE_PL}  style={{filter: "grayscale(1)"}}/>
+
+            <button onClick={() => handleEditarPlato(plato)}>Editar</button>
+            <button onClick={() => handleActualizarEstadoPlato(plato.ID_PL, plato.ESTADO_PL)}>
+              {plato.ESTADO_PL === 1 ? "Deshabilitar" : "Habilitar"} Plato
+            </button>
+          </li>
+            ))}
+        
         </div>
       </ul>
       {platos.length === 0 && <p>No hay platos disponibles.</p>}

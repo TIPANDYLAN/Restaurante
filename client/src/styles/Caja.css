@@ -23,10 +23,16 @@
   
   /* Agrega aquí estilos adicionales para otros elementos en las órdenes si es necesario */
   
+  .botonFactura{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: end;
+    left: 0;
+  }
+
   .button-fac {
-  
-    bottom: 10px; /* Ajusta esta propiedad para cambiar la distancia desde el borde inferior */
-    right: 10px; /* Ajusta esta propiedad para cambiar la distancia desde el borde derecho */
+
     padding: 8px 16px;
     background-color: #f9cc83;
     color: white;
@@ -34,23 +40,17 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    height: 30px;
+    width: 100%;
   }
   
-  
+  .OrdenInfo h2{
+    text-align: center;
+    border-bottom: 1px solid rgba(134, 134, 134, 0.441);
+    margin: auto;
+    padding: 10px 0;
+  }
+
   .button-fac:hover {
     background-color: #3cb300;
   }
-  
-  /* Estilos para el modal de la factura */
-  .ModalFactura {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    width: 400px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  

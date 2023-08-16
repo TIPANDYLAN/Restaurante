@@ -4,6 +4,8 @@ import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import "../styles/Caja.css";
 
+import Logo from "../images/Logo.png";
+
 const Caja = () => {
   const [ordenes, setOrdenes] = useState([]);
 
@@ -86,10 +88,17 @@ const Caja = () => {
     .text-right {
       text-align: right;
     }
+    img{
+      width: auto;
+      height: 120px;
+      position:absolute;
+      right:0;
+    }
   `);
     facturaWindow.document.write('</style></head><body>');
 
     // Contenido de la factura
+    facturaWindow.document.write(`<img src="${Logo}" alt="Sin Logo">`);
     facturaWindow.document.write('<h2>Factura</h2>');
     facturaWindow.document.write(`<p>Número de orden: ${orden.ID_OR}</p>`);
     facturaWindow.document.write(`<p>Cliente: ${orden.NOMBRE_CL}</p>`);
@@ -98,7 +107,6 @@ const Caja = () => {
     facturaWindow.document.write(`<p>Teléfono: ${orden.TELEFONO_CL}</p>`);
     facturaWindow.document.write(`<p>Dirección: ${orden.DIRECCION_CL}</p>`);
     facturaWindow.document.write(`<p>Mesa ${orden.NMESA_OR}</p>`);
-    facturaWindow.document.write(`<p>Estado de la orden: ${orden.ESTADO_OR}</p>`);
     facturaWindow.document.write('<h3>Detalles de la orden y platos</h3>');
     facturaWindow.document.write('<table>');
     facturaWindow.document.write('<tr><th>Plato</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th></tr>');
@@ -132,10 +140,9 @@ const Caja = () => {
           <div key={orden.ID_OR} className="OrdenCocina">
             {/* Mostrar número de orden y cliente */}
             <div className="OrdenInfo">
+              <h2>Mesa {orden.NMESA_OR}</h2>
               <p>Número de orden: {orden.ID_OR}</p>
               <p>Cliente: {orden.NOMBRE_CL}</p>
-              <p>Mesa {orden.NMESA_OR}</p>
-              <p>Estado de la orden: {orden.ESTADO_OR}</p>
             </div>
             
             {/* Mostrar detalles de la orden y platos */}
@@ -153,7 +160,9 @@ const Caja = () => {
             <p className="precioTotal">Total: ${orden.platos.reduce((sum, plato) => sum + (plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS), 0).toFixed(2)}</p>
             
             {/* Botón de impresión */}
-            <button className="button-fac"onClick={() => printFactura(orden)}>Imprimir Factura</button>
+            <div className="botonFactura">
+              <button className="button-fac"onClick={() => printFactura(orden)}>Imprimir Factura</button>
+            </div>
           </div>
         ))}
       </div>

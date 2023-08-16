@@ -612,3 +612,44 @@
   justify-content: center;
   height: 100px;
 }
+
+.ModalEditarOrdenes{
+ max-height: 80vh;
+  overflow-y: auto;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+}
+
+.ModalEditarOrdenes h2{
+  padding-left: 1.5rem;
+}
+
+.tarjetaEditarOrdenes{
+  cursor: pointer;
+  margin: 10px 10px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  transition: transform 0.3s ease;
+}
+
+.tarjetaEditarOrdenes p{
+  text-align: center;
+  padding: 0;
+  margin: 15px 2px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.eachOrden{
+  display: grid;
+  grid-template-columns: repeat(3, 31%);
+  width: 100%;
+  justify-content: center;
+}
+
+.tarjetaEditarOrdenes:hover{
+  transform: scale(1.03);
+}

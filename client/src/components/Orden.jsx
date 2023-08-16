@@ -10,7 +10,7 @@ const Orden = () => {
   const [platos, setPlatos] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [orden, setOrden] = useState([]);
-  const [totalOrden, setTotalOrden] = useState(0);
+  const [ordenActual, setOrdenActual] = useState([]);
   const [platosAEliminar, setPlatosAEliminar] = useState(0);
   const [platoIdAEliminar, setPlatoIdAEliminar] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -25,14 +25,19 @@ const Orden = () => {
   const [clienteSubido, setCLienteSubido] = useState(false);
   const [OpcionCliente, setOpcionCliente] = useState(false);
   const [generarOrden, setGenerarOrden] = useState(false);
+  const [editarOrden, setEditarOrden] = useState(false);
   const [ordenes, setOrdenes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [IDordenActual, setIDOrdenActual] = useState(0);
   const [platoAgregado, setPlatoAgregado] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Parrilladas");
-
-
-
+  const [modalEditar, setModalEditar] = useState(false);
+  const [ordenesFiltradas, setOrdenesFiltradas] = useState([]);
+  const [ordenesActuales, setOrdenesActuales] = useState([]);
+  const [ordenesCargadas, setOrdenesCargadas] = useState(false);
+  const [cantidadActual, setCantidadActual] = useState(0);
+  const [cantidadAgregada, setCantidadAgregada] = useState(0);
+  const [cantidadTotal, setCantidadTotal] = useState(0);
 
   useEffect(() => {
     axios
@@ -44,20 +49,29 @@ const Orden = () => {
         console.error("Error al obtener los platos:", error);
       });
   }, []);
-
+  
   useEffect(() => {
-    axios
+    // Fetch ordenesActuales
+    fetchOrdenesActuales();
+    obtenerOrdenes();
+    FiltrarOrdenes();
+    ObtenerClientes();
+    verificarClienteConsumidorFinal();
+  }, []);
+  
+  const ObtenerClientes = async () => {
+    try{
+      axios
       .get("http://localhost:4000/api/clientes")
       .then((response) => {
         setClientes(response.data);
         console.log("Datos de clientes:", response.data);
       })
-      .catch((error) => {
-        console.error("Error al obtener los clientes:", error);
-      });
-  }, []);
-
-  useEffect(() => {
+    }catch (error){
+      console.error("Error al obtener los clientes:", error);
+    }
+  }
+  const obtenerOrdenes = async ()=> {
     axios
       .get("http://localhost:4000/api/ordenes")
       .then((response) => {
@@ -67,7 +81,38 @@ const Orden = () => {
       .catch((error) => {
         console.error("Error al obtener las ordenes:", error);
       });
-  }, []);
+    }
+
+    const FiltrarOrdenes = async () =>{
+      try{
+      axios
+      .get("http://localhost:4000/api/ordenes")
+      .then((response) => {
+        const ordenesSinCanceladasOFacturadas = response.data.filter(
+          (orden) => orden.ESTADO_OR !== "Cancelada" && orden.ESTADO_OR !== "Facturada"
+        );
+        setOrdenesFiltradas(ordenesSinCanceladasOFacturadas);
+        setOrdenesCargadas(true);
+        console.log("Datos de ordenes:", ordenesSinCanceladasOFacturadas);
+      })
+    } catch(error){
+      console.error("Error al obtener las ordenes:", error);
+    }
+    }
+
+  const fetchOrdenesActuales = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/ordenescocina');
+      if (Array.isArray(response.data)) {
+        setOrdenesActuales(response.data);
+        console.log("Datos de ordenes actuales:", response.data);
+      } else {
+        console.error('La respuesta no es un array:', response.data);
+      }
+    } catch (error) {
+      console.error('Error al obtener las órdenes:', error);
+    }
+  };
 
   useEffect(() => {
     setTotalOrden((prevTotal) => {
@@ -93,7 +138,7 @@ const Orden = () => {
 
       // Verificar si el plato ya está en la orden
       const platoEnOrden = orden.find((item) => item.ID_PL === platoId);
-
+      if(clienteSubido){
       if (platoEnOrden) {
         setOrden((prevOrden) =>
           prevOrden.map((item) =>
@@ -108,6 +153,7 @@ const Orden = () => {
           { ...platoSeleccionado, cantidad: 1, total: platoSeleccionado.PRECIO_PL },
         ]);
       }
+     }
     }
   };
 
@@ -137,12 +183,17 @@ const Orden = () => {
     setPlatoIdAEliminar(null);
   };
 
+  const calculateTotalOrden = () => {
+    const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad, 0);
+    return total;
+  };
+
   useEffect(() => {
-    if (orden.length > 0) {
-      setOrden((prevOrden) => prevOrden.filter((item) => item.cantidad > 0));
-    }
+    setTotalOrden(calculateTotalOrden());
   }, [orden]);
 
+  const [totalOrden, setTotalOrden] = useState(calculateTotalOrden());
+  
   // Función para manejar el cambio de inputs del formulario de cliente
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -273,6 +324,7 @@ const Orden = () => {
       setMostrarModal(false);
       setCLienteSubido(true);
       actualizarCedulaOrden(clienteData.CEDULA_CLI);
+      ObtenerClientes();
     } catch (error) {
       console.error("Error al agregar el cliente:", error);
       alert("Hubo un error al agregar el cliente");
@@ -299,10 +351,6 @@ const Orden = () => {
     }
   };
 
-  useEffect(() => {
-    verificarClienteConsumidorFinal();
-  }, []);
-
   const handleCrearOrden = () => {
     // Crear una nueva orden con el estado activo y la fecha actual
     axios
@@ -325,7 +373,6 @@ const Orden = () => {
           PERSONALIZA: true,
         }));
         setCLienteSubido(false);
-
         // Guardar el ID de la nueva orden para utilizarlo luego
         // Puedes usar este ID para realizar operaciones adicionales relacionadas con esta orden
         // Por ejemplo, agregar los platos seleccionados a esta orden en una tabla de detalles de orden.
@@ -337,7 +384,7 @@ const Orden = () => {
   };
 
 
-  const enviarPedidos = () => {
+  const enviarPedidos = async () => {
     // Iterate through each plato in the orden and send the pedido data to the server
     orden.forEach((pedido) => {
       const dataToSend = {
@@ -377,16 +424,20 @@ const Orden = () => {
       ESTADO_OR: "Por hacer",
     };
 
-    axios
+    try{
+    await axios
       .put(`http://localhost:4000/api/ordenes/${IDordenActual}`, dataToUpdate)
       .then((response) => {
         console.log("Datos de la orden actualizados con éxito!!!");
         console.log(response);
+        obtenerOrdenes();
+        fetchOrdenesActuales();
+        FiltrarOrdenes();
         limpiarOrden();
       })
-      .catch((error) => {
-        console.error("Error al actualizar los datos de la orden:", error);
-      });
+    }catch (error){
+      console.error("Error al actualizar los datos de la orden:", error);
+    }
   };
 
   const CancelarOrden = () => {
@@ -441,6 +492,68 @@ const Orden = () => {
   const categorias = Object.keys(platosPorCategoria);
 
   const platosFiltrados = platosHabilitados.filter((plato) => plato.CATEGORIA_PL === categoriaSeleccionada);
+
+  const handleEditarOrden= () =>{
+    setModalEditar(true);
+  };
+
+  const ObtenerOrden = (idOrden) => {
+    // Aquí deberías realizar una búsqueda en las órdenes actuales por el ID de la orden
+    // y luego enviar la solicitud para obtener los pedidos asociados a esa orden
+    const ordenEscogida = ordenesActuales.find((orden) => orden.ID_OR === idOrden);
+    if (ordenEscogida) {
+      // Aquí deberías realizar una solicitud para obtener los pedidos de la orden
+      axios
+        .get(`http://localhost:4000/api/ordenescocina/${idOrden}`)
+        .then((response) => {
+          console.log('Pedidos de la orden:', response.data);
+          setOrdenActual(response.data);
+          setModalEditar(false);
+          setEditarOrden(true);
+          setCLienteSubido(true);
+        })
+        .catch((error) => {
+          console.error('Error al obtener los pedidos:', error);
+        });
+    } else {
+      console.error('Orden no encontrada');
+    }
+  };
+  
+  const ordenesActualesInvertidas = [...ordenesFiltradas].reverse();
+  const totalOrdenActual = ordenActual.reduce((total, plato) => {
+    const subtotal = plato.PRECIO_PLATO * plato.CANTIDAD_PLATOS_PEDIDOS;
+    return total + subtotal;
+  }, 0);
+
+  useEffect(()=>{
+    setCantidadActual(totalOrdenActual);
+  },[totalOrdenActual])
+
+  const CancelarEditar = ()=>{
+    setEditarOrden(false);
+    setOrden([]);
+    setClienteData({
+      CEDULA_CLI: "",
+      NOMBRE_CLI: "",
+      DIRECCION_CLI: "",
+      TELEFONO_CLI: "",
+      CORREO_CLI: "",
+      PERSONALIZA: true,
+    });
+    setCLienteSubido(false);
+    setPlatosAEliminar(0);
+    setPlatoIdAEliminar(null);
+    setSearchQuery("");
+    setIDOrdenActual(0);
+    setCantidadActual(0);
+    setCantidadAgregada(0);
+    setCantidadTotal(0);
+  }
+
+  useEffect(()=>{
+
+  },[cantidadAgregada])
 
   return (
     <>
@@ -523,11 +636,86 @@ const Orden = () => {
                   }}>Cancelar</button>
                 </div>
               </>
-            ) : (
+            ) : editarOrden ? (<>
+            <div className="Platos-en-Orden">
+                  <div className="Cliente">
+                    {clienteSubido ? (<p>Cliente: {ordenActual[0].NOMBRE_CL}</p>) : (<button className="AddCliente" onClick={() => setMostrarModal(true)}>Agregar Cliente</button>)}
+                  </div>
+                  <div className="grid-orden">
+                    {ordenActual.map((plato) => (
+                      <div key={plato.ID_PLATO_PEDIDO} className="orden-item">
+                        <p className="recipe-desc2">{plato.NOMBRE_PLATO_PEDIDO}</p>
+                        <p className="recipe-desc">{plato.PRECIO_PLATO}$</p>
+                        <p className="recipe-desc">x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
+                        <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
+                          Eliminar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {platosAEliminar > 0 && (
+                    <div className="eliminar-platos">
+                      <p>
+                        ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
+                      </p>
+                      <input
+                        type="number"
+                        min="1"
+                        max={Math.min(platosAEliminar, 100)}
+                        value={platosAEliminar}
+                        onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
+                      />
+                      <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
+                    </div>
+                  )}
+                  {ordenActual.length > 0 && (
+                    <>
+                    <div className="total-orden">
+                    <h3>Total de la Orden: ${cantidadActual}</h3>
+                     </div>
+                      <input
+                        type="text"
+                        id="descripcionPlato"
+                        value={ordenActual[0].DESCRIPCION_OR}
+                        placeholder="Observaciones"
+                        onChange={(e) => {
+                          const newValue = e.target.value;
+                          setOrdenActual(prevOrdenActual => {
+                            const newOrdenActual = [...prevOrdenActual];
+                            newOrdenActual[0].DESCRIPCION_OR = newValue;
+                            return newOrdenActual;
+                          });
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={ordenActual[0].NMESA_OR}
+                        id="Mesa"
+                        placeholder="Agregar mesa..."
+                        onChange={(e) => {
+                          const newValue = e.target.value;
+                          setOrdenActual(prevOrdenActual => {
+                            const newOrdenActual = [...prevOrdenActual];
+                            newOrdenActual[0].NMESA_OR = newValue;
+                            return newOrdenActual;
+                          });
+                        }}
+                      />
+                    </>
+                  )}
+                  {orden.length > 0 && (
+                    <button onClick={enviarPedidos}>Enviar Orden</button>
+                  )}
+                  <button onClick={() => {
+                    CancelarEditar();
+                  }}>Cancelar</button>
+                </div>
+                </>) : (
               <>
                 <div className="tipoOrdenContainer">
                   <div className="tipoOrden">
                     <button onClick={handleCrearOrden}>Nueva Orden</button>
+                    <button onClick={handleEditarOrden}>Editar Orden</button>
                   </div>
                 </div>
               </>
@@ -643,6 +831,28 @@ const Orden = () => {
           </div>
         </form>
       </Modal>
+      <Modal isOpen={modalEditar} onClose={() => setModalEditar(false)}>
+        <div className="EditarOrdenes ModalEditarOrdenes">
+          <h2>Órdenes Disponibles</h2>
+          {ordenesCargadas ? (
+            <ul className="eachOrden">
+              {ordenesActualesInvertidas.map((orden) => (
+                <li
+                  key={orden.ID_OR}
+                  className="tarjetaEditarOrdenes"
+                  onClick={() => ObtenerOrden(orden.ID_OR)}
+                >
+                  <p>Mesa {orden.NMESA_OR}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Cargando órdenes...</p>
+          )}
+
+        </div>
+      </Modal>
+
     </>
   );
 };

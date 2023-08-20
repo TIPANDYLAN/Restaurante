@@ -13,8 +13,11 @@ useEffect(() => {
 
 useEffect(() => {
   const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
+  const ordenesFiltradas = ordenesConPlatosAgrupados.filter(
+    (orden) => orden.ESTADO_OR !== 'Cancelada' && orden.ESTADO_OR !== 'Entregado' && orden.ESTADO_OR !== 'Facturada',
+  );
 
-  ordenesConPlatosAgrupados.forEach((orden) => {
+  ordenesFiltradas.forEach((orden) => {
     let nuevoEstadoOrden = "";
 
     const estadosPlatos = orden.platos.map((plato) => plato.NIVEL_ESTADO);
@@ -185,21 +188,14 @@ useEffect(() => {
             <p className='DescripcionPlato'>{orden.DESCRIPCION_OR || 'Vacío'}</p>
             <div className="PlatosContainer"> {/* Nuevo div para contener los platos */}
             <div className="Secciones"><p>Nombre plato</p>
-            <p style={{marginLeft:"30px"}}>Total</p>
-            <p style={{marginRight:"20px"}}>Realizado</p>
+            <p style={{marginLeft:"70px"}}>Total</p>
+            <p style={{marginRight:"10px"}}>Terminados</p>
             <p style={{marginRight:"45px"}}>Estado</p></div>
               {orden.platos.map((plato) => (
                 <div key={plato.ID_PLATO_PEDIDO} className='PlatoOrden'>
                   <p className='nombrePlato'>{plato.NOMBRE_PLATO_PEDIDO}</p>
                   <p className='cantidadPlato'>x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
                   <p className='platosRealizados'>{plato.PLATOS_REALIZADOS}</p>
-                  <button
-                      className="state-arrow"
-                      disabled={plato.NIVEL_ESTADO === 0}
-                      onClick={() => handleStateChange(plato.ID_PLATO_PEDIDO,orden.ID_OR,plato.NIVEL_ESTADO - 1,orden.ESTADO_OR)}
-                    >
-                      &#8592;
-                    </button>
                   <div className="PlatoActivo" style={{backgroundColor: plato.ESTADO_PLATO==="Por Hacer" ? "red":"rgba(168, 36, 36,0.550)"}}/>
                   <div className="PlatoActivo" style={{backgroundColor: plato.ESTADO_PLATO==="Realizando" ? "rgb(255, 235, 54)":"rgba(188, 183, 83,0.550)"}}/>
                   <div className="PlatoActivo" style={{backgroundColor: plato.ESTADO_PLATO==="Terminado" ? "#39a742":"rgba(67, 113, 65,0.550)"}}/>

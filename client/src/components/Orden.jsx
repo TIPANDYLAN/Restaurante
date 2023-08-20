@@ -757,7 +757,7 @@ const Orden = () => {
                       <button className="recipe-desc" onClick={() =>{ 
                         if(generarOrden){
                         handleAgregarPlato(plato.ID_PL)}
-                        else{
+                        else if(editarOrden){
                         handleEditarPlatos(plato.ID_PL)
                         }}
                         }>Agregar</button>
@@ -998,8 +998,8 @@ const Orden = () => {
         </form>
       </Modal>
       <Modal isOpen={modalEditar} onClose={() => setModalEditar(false)}>
+        <h2 className="OrdenesDisponibles">Órdenes Disponibles</h2>
         <div className="EditarOrdenes ModalEditarOrdenes">
-          <h2>Órdenes Disponibles</h2>
           {ordenesCargadas ? (
             <ul className="eachOrden">
               {ordenesActualesInvertidas.map((orden) => (

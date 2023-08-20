@@ -594,14 +594,9 @@
 }
 
 .ModalEditarOrdenes{
- max-height: 80vh;
+ max-height: 400px;
   overflow-y: auto;
   padding-bottom: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  flex-direction: column;
 }
 
 .ModalEditarOrdenes h2{
@@ -659,4 +654,8 @@
 }
 .reducir:hover:disabled{
   background-color: #d49b9b;
+}
+
+.OrdenesDisponibles{
+  
 }

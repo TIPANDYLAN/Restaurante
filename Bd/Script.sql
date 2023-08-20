@@ -58,7 +58,6 @@ create table EMPLEADO
 create table ENTREGA
 (
    ID_EN                int not null,
-   ID_I                 int,
    ID_PR                int,
    FECHA_EN             date not null,
    TIPO_EN              text not null,
@@ -83,9 +82,10 @@ create table INGREDIENTES
 /*==============================================================*/
 create table INVENTARIO
 (
-   ID_EN                int,
    ID_INV               int not null,
-   DESCRIPCION_INV      text not null,
+   ID_EN                int,
+   ID_I                 int,
+   TOTAL_INV      bigint not null,
    primary key (ID_INV)
 );
 
@@ -111,9 +111,10 @@ create table PEDIDO
 (
    ID_PL                int not null,
    ID_OR                int not null,
-   PRECIO_PE            real,
+   PRECIO_PE            DECIMAL(20,2),
    CANTXPLA_PE          numeric(50,0) not null,
    ESTADO_PE			varchar(20) not null,
+   CANTREALIZADA_PE		bigint,
    primary key (ID_PL, ID_OR)
 );
 
@@ -124,11 +125,10 @@ create table PLATO
 (
    ID_PL                int auto_increment not null,
    NOMBRE_PL            varchar(100) not null,
-   PRECIO_PL            float not null,
-   FOTO_PL              longblob not null,
-   DESCRIPCION_PL       text not null,
+   PRECIO_PL            DECIMAL(20, 2) not null,
+   FOTO_PL              text not null,
    CATEGORIA_PL         varchar(40),
-   ESTADO_PL            bool,
+   ESTADO_PL            TINYINT(1),
    primary key (ID_PL)
 );
 
@@ -157,7 +157,7 @@ create table RECETA
    primary key (ID_RE)
 );
 
-alter table ENTREGA add constraint FK_PROVEEN foreign key (ID_I)
+alter table INVENTARIO add constraint FK_PROVEEN foreign key (ID_I)
       references INGREDIENTES (ID_I) on delete restrict on update restrict;
 
 alter table ENTREGA add constraint FK_REALIZA foreign key (ID_PR)

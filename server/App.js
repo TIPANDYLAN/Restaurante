@@ -330,6 +330,70 @@ app.get("/api/pedidos", (req, res) => {
   });
 });
 
+app.post("/api/pedidosNuevos", (req, res) => {
+  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE } = req.body;
+
+  // Check if a pedido with the given ID_PL and ID_OR already exists
+  const selectQuery = "SELECT * FROM PEDIDO WHERE ID_PL = ? AND ID_OR = ?";
+  connection.query(selectQuery, [ID_PL, ID_OR], (error, results) => {
+    if (error) {
+      console.error("Error verifying existing pedido:", error);
+      res.sendStatus(500);
+      return;
+    }
+
+    if (results.length > 0) {
+      // Update the existing pedido
+      const updateQuery =
+        "UPDATE PEDIDO SET PRECIO_PE = ?, CANTXPLA_PE = ?, ESTADO_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+      connection.query(
+        updateQuery,
+        [PRECIO_PE, CANTXPLA_PE, ESTADO_PE, ID_PL, ID_OR],
+        (error, result) => {
+          if (error) {
+            console.error("Error updating pedido:", error);
+            res.sendStatus(500);
+          } else {
+            console.log("Pedido updated successfully");
+            res.json({
+              ID_PL,
+              ID_OR,
+              PRECIO_PE,
+              CANTXPLA_PE,
+              ESTADO_PE,
+            });
+          }
+        }
+      );
+    } else {
+      // Create a new pedido
+      const insertQuery =
+        "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE) VALUES (?, ?, ?, ?, ?, ?)";
+      connection.query(
+        insertQuery,
+        [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE],
+        (error, result) => {
+          if (error) {
+            console.error("Error creating pedido:", error);
+            res.sendStatus(500);
+          } else {
+            console.log("Pedido created successfully");
+            res.json({
+              ID_PL,
+              ID_OR,
+              PRECIO_PE,
+              CANTXPLA_PE,
+              ESTADO_PE,
+              CANTREALIZADA_PE,
+            });
+          }
+        }
+      );
+    }
+  });
+});
+
+
 app.get("/api/pedidos/:id", (req, res) => {
   const idOrden = req.params.id;
   const query = "SELECT * FROM PEDIDO WHERE ID_OR = ?";
@@ -388,14 +452,14 @@ app.put("/api/pedidos/:id", (req, res) => {
 app.put("/api/pedidosEstado/:id1/:id2", (req, res) => {
   const idPlato = req.params.id1;
   const idOrden = req.params.id2;
-  const { ESTADO_PE } = req.body;
+  const { ESTADO_PE, CANTREALIZADA_PE } = req.body;
 
   const query =
-    "UPDATE PEDIDO SET ESTADO_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+    "UPDATE PEDIDO SET ESTADO_PE = ?, CANTREALIZADA_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
 
   connection.query(
     query,
-    [ESTADO_PE, idPlato, idOrden],
+    [ESTADO_PE, CANTREALIZADA_PE, idPlato, idOrden],
     (error, result) => {
       if (error) {
         console.error("Error al actualizar el pedido:", error);
@@ -408,12 +472,13 @@ app.put("/api/pedidosEstado/:id1/:id2", (req, res) => {
   );
 });
 
-app.delete("/api/pedidos/:id", (req, res) => {
+app.delete("/api/pedidos/:id/:id2", (req, res) => {
   const idPedido = req.params.id;
+  const idOrden = req.params.id2;
 
-  const query = "DELETE FROM PEDIDO WHERE ID_PL = ?";
+  const query = "DELETE FROM PEDIDO WHERE ID_PL = ? AND ID_OR = ?";
 
-  connection.query(query, idPedido, (error, result) => {
+  connection.query(query, [idPedido, idOrden], (error, result) => {
     if (error) {
       console.error("Error al eliminar el pedido:", error);
       res.sendStatus(500);
@@ -435,7 +500,8 @@ app.get("/api/ordenescocina", (req, res) => {
       P.ID_PL AS ID_PLATO_PEDIDO,
       P.NOMBRE_PL AS NOMBRE_PLATO_PEDIDO,
       PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS,
-      PE.ESTADO_PE AS ESTADO_PLATO
+      PE.ESTADO_PE AS ESTADO_PLATO,
+      PE.CANTREALIZADA_PE AS PLATOS_REALIZADOS
     FROM ORDEN O
     JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
     JOIN PLATO P ON PE.ID_PL = P.ID_PL
@@ -454,6 +520,24 @@ app.get("/api/ordenescocina", (req, res) => {
   });
 });
 
+app.put("/api/pedidosCantidad/:idPlato/:idOrden", (req, res) => {
+  const idPlato = req.params.idPlato;
+  const idOrden = req.params.idOrden;
+  const { PRECIO_PE, CANTXPLA_PE } = req.body;
+
+  const updateQuery = "UPDATE PEDIDO SET PRECIO_PE = ?, CANTXPLA_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+  connection.query(updateQuery, [PRECIO_PE, CANTXPLA_PE, idPlato, idOrden], (error, result) => {
+    if (error) {
+      console.error("Error updating pedido:", error);
+      res.sendStatus(500);
+    } else {
+      console.log("Pedido updated successfully");
+      res.json({ message: "Pedido updated successfully" });
+    }
+  });
+});
+
+
 app.get("/api/ordenescocina/:idOrden", (req, res) => {
   const idOrden = req.params.idOrden;
 
@@ -469,13 +553,44 @@ app.get("/api/ordenescocina/:idOrden", (req, res) => {
       P.NOMBRE_PL AS NOMBRE_PLATO_PEDIDO,
       P.PRECIO_PL AS PRECIO_PLATO,
       PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS,
-      PE.ESTADO_PE AS ESTADO_PLATO
+      PE.ESTADO_PE AS ESTADO_PLATO,
+      PE.CANTREALIZADA_PE AS PLATOS_REALIZADOS,
+      PE.PRECIO_PE AS PRECIO_PLATOS
     FROM ORDEN O
     JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
     JOIN PLATO P ON PE.ID_PL = P.ID_PL
     JOIN CLIENTE C ON O.CEDULA_CL = C.CEDULA_CL
     WHERE O.ID_OR = ?
   `;
+
+  app.put("/api/ordenescocina/:idOrden/update-plato", (req, res) => {
+    const idOrden = req.params.idOrden;
+    const updatedPlatoData = req.body;
+  
+    // Update the database with the updated order details
+    const updateQuery = `
+      UPDATE PEDIDO
+      SET CANTXPLA_PE = ?,
+          ESTADO_PE = ?
+      WHERE ID_OR = ? AND ID_PL = ?
+    `;
+  
+    const { CANTIDAD_PLATOS_PEDIDOS, ESTADO_PLATO, ID_PLATO_PEDIDO } = updatedPlatoData;
+  
+    connection.query(
+      updateQuery,
+      [CANTIDAD_PLATOS_PEDIDOS, ESTADO_PLATO, idOrden, ID_PLATO_PEDIDO],
+      (error, result) => {
+        if (error) {
+          console.error("Error updating order details:", error);
+          res.sendStatus(500);
+        } else {
+          res.send({ message: "Order details updated successfully" });
+        }
+      }
+    );
+  });
+  
 
   connection.query(query, [idOrden], (error, rows) => {
     if (error) {

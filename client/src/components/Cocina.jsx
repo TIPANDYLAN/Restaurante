@@ -29,6 +29,7 @@ const CocinaCrud = () => {
           CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS,
           ESTADO_PLATO: orden.ESTADO_PLATO,
           NIVEL_ESTADO: orden.ESTADO_PLATO === "Por Hacer" ? 0 : orden.ESTADO_PLATO === "Realizando" ? 1 : 2,
+          PLATOS_REALIZADOS: orden.PLATOS_REALIZADOS,
         });
       }
       
@@ -85,14 +86,23 @@ const CocinaCrud = () => {
   
   const handleStateChange = async (idPlato, idOrden, nuevoEstado) => {
     let nuevoEstadoTexto = "";
+
+    const orden = ordenesConPlatosAgrupados.find((orden) => orden.ID_OR === idOrden);
+    const plato = orden.platos.find((plato) => plato.ID_PLATO_PEDIDO === idPlato);
+    let nuevoRealizado = 0;
+
+
     if (nuevoEstado === 0) {
       nuevoEstadoTexto = "Por Hacer";
+      nuevoRealizado = plato.PLATOS_REALIZADOS;
     } else if (nuevoEstado === 1) {
       nuevoEstadoTexto = "Realizando";
+      nuevoRealizado = plato.PLATOS_REALIZADOS;
     } else if (nuevoEstado === 2) {
       nuevoEstadoTexto = "Terminado";
+      nuevoRealizado = plato.CANTIDAD_PLATOS_PEDIDOS;
     }
-  
+
     const platosExcluyendoActual = ordenesConPlatosAgrupados
     .find((orden) => orden.ID_OR === idOrden)
     ?.platos.filter((plato) => plato.ID_PLATO_PEDIDO !== idPlato) || [];
@@ -115,6 +125,7 @@ const CocinaCrud = () => {
     // Llamada a la API para actualizar el estado del plato
     await axios.put(`http://localhost:4000/api/pedidosEstado/${idPlato}/${idOrden}`, {
       ESTADO_PE: nuevoEstadoTexto,
+      CANTREALIZADA_PE: nuevoRealizado,
     });
 
     // Llamada a la API para actualizar el estado de la orden
@@ -144,10 +155,15 @@ const CocinaCrud = () => {
             <p className='MesaOrden'>Mesa {orden.NMESA_OR}</p>
             <p className='DescripcionPlato'>{orden.DESCRIPCION_OR || 'Vacío'}</p>
             <div className="PlatosContainer"> {/* Nuevo div para contener los platos */}
+            <div className="Secciones"><p>Nombre plato</p>
+            <p style={{marginLeft:"30px"}}>Total</p>
+            <p style={{marginRight:"20px"}}>Realizado</p>
+            <p style={{marginRight:"45px"}}>Estado</p></div>
               {orden.platos.map((plato) => (
                 <div key={plato.ID_PLATO_PEDIDO} className='PlatoOrden'>
                   <p className='nombrePlato'>{plato.NOMBRE_PLATO_PEDIDO}</p>
                   <p className='cantidadPlato'>x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
+                  <p className='platosRealizados'>{plato.PLATOS_REALIZADOS}</p>
                   <button
                       className="state-arrow"
                       disabled={plato.NIVEL_ESTADO === 0}

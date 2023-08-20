@@ -80,15 +80,21 @@
   
   .grid-orden {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
     grid-gap: 10px;
     justify-items: center;
+    overflow-y: auto;
+    max-height: 350px;
+    border: 1px solid rgba(128, 128, 128, 0.384);
+    margin: 0 10px;
   }
   
   .orden-item {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 40% 20% 20% 20%;
     align-items: center;
+    justify-content: space-around;
+    width: 95%;
   }
   
   .orden-item p {
@@ -99,7 +105,6 @@
   
   .orden-item button {
     padding: 4px 8px;
-    background-color: #dc3545;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -567,32 +572,7 @@
   margin-bottom: 10px;
   outline: none;
 }
-.Platos-en-Orden button {
-  padding: 10px 20px;
-  margin-right: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-/* Estilo para el efecto hover en los botones */
-.Platos-en-Orden button:hover {
-  background-color: #1d7b22;
-}
-
-/* Estilo para el botón de "Cancelar" */
-.Platos-en-Orden button:last-child {
-  background-color: #b51c1c;
-}
-
 /* Estilo para el efecto hover en el botón de "Cancelar" */
-.Platos-en-Orden button:last-child:hover {
-  background-color: #5d0505;
-}
 .ordenes-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -600,7 +580,7 @@
 }
 
 .orden-item {
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
 }
@@ -652,4 +632,31 @@
 
 .tarjetaEditarOrdenes:hover{
   transform: scale(1.03);
+}
+
+.MoverCantidad{
+  display: grid;
+  grid-gap: 5px;
+}
+.aumentar{
+  background-color: #30ac0e;
+}
+
+.aumentar:hover{
+  background-color: #287213;
+}
+
+.reducir{
+  background-color: rgb(207, 12, 12);
+}
+
+.reducir:hover{
+  background-color: rgb(122, 23, 23);
+}
+.reducir:disabled{
+  background-color: #d49b9b;
+  cursor: auto;
+}
+.reducir:hover:disabled{
+  background-color: #d49b9b;
 }

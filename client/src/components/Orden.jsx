@@ -11,8 +11,6 @@ const Orden = () => {
   const [clientes, setClientes] = useState([]);
   const [orden, setOrden] = useState([]);
   const [ordenActual, setOrdenActual] = useState([]);
-  const [platosAEliminar, setPlatosAEliminar] = useState(0);
-  const [platoIdAEliminar, setPlatoIdAEliminar] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [clienteData, setClienteData] = useState({
     CEDULA_CLI: "",
@@ -36,8 +34,9 @@ const Orden = () => {
   const [ordenesActuales, setOrdenesActuales] = useState([]);
   const [ordenesCargadas, setOrdenesCargadas] = useState(false);
   const [cantidadActual, setCantidadActual] = useState(0);
-  const [cantidadAgregada, setCantidadAgregada] = useState(0);
-  const [cantidadTotal, setCantidadTotal] = useState(0);
+  const [cantidadPlatos, setCantidadPlatos]= useState([]);
+  const [reducirPlatos, setReducirPlatos] = useState(true);
+
 
   useEffect(() => {
     axios
@@ -51,7 +50,6 @@ const Orden = () => {
   }, []);
   
   useEffect(() => {
-    // Fetch ordenesActuales
     fetchOrdenesActuales();
     obtenerOrdenes();
     FiltrarOrdenes();
@@ -158,39 +156,127 @@ const Orden = () => {
   };
 
 
-  const handleEliminarPlato = (platoId) => {
-    const platoAEliminar = orden.find((plato) => plato.ID_PL === platoId);
-    if (platoAEliminar) {
-      if (platoAEliminar.cantidad > 1) {
+  const handleCantidadPlato = (platoId, ordenId, estado) => {
+    let updateData = {};
+    const platoEnOrden = orden.find((item) => item.ID_PL === platoId);
+    const platoEnOrdenActual = ordenActual.find((item) => item.ID_PLATO_PEDIDO === platoId);
+    
+    if (estado === "Aumentar") {
+      if (platoEnOrden) {
         setOrden((prevOrden) =>
           prevOrden.map((item) =>
-            item.ID_PL === platoId ? { ...item, cantidad: item.cantidad - 1, total: (item.cantidad - 1) * item.PRECIO_PL } : item
+            item.ID_PL === platoId
+              ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL }
+              : item
           )
         );
-      } else {
-        setOrden((prevOrden) => prevOrden.filter((item) => item.ID_PL !== platoId));
+      } else if (platoEnOrdenActual) {
+        setReducirPlatos(false);
+        setOrdenActual((prevOrdenActual) =>
+          prevOrdenActual.map((item) =>
+            item.ID_PLATO_PEDIDO === platoId
+              ? {
+                  ...item,
+                  PRECIO_PLATOS: item.PRECIO_PLATO * (item.CANTIDAD_PLATOS_PEDIDOS + 1),
+                  CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS + 1,
+                  REDUCIR_PLATOS: false,
+                }
+              : item
+          )
+        );
+            updateData = {
+              PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS + 1),
+              CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS + 1,
+            };
+            axios.put(`http://localhost:4000/api/pedidosCantidad/${platoId}/${ordenId}`, updateData)
+          .then((response) => {
+            console.log("Pedido updated successfully:", response.data);
+            // You can also update the UI or state here if needed
+          })
+          .catch((error) => {
+            console.error("Error updating pedido:", error);
+            // Handle error here if needed
+          });
+      }
+    } else {
+      if (platoEnOrden) {
+        if (platoEnOrden.cantidad > 1) {
+          setOrden((prevOrden) =>
+            prevOrden.map((item) =>
+              item.ID_PL === platoId
+                ? { ...item, cantidad: item.cantidad - 1, total: (item.cantidad - 1) * item.PRECIO_PL }
+                : item
+            )
+          );
+        } else {
+          setOrden((prevOrden) => prevOrden.filter((item) => item.ID_PL !== platoId));
+        }
+      } else if (platoEnOrdenActual) {
+        const platosAntiguos = cantidadPlatos.find((item) => item.ID_PLATO_PEDIDO === platoId);
+        const numeroPlatosAntiguos = platosAntiguos.CANTIDAD_PLATOS_PEDIDOS;
+
+        if(numeroPlatosAntiguos !== platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS){
+        if (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS > 1) {
+          setOrdenActual((prevOrdenActual) =>
+            prevOrdenActual.map((item) =>
+              item.ID_PLATO_PEDIDO === platoId
+                ? {
+                    ...item,
+                    PRECIO_PLATOS: item.PRECIO_PLATO * (item.CANTIDAD_PLATOS_PEDIDOS - 1),
+                    CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS - 1,
+                  }
+                : item
+            )
+          );
+          updateData = {
+            PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1),
+            CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1,
+          };
+          axios.put(`http://localhost:4000/api/pedidosCantidad/${platoId}/${ordenId}`, updateData)
+          .then((response) => {
+            console.log("Pedido updated successfully:", response.data);
+            // You can also update the UI or state here if needed
+          })
+          .catch((error) => {
+            console.error("Error updating pedido:", error);
+            // Handle error here if needed
+          });
+        }
+        else{
+          setOrdenActual((prevOrdenActual) => prevOrdenActual.filter((item) => item.ID_PLATO_PEDIDO !== platoId));
+          axios.delete(`http://localhost:4000/api/pedidos/${platoId}/${ordenId}`)
+          .then((response) => {
+            console.log("Pedido updated successfully:", response.data);
+            // You can also update the UI or state here if needed
+          })
+          .catch((error) => {
+            console.error("Error updating pedido:", error);
+            // Handle error here if needed
+          });
+        }
+        
+        if(numeroPlatosAntiguos + 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS){
+          setReducirPlatos(true);
+          setOrdenActual((prevOrdenActual) =>
+            prevOrdenActual.map((item) =>
+              item.ID_PLATO_PEDIDO === platoId
+                ? {
+                    ...item,
+                    REDUCIR_PLATOS:true,
+                  }
+                : item
+            )
+          );
+        }
       }
     }
-  };
-
-  const confirmarEliminarPlatos = () => {
-    setOrden((prevOrden) =>
-      prevOrden.map((item) =>
-        item.ID_PL === platoIdAEliminar ? { ...item, cantidad: item.cantidad - platosAEliminar } : item
-      )
-    );
-    setPlatosAEliminar(0);
-    setPlatoIdAEliminar(null);
+    }
   };
 
   const calculateTotalOrden = () => {
     const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad, 0);
     return total;
   };
-
-  useEffect(() => {
-    setTotalOrden(calculateTotalOrden());
-  }, [orden]);
 
   const [totalOrden, setTotalOrden] = useState(calculateTotalOrden());
   
@@ -393,6 +479,7 @@ const Orden = () => {
         PRECIO_PE: pedido.total,
         CANTXPLA_PE: pedido.cantidad,
         ESTADO_PE: "Por Hacer",
+        CANTREALIZADA_PE: 0,
       };
 
       // Send the pedido data for this plato to the server
@@ -470,8 +557,6 @@ const Orden = () => {
       PERSONALIZA: true,
     });
     setCLienteSubido(false);
-    setPlatosAEliminar(0);
-    setPlatoIdAEliminar(null);
     setSearchQuery("");
     setIDOrdenActual(0);
   };
@@ -498,19 +583,32 @@ const Orden = () => {
   };
 
   const ObtenerOrden = (idOrden) => {
-    // Aquí deberías realizar una búsqueda en las órdenes actuales por el ID de la orden
-    // y luego enviar la solicitud para obtener los pedidos asociados a esa orden
+    // First, find the selected order in your current orders
     const ordenEscogida = ordenesActuales.find((orden) => orden.ID_OR === idOrden);
-    if (ordenEscogida) {
-      // Aquí deberías realizar una solicitud para obtener los pedidos de la orden
-      axios
+  
+      if (ordenEscogida) {
+        // Make a GET request to fetch the orders and their associated items (pedidos)
+        axios
         .get(`http://localhost:4000/api/ordenescocina/${idOrden}`)
         .then((response) => {
-          console.log('Pedidos de la orden:', response.data);
-          setOrdenActual(response.data);
+          // Assuming response.data is an array of pedidos
+          const pedidosConCampoExtra = response.data.map((plato) => ({
+              ...plato,
+              REDUCIR_PLATOS: true,
+            }
+          ));
+          setOrdenActual(pedidosConCampoExtra);
           setModalEditar(false);
           setEditarOrden(true);
           setCLienteSubido(true);
+          console.log('Pedidos de la orden:', ordenActual);
+          // Calculate the total quantity of platos
+          const putcantidadPlatos = response.data.map((plato) => ({
+            ID_PLATO_PEDIDO: plato.ID_PLATO_PEDIDO,
+            CANTIDAD_PLATOS_PEDIDOS: plato.CANTIDAD_PLATOS_PEDIDOS,
+          }));
+          setCantidadPlatos(putcantidadPlatos);
+          console.log(cantidadPlatos);
         })
         .catch((error) => {
           console.error('Error al obtener los pedidos:', error);
@@ -519,6 +617,7 @@ const Orden = () => {
       console.error('Orden no encontrada');
     }
   };
+  
   
   const ordenesActualesInvertidas = [...ordenesFiltradas].reverse();
   const totalOrdenActual = ordenActual.reduce((total, plato) => {
@@ -532,7 +631,7 @@ const Orden = () => {
 
   const CancelarEditar = ()=>{
     setEditarOrden(false);
-    setOrden([]);
+    setOrdenActual([]);
     setClienteData({
       CEDULA_CLI: "",
       NOMBRE_CLI: "",
@@ -542,18 +641,77 @@ const Orden = () => {
       PERSONALIZA: true,
     });
     setCLienteSubido(false);
-    setPlatosAEliminar(0);
-    setPlatoIdAEliminar(null);
     setSearchQuery("");
     setIDOrdenActual(0);
     setCantidadActual(0);
-    setCantidadAgregada(0);
-    setCantidadTotal(0);
   }
 
-  useEffect(()=>{
+  const handleEditarPlatos = (idPlato) => {
+    let updateData = {};
+    const platoSeleccionado = platos.find((plato) => plato.ID_PL === idPlato);
+    if (platoSeleccionado) {
+      const platoEnOrden = ordenActual.find((item) => item.ID_PLATO_PEDIDO === idPlato);
+  
+      if (platoEnOrden) {
+        // Si el plato ya está en la orden, actualiza su cantidad y total
+        setOrdenActual((prevOrdenActual) =>
+          prevOrdenActual.map((item) =>
+            item.ID_PLATO_PEDIDO === idPlato
+              ? {
+                  ...item,
+                  CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS + 1,
+                }
+              : item,
+          )
+        );
+        updateData = {
+          ID_PL: platoEnOrden.ID_PLATO_PEDIDO,
+          ID_OR: platoEnOrden.ID_OR,
+          PRECIO_PE: platoEnOrden.PRECIO_PLATO * (platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1),
+          CANTXPLA_PE: platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1,
+          ESTADO_PE: "Por hacer",
+          CANTREALIZADA_PE: platoEnOrden.PLATOS_REALIZADOS,
+        }
+        console.log(ordenActual);
+      } else {
+        // Si el plato no está en la orden, agrégalo con cantidad 1 y calcula su total
+        const nuevoPlato = {
+          ID_OR: ordenActual[0].ID_OR,
+          DESCRIPCION_OR: ordenActual[0].DESCRIPCION_OR,
+          ESTADO_OR: ordenActual.every((plato) => plato.ESTADO_PLATO === "Por Hacer") ? "Por Hacer" : "Realizando",
+          NMESA_OR: ordenActual[0].NMESA_OR,
+          CEDULA_CL: ordenActual[0].CEDULA_CL,
+          NOMBRE_CL: ordenActual[0].NOMBRE_CL,
+          ID_PLATO_PEDIDO:idPlato,
+          NOMBRE_PLATO_PEDIDO: platoSeleccionado.NOMBRE_PL,
+          PRECIO_PLATO: platoSeleccionado.PRECIO_PL,
+          PRECIO_PLATOS: platoSeleccionado.PRECIO_PL,
+          CANTIDAD_PLATOS_PEDIDOS: 1,
+          ESTADO_PLATO: "Por Hacer",
+          PLATOS_REALIZADOS: 0,
+        };
+        setOrdenActual((prevOrdenActual) => [...prevOrdenActual ,nuevoPlato]);
+        updateData = {
+          ID_PL: nuevoPlato.ID_PLATO_PEDIDO,
+          ID_OR: nuevoPlato.ID_OR,
+          PRECIO_PE: nuevoPlato.PRECIO_PLATO * nuevoPlato.CANTIDAD_PLATOS_PEDIDOS,
+          CANTXPLA_PE: nuevoPlato.CANTIDAD_PLATOS_PEDIDOS,
+          ESTADO_PE: nuevoPlato.ESTADO_PLATO,
+          CANTREALIZADA_PE: nuevoPlato.PLATOS_REALIZADOS,
+        }
+      }
+      axios.post(`http://localhost:4000/api/pedidosNuevos`, updateData)
+      .then((response) => {
+        console.log("Pedido updated successfully:", response.data);
+        // You can also update the UI or state here if needed
+      })
+      .catch((error) => {
+        console.error("Error updating pedido:", error);
+        // Handle error here if needed
+      });
 
-  },[cantidadAgregada])
+    }
+  };
 
   return (
     <>
@@ -574,7 +732,13 @@ const Orden = () => {
                     <br></br>
                     <div className="gridAbajo">
                       <p className="recipe-desco">{plato.PRECIO_PL}$ </p>
-                      <button className="recipe-desc" onClick={() => handleAgregarPlato(plato.ID_PL)}>Agregar</button>
+                      <button className="recipe-desc" onClick={() =>{ 
+                        if(generarOrden){
+                        handleAgregarPlato(plato.ID_PL)}
+                        else{
+                        handleEditarPlatos(plato.ID_PL)
+                        }}
+                        }>Agregar</button>
                     </div>
                   </div>
                 </li>
@@ -598,32 +762,22 @@ const Orden = () => {
                     {orden.map((plato) => (
                       <div key={plato.ID_PL} className="orden-item">
                         <p className="recipe-desc2">{plato.NOMBRE_PL}</p>
-                        <p className="recipe-desc">{plato.PRECIO_PL}$</p>
                         <p className="recipe-desc">x{plato.cantidad}</p>
-                        <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
-                          Eliminar
+                        <p className="recipe-desc">{parseFloat(plato.total).toFixed(2)}$</p>
+                        <div className="MoverCantidad">
+                        <button className="aumentar" onClick={() => handleCantidadPlato(plato.ID_PL,0, "Aumentar")}>
+                        ▲
                         </button>
+                        <button className="reducir" onClick={() => handleCantidadPlato(plato.ID_PL,0, "Reducir")}>
+                        ▼
+                        </button>
+                        </div>
                       </div>
                     ))}
+                    {orden.length === 0 && <div className="centrarVertical" style={{display:"flex", justifyContent: "center"}}><p>No hay platos en la orden</p></div>}
                   </div>
-                  {orden.length === 0 && <p>No hay platos en la orden</p>}
-                  {platosAEliminar > 0 && (
-                    <div className="eliminar-platos">
-                      <p>
-                        ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
-                      </p>
-                      <input
-                        type="number"
-                        min="1"
-                        max={Math.min(platosAEliminar, 100)}
-                        value={platosAEliminar}
-                        onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
-                      />
-                      <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
-                    </div>
-                  )}
                   <div className="total-orden">
-                    <h3>Total de la Orden: ${totalOrden}</h3>
+                    <h3>Total de la Orden: ${totalOrden.toFixed(2)}</h3>
                   </div>
                   <input type="text" id="Mesa" placeholder="Agregar mesa..." />
                   <input type="text" id="Observaciones" placeholder="Observaciones" />
@@ -645,33 +799,23 @@ const Orden = () => {
                     {ordenActual.map((plato) => (
                       <div key={plato.ID_PLATO_PEDIDO} className="orden-item">
                         <p className="recipe-desc2">{plato.NOMBRE_PLATO_PEDIDO}</p>
-                        <p className="recipe-desc">{plato.PRECIO_PLATO}$</p>
                         <p className="recipe-desc">x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
-                        <button className="recipe-desc" onClick={() => handleEliminarPlato(plato.ID_PL)}>
-                          Eliminar
+                        <p className="recipe-desc">{parseFloat(plato.PRECIO_PLATOS).toFixed(2)}$</p>
+                        <div className="MoverCantidad">
+                        <button className="aumentar" onClick={() => handleCantidadPlato(plato.ID_PLATO_PEDIDO, plato.ID_OR ,"Aumentar")}>
+                          ▲
                         </button>
+                        <button className="reducir" disabled={plato.REDUCIR_PLATOS} onClick={() => handleCantidadPlato(plato.ID_PLATO_PEDIDO,  plato.ID_OR,"Reducir")}>
+                          ▼
+                        </button>
+                        </div>
                       </div>
                     ))}
                   </div>
-                  {platosAEliminar > 0 && (
-                    <div className="eliminar-platos">
-                      <p>
-                        ¿Cuántos platos de {orden.find((plato) => plato.ID_PL === platoIdAEliminar)?.NOMBRE_PL} deseas eliminar?
-                      </p>
-                      <input
-                        type="number"
-                        min="1"
-                        max={Math.min(platosAEliminar, 100)}
-                        value={platosAEliminar}
-                        onChange={(e) => setPlatosAEliminar(parseInt(e.target.value))}
-                      />
-                      <button onClick={confirmarEliminarPlatos}>Confirmar Eliminar</button>
-                    </div>
-                  )}
                   {ordenActual.length > 0 && (
                     <>
                     <div className="total-orden">
-                    <h3>Total de la Orden: ${cantidadActual}</h3>
+                    <h3>Total de la Orden: ${cantidadActual.toFixed(2)}</h3>
                      </div>
                       <input
                         type="text"
@@ -708,7 +852,7 @@ const Orden = () => {
                   )}
                   <button onClick={() => {
                     CancelarEditar();
-                  }}>Cancelar</button>
+                  }}>Cerrar Editar</button>
                 </div>
                 </>) : (
               <>

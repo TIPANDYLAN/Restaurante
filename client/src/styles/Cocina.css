@@ -80,6 +80,15 @@
   }
 
   .cantidadPlato{
-    padding-left: 50px;
-    margin: 0 -70px;
+    padding-left: 30px;
+    margin: 0 -50px 0 5px;
+  }
+
+.platosRealizados{
+  margin-right: 45px;
+}
+
+  .Secciones{
+    display: flex;
+    justify-content: space-between;
   }

@@ -5,9 +5,38 @@ import "../styles/Cocina.css";
 const CocinaCrud = () => {
   const [ordenes, setOrdenes] = useState([]);
 
-  useEffect(() => {
-    fetchOrdenes();
-  }, []);
+  // Dentro del componente CocinaCrud
+
+useEffect(() => {
+  fetchOrdenes();
+}, []);
+
+useEffect(() => {
+  const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
+
+  ordenesConPlatosAgrupados.forEach((orden) => {
+    let nuevoEstadoOrden = "";
+
+    const estadosPlatos = orden.platos.map((plato) => plato.NIVEL_ESTADO);
+    if (estadosPlatos.every((estado) => estado === 2)) {
+      nuevoEstadoOrden = "Completado";
+    } else if (estadosPlatos.every((estado) => estado === 0)) {
+      nuevoEstadoOrden = "Por hacer";
+    } else if (estadosPlatos.includes(1) || estadosPlatos.includes(2)) {
+      nuevoEstadoOrden = "En proceso";
+    }
+
+    // Actualizar el estado local de las órdenes con los estados recalculados
+    setOrdenes(prevOrdenes =>
+      prevOrdenes.map(prevOrden =>
+        prevOrden.ID_OR === orden.ID_OR
+          ? { ...prevOrden, ESTADO_OR: nuevoEstadoOrden }
+          : prevOrden
+      )
+    );
+  });
+}, [ordenes]);
+
 
   // Función para agrupar los platos por orden
 

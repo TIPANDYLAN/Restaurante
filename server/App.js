@@ -291,14 +291,14 @@ app.put("/api/ordenesEstado/:id", (req, res) => {
 });
 
 app.post("/api/pedidos", (req, res) => {
-  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE } = req.body;
+  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE } = req.body;
 
   const query =
-    "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE) VALUES (?, ?, ?, ?, ?, ?)";
 
   connection.query(
     query,
-    [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE],
+    [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE],
     (error, result) => {
       if (error) {
         console.error("Error al crear el pedido:", error);

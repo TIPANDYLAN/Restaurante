@@ -35,8 +35,6 @@ const Orden = () => {
   const [ordenesCargadas, setOrdenesCargadas] = useState(false);
   const [cantidadActual, setCantidadActual] = useState(0);
   const [cantidadPlatos, setCantidadPlatos]= useState([]);
-  const [reducirPlatos, setReducirPlatos] = useState(true);
-
 
   useEffect(() => {
     axios
@@ -171,7 +169,6 @@ const Orden = () => {
           )
         );
       } else if (platoEnOrdenActual) {
-        setReducirPlatos(false);
         setOrdenActual((prevOrdenActual) =>
           prevOrdenActual.map((item) =>
             item.ID_PLATO_PEDIDO === platoId
@@ -214,6 +211,7 @@ const Orden = () => {
       } else if (platoEnOrdenActual) {
         const platosAntiguos = cantidadPlatos.find((item) => item.ID_PLATO_PEDIDO === platoId);
         const numeroPlatosAntiguos = platosAntiguos.CANTIDAD_PLATOS_PEDIDOS;
+        const siNuevoPlato = platosAntiguos.NUEVOPLATO;
 
         if(numeroPlatosAntiguos !== platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS){
         if (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS > 1) {
@@ -255,8 +253,7 @@ const Orden = () => {
           });
         }
         
-        if(numeroPlatosAntiguos + 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS){
-          setReducirPlatos(true);
+        if(numeroPlatosAntiguos + 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS && !siNuevoPlato){
           setOrdenActual((prevOrdenActual) =>
             prevOrdenActual.map((item) =>
               item.ID_PLATO_PEDIDO === platoId
@@ -268,6 +265,20 @@ const Orden = () => {
             )
           );
         }
+      }
+      else{
+        console.log("ANTESDEELIMINAR: ", cantidadPlatos)
+        setCantidadPlatos((prevCantidadPlatos) => prevCantidadPlatos.filter((item) => item.ID_PLATO_PEDIDO !== platoId));
+        setOrdenActual((prevOrdenActual) => prevOrdenActual.filter((item) => item.ID_PLATO_PEDIDO !== platoId));
+          axios.delete(`http://localhost:4000/api/pedidos/${platoId}/${ordenId}`)
+          .then((response) => {
+            console.log("Pedido updated successfully:", response.data);
+            // You can also update the UI or state here if needed
+          })
+          .catch((error) => {
+            console.error("Error updating pedido:", error);
+            // Handle error here if needed
+          });
       }
     }
     }
@@ -660,6 +671,7 @@ const Orden = () => {
               ? {
                   ...item,
                   CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS + 1,
+                  REDUCIR_PLATOS: false,
                 }
               : item,
           )
@@ -691,6 +703,16 @@ const Orden = () => {
           PLATOS_REALIZADOS: 0,
         };
         setOrdenActual((prevOrdenActual) => [...prevOrdenActual ,nuevoPlato]);
+        setCantidadPlatos((prevCantidadPlatos) => [
+          ...prevCantidadPlatos,
+          {
+            ID_PLATO_PEDIDO: nuevoPlato.ID_PLATO_PEDIDO,
+            CANTIDAD_PLATOS_PEDIDOS: nuevoPlato.CANTIDAD_PLATOS_PEDIDOS,
+            NUEVOPLATO: true,
+          }
+        ]);
+        
+        console.log("RevisarCantidad",cantidadPlatos);
         updateData = {
           ID_PL: nuevoPlato.ID_PLATO_PEDIDO,
           ID_OR: nuevoPlato.ID_OR,

@@ -525,10 +525,10 @@ app.get("/api/ordenescocina", (req, res) => {
 app.put("/api/pedidosCantidad/:idPlato/:idOrden", (req, res) => {
   const idPlato = req.params.idPlato;
   const idOrden = req.params.idOrden;
-  const { PRECIO_PE, CANTXPLA_PE } = req.body;
+  const { PRECIO_PE,PARA_LLEVAR ,CANTXPLA_PE } = req.body;
 
-  const updateQuery = "UPDATE PEDIDO SET PRECIO_PE = ?, CANTXPLA_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
-  connection.query(updateQuery, [PRECIO_PE, CANTXPLA_PE, idPlato, idOrden], (error, result) => {
+  const updateQuery = "UPDATE PEDIDO SET PRECIO_PE = ?, PARALLEVAR_PE = ? ,CANTXPLA_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+  connection.query(updateQuery, [PRECIO_PE, PARA_LLEVAR ,CANTXPLA_PE, idPlato, idOrden], (error, result) => {
     if (error) {
       console.error("Error updating pedido:", error);
       res.sendStatus(500);

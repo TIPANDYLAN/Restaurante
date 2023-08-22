@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchData } from '../js/fetchDataUrl';
+import axios from 'axios';
 
 const ComboBox = ({ initialText, mode, onSelectChange, opcionActual, cantidadPlatos, idPlato, idOrden }) => {
   const [options, setOptions] = useState([]);
@@ -7,12 +8,8 @@ const ComboBox = ({ initialText, mode, onSelectChange, opcionActual, cantidadPla
   const [settings, setSettings] = useState([]);
 
   useEffect(() => {
-    if (mode === 'ingredients') {
-      fetchData('ingredientes')
-        .then(data => setOptions(data))
-        .catch(error => {
-          console.error('Error fetching ingredients:', error);
-        });
+    if (mode === 'ingredientes') {
+      ObtenerIngredientes();
     } else if (mode === 'mesas') {
       fetchData('settings')
         .then(data => {
@@ -22,7 +19,8 @@ const ComboBox = ({ initialText, mode, onSelectChange, opcionActual, cantidadPla
           console.error('Error fetching settings:', error);
         });
     }
-  }, [mode]);
+    setSelectedOption(opcionActual);
+  }, [mode, opcionActual]);
 
   useEffect(() => {
     if (mode === 'mesas' && settings.length > 0) {
@@ -40,6 +38,18 @@ const ComboBox = ({ initialText, mode, onSelectChange, opcionActual, cantidadPla
     }
   }, [mode, settings, cantidadPlatos]);
 
+  const ObtenerIngredientes = async () => {
+    try{
+      axios
+      .get("http://localhost:4000/api/ingredientes")
+      .then((response) => {
+        setOptions(response.data);
+      })
+    }catch (error){
+      console.error("Error al obtener los Ingredientes:", error);
+    }
+  }
+
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
     onSelectChange(event.target.value, idPlato, idOrden);
@@ -50,11 +60,11 @@ const ComboBox = ({ initialText, mode, onSelectChange, opcionActual, cantidadPla
       <select value={selectedOption} onChange={handleSelectChange}>
         <option value="0">{initialText}</option>
         {options.map((option, index) => (
-          <option key={index} value={option.id}>
-            {mode === 'ingredients' ? option.name : option}
-          </option>
+            <option key={index} value={option.id || option.NOMBRE_I}>
+            {mode === 'ingredientes' ? option.NOMBRE_I : option}
+            </option>
         ))}
-      </select>
+        </select>
     </div>
   );
 };

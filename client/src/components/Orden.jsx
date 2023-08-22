@@ -224,14 +224,16 @@ const Orden = () => {
               item.ID_PLATO_PEDIDO === platoId
                 ? {
                     ...item,
-                    PRECIO_PLATOS: item.PRECIO_PLATO * (item.CANTIDAD_PLATOS_PEDIDOS - 1),
+                    PRECIO_PLATOS: item.PRECIO_PLATO * (item.CANTIDAD_PLATOS_PEDIDOS - 1) + (settings[0].PRECIO_EXTRA_SE * (item.PARA_LLEVAR - 1 === item.CANTIDAD_PLATOS_PEDIDOS - 1 ? item.PARA_LLEVAR - 1 : item.PARA_LLEVAR)),
+                    PARA_LLEVAR: item.PARA_LLEVAR - 1 === item.CANTIDAD_PLATOS_PEDIDOS - 1 ? item.PARA_LLEVAR - 1 : item.PARA_LLEVAR,
                     CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS - 1,
                   }
                 : item
             )
           );
           updateData = {
-            PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1),
+            PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + (settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)),
+            PARA_LLEVAR: platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR,
             CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1,
           };
           axios.put(`http://localhost:4000/api/pedidosCantidad/${platoId}/${ordenId}`, updateData)
@@ -1069,6 +1071,7 @@ const Orden = () => {
 
         </div>
       </Modal>
+      <ComboBox mode='ingredientes' initialText={"Seleccione una mesa"}/>
     </>
   );
 };

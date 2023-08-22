@@ -42,6 +42,93 @@ connection.connect((error) => {
   }
 });
 
+
+//Crud Ingredientes
+//================================================================
+// Crear un nuevo ingrediente
+app.post("/ingredientes", (req, res) => {
+  const { nombre, descripcion, precio } = req.body;
+
+  const query = "INSERT INTO INGREDIENTES (NOMBRE_I, DESCRIPCION_I, PRECIO_I) VALUES (?, ?, ?)";
+  
+  connection.query(query, [nombre, descripcion, precio], (error, results) => {
+    if (error) {
+      console.error("Error al crear el ingrediente:", error);
+      res.status(500).json({ error: "Error al crear el ingrediente." });
+    } else {
+      console.log("Ingrediente creado exitosamente.");
+      res.status(201).json({ message: "Ingrediente creado exitosamente." });
+    }
+  });
+});
+
+
+
+
+// Obtener todos los ingredientes
+app.get("/ingredientes", (req, res) => {
+  const query = "SELECT * FROM Restaurant.INGREDIENTES";
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "Error al obtener los ingredientes." });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+// Obtener un ingrediente por su ID
+app.get("/ingredientes/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM Restaurant.INGREDIENTES WHERE ID_I = ?";
+  
+  connection.query(query, [id], (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "Error al obtener el ingrediente." });
+    } else {
+      if (results.length === 0) {
+        res.status(404).json({ message: "Ingrediente no encontrado." });
+      } else {
+        res.status(200).json(results[0]);
+      }
+    }
+  });
+});
+
+// Actualizar un ingrediente por su ID
+app.put("/ingredientes/:id", (req, res) => {
+  const { id } = req.params;
+  const { nombre, descripcion, precio } = req.body;
+  
+  const query = "UPDATE Restaurant.INGREDIENTES SET NOMBRE_I = ?, DESCRIPCION_I = ?, PRECIO_I = ? WHERE ID_I = ?";
+  
+  connection.query(query, [nombre, descripcion, precio, id], (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "Error al actualizar el ingrediente." });
+    } else {
+      res.status(200).json({ message: "Ingrediente actualizado exitosamente." });
+    }
+  });
+});
+
+// Eliminar un ingrediente por su ID
+app.delete("/ingredientes/:id", (req, res) => {
+  const { id } = req.params;
+  const query = "DELETE FROM Restaurant.INGREDIENTES WHERE ID_I = ?";
+  
+  connection.query(query, [id], (error, results) => {
+    if (error) {
+      res.status(500).json({ error: "Error al eliminar el ingrediente." });
+    } else {
+      res.status(200).json({ message: "Ingrediente eliminado exitosamente." });
+    }
+  });
+});
+//================================================================
+
+
+
 // Obtener todos los platos
 app.get("/api/platos", (req, res) => {
   const query = "SELECT * FROM Restaurant.PLATO";

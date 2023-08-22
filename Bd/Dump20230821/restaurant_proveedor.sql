@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -16,34 +18,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `receta`
+-- Table structure for table `proveedor`
 --
 
-DROP TABLE IF EXISTS `receta`;
+DROP TABLE IF EXISTS `proveedor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `receta` (
-  `ID_RE` int NOT NULL,
-  `ID_I` int NOT NULL,
-  `ID_PL` int DEFAULT NULL,
-  `PESO_RE` float NOT NULL,
-  `DESCRIPCION_RE` text NOT NULL,
-  `NOMBRE_RE` text NOT NULL,
-  PRIMARY KEY (`ID_RE`),
-  KEY `FK_CONFORMAN` (`ID_I`),
-  KEY `FK_TIENE` (`ID_PL`),
-  CONSTRAINT `FK_CONFORMAN` FOREIGN KEY (`ID_I`) REFERENCES `ingredientes` (`ID_I`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_TIENE` FOREIGN KEY (`ID_PL`) REFERENCES `plato` (`ID_PL`) ON DELETE RESTRICT ON UPDATE RESTRICT
+CREATE TABLE `proveedor` (
+  `ID_PR` int NOT NULL,
+  `NOMBRE_PR` text NOT NULL,
+  `DESCRIPCION_I` text NOT NULL,
+  PRIMARY KEY (`ID_PR`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `receta`
+-- Dumping data for table `proveedor`
 --
 
-LOCK TABLES `receta` WRITE;
-/*!40000 ALTER TABLE `receta` DISABLE KEYS */;
-/*!40000 ALTER TABLE `receta` ENABLE KEYS */;
+LOCK TABLES `proveedor` WRITE;
+/*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
+/*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -55,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-09 10:16:55
+-- Dump completed on 2023-08-21 19:02:59

@@ -91,7 +91,7 @@
   
   .orden-item {
     display: grid;
-    grid-template-columns: 40% 20% 20% 20%;
+    grid-template-columns: 40% 12% 12% 20% 16%;
     align-items: center;
     justify-content: space-around;
     width: 95%;
@@ -632,9 +632,12 @@
 .MoverCantidad{
   display: grid;
   grid-gap: 5px;
+  margin: auto;
+  width: 90%;
 }
 .aumentar{
   background-color: #30ac0e;
+  width: 90%;
 }
 
 .aumentar:hover{
@@ -643,6 +646,7 @@
 
 .reducir{
   background-color: rgb(207, 12, 12);
+  width: 90%;
 }
 
 .reducir:hover{
@@ -657,5 +661,12 @@
 }
 
 .OrdenesDisponibles{
-  
+  border-bottom: 1px solid rgba(90, 89, 89, 0.541);
+  margin: 20px 50px 0 50px;
+}
+
+.Domicilio{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

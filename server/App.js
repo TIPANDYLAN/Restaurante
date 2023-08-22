@@ -291,14 +291,14 @@ app.put("/api/ordenesEstado/:id", (req, res) => {
 });
 
 app.post("/api/pedidos", (req, res) => {
-  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE } = req.body;
+  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE, PARALLEVAR_PE } = req.body;
 
   const query =
-    "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE) VALUES (?, ?, ?, ?, ?, ?)";
+    "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE, PARALLEVAR_PE) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
   connection.query(
     query,
-    [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE],
+    [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE, PARALLEVAR_PE],
     (error, result) => {
       if (error) {
         console.error("Error al crear el pedido:", error);
@@ -331,7 +331,7 @@ app.get("/api/pedidos", (req, res) => {
 });
 
 app.post("/api/pedidosNuevos", (req, res) => {
-  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE } = req.body;
+  const { ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE, PARALLEVAR_PE } = req.body;
 
   // Check if a pedido with the given ID_PL and ID_OR already exists
   const selectQuery = "SELECT * FROM PEDIDO WHERE ID_PL = ? AND ID_OR = ?";
@@ -345,10 +345,10 @@ app.post("/api/pedidosNuevos", (req, res) => {
     if (results.length > 0) {
       // Update the existing pedido
       const updateQuery =
-        "UPDATE PEDIDO SET PRECIO_PE = ?, CANTXPLA_PE = ?, ESTADO_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+        "UPDATE PEDIDO SET PRECIO_PE = ?, CANTXPLA_PE = ?, ESTADO_PE = ?, PARALLEVAR_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
       connection.query(
         updateQuery,
-        [PRECIO_PE, CANTXPLA_PE, ESTADO_PE, ID_PL, ID_OR],
+        [PRECIO_PE, CANTXPLA_PE, ESTADO_PE, PARALLEVAR_PE, ID_PL, ID_OR],
         (error, result) => {
           if (error) {
             console.error("Error updating pedido:", error);
@@ -361,6 +361,7 @@ app.post("/api/pedidosNuevos", (req, res) => {
               PRECIO_PE,
               CANTXPLA_PE,
               ESTADO_PE,
+              PARALLEVAR_PE,
             });
           }
         }
@@ -368,10 +369,10 @@ app.post("/api/pedidosNuevos", (req, res) => {
     } else {
       // Create a new pedido
       const insertQuery =
-        "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO PEDIDO (ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE, PARALLEVAR_PE) VALUES (?, ?, ?, ?, ?, ?, ?)";
       connection.query(
         insertQuery,
-        [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE],
+        [ID_PL, ID_OR, PRECIO_PE, CANTXPLA_PE, ESTADO_PE, CANTREALIZADA_PE, PARALLEVAR_PE],
         (error, result) => {
           if (error) {
             console.error("Error creating pedido:", error);
@@ -385,6 +386,7 @@ app.post("/api/pedidosNuevos", (req, res) => {
               CANTXPLA_PE,
               ESTADO_PE,
               CANTREALIZADA_PE,
+              PARALLEVAR_PE,
             });
           }
         }
@@ -555,7 +557,8 @@ app.get("/api/ordenescocina/:idOrden", (req, res) => {
       PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS,
       PE.ESTADO_PE AS ESTADO_PLATO,
       PE.CANTREALIZADA_PE AS PLATOS_REALIZADOS,
-      PE.PRECIO_PE AS PRECIO_PLATOS
+      PE.PRECIO_PE AS PRECIO_PLATOS,
+      PE.PARALLEVAR_PE AS PARA_LLEVAR
     FROM ORDEN O
     JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
     JOIN PLATO P ON PE.ID_PL = P.ID_PL
@@ -602,7 +605,31 @@ app.get("/api/ordenescocina/:idOrden", (req, res) => {
   });
 });
 
+app.put('/api/domicilio/:idPlato/:idOrden', (req, res) => {
+  const idPlato = req.params.idPlato;
+  const idOrden = req.params.idOrden;
+  const { PRECIO_PE, PARA_LLEVAR } = req.body;
 
+  const updateQuery = `
+    UPDATE PEDIDO
+    SET PRECIO_PE = ?, PARALLEVAR_PE = ?
+    WHERE ID_PL = ? AND ID_OR = ?
+  `;
+
+  connection.query(
+    updateQuery,
+    [PRECIO_PE, PARA_LLEVAR, idPlato, idOrden],
+    (error, result) => {
+      if (error) {
+        console.error('Error al actualizar el pedido:', error);
+        res.status(500).json({ error: 'Error al actualizar el pedido' });
+      } else {
+        console.log('Pedido actualizado exitosamente');
+        res.status(200).json({ message: 'Pedido actualizado exitosamente' });
+      }
+    }
+  );
+});
 
 // Agregar un nuevo ingrediente
 app.post("/api/ingredientes", (req, res) => {
@@ -814,5 +841,19 @@ app.get("/api/factura", (req, res) => {
     } else {
       res.send(rows);
     }
+  });
+});
+
+app.get("/api/settings", (req, res) => {
+  const sqlSelect = "SELECT * FROM SETTINGS";
+  connection.query(sqlSelect, (err, rows, results) => {
+    res.send(rows);
+  });
+});
+
+app.get("/api/ingredientes", (req, res) => {
+  const sqlSelect = "SELECT * FROM INGREDIENTES";
+  connection.query(sqlSelect, (err, rows, results) => {
+    res.send(rows);
   });
 });

@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -16,35 +18,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `orden`
+-- Table structure for table `inventario`
 --
 
-DROP TABLE IF EXISTS `orden`;
+DROP TABLE IF EXISTS `inventario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `orden` (
-  `ID_OR` int NOT NULL AUTO_INCREMENT,
-  `CEDULA_CL` varchar(15) DEFAULT NULL,
-  `ID_EMP` int DEFAULT NULL,
-  `FECHA_OR` date NOT NULL,
-  `NMESA_OR` bigint DEFAULT NULL,
-  `DESCRIPCION_OR` text,
-  `ESTADO_OR` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`ID_OR`),
-  KEY `FK_ATIENDE` (`ID_EMP`),
-  KEY `FK_PIDE` (`CEDULA_CL`),
-  CONSTRAINT `FK_ATIENDE` FOREIGN KEY (`ID_EMP`) REFERENCES `empleado` (`ID_EMP`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `FK_PIDE` FOREIGN KEY (`CEDULA_CL`) REFERENCES `cliente` (`CEDULA_CL`) ON DELETE RESTRICT ON UPDATE RESTRICT
+CREATE TABLE `inventario` (
+  `ID_INV` int NOT NULL,
+  `ID_EN` int DEFAULT NULL,
+  `ID_I` int DEFAULT NULL,
+  `TOTAL_INV` bigint NOT NULL,
+  PRIMARY KEY (`ID_INV`),
+  KEY `FK_PROVEEN` (`ID_I`),
+  KEY `FK_LLENA` (`ID_EN`),
+  CONSTRAINT `FK_LLENA` FOREIGN KEY (`ID_EN`) REFERENCES `entrega` (`ID_EN`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_PROVEEN` FOREIGN KEY (`ID_I`) REFERENCES `ingredientes` (`ID_I`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `orden`
+-- Dumping data for table `inventario`
 --
 
-LOCK TABLES `orden` WRITE;
-/*!40000 ALTER TABLE `orden` DISABLE KEYS */;
-/*!40000 ALTER TABLE `orden` ENABLE KEYS */;
+LOCK TABLES `inventario` WRITE;
+/*!40000 ALTER TABLE `inventario` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inventario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -56,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-09 10:16:56
+-- Dump completed on 2023-08-21 19:02:59

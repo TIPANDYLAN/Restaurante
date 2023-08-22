@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Orden.css";
 import Modal from "./Modal";
+import HorizontalMenu from "./MenuHorizontal";
+import ComboBox from "./ComboBox";
 
 import Lupa from "../images/search-icon.png";
-import HorizontalMenu from "./MenuHorizontal";
+import { fetchData } from "../js/fetchDataUrl";
 
 const Orden = () => {
   const [platos, setPlatos] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [orden, setOrden] = useState([]);
+  const [settings, setSettings] = useState([]);
   const [ordenActual, setOrdenActual] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [clienteData, setClienteData] = useState({
@@ -20,6 +23,7 @@ const Orden = () => {
     CORREO_CLI: "",
     PERSONALIZA: true,
   });
+  const [mesa, setMesa] = useState(0);
   const [clienteSubido, setCLienteSubido] = useState(false);
   const [OpcionCliente, setOpcionCliente] = useState(false);
   const [generarOrden, setGenerarOrden] = useState(false);
@@ -37,17 +41,19 @@ const Orden = () => {
   const [cantidadPlatos, setCantidadPlatos]= useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/platos")
-      .then((response) => {
-        setPlatos(response.data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener los platos:", error);
-      });
+      fetchData('platos')
+      .then(data => setPlatos(data))
+        .catch(error => {
+          console.error('Error fetching platos:', error);
+        });
   }, []);
   
   useEffect(() => {
+    fetchData('settings')
+      .then(data => setSettings(data))
+        .catch(error => {
+          console.error('Error fetching settings:', error);
+        });
     fetchOrdenesActuales();
     obtenerOrdenes();
     FiltrarOrdenes();
@@ -61,7 +67,6 @@ const Orden = () => {
       .get("http://localhost:4000/api/clientes")
       .then((response) => {
         setClientes(response.data);
-        console.log("Datos de clientes:", response.data);
       })
     }catch (error){
       console.error("Error al obtener los clientes:", error);
@@ -72,7 +77,6 @@ const Orden = () => {
       .get("http://localhost:4000/api/ordenes")
       .then((response) => {
         setOrdenes(response.data);
-        console.log("Datos de ordenes:", response.data);
       })
       .catch((error) => {
         console.error("Error al obtener las ordenes:", error);
@@ -89,7 +93,6 @@ const Orden = () => {
         );
         setOrdenesFiltradas(ordenesSinCanceladasOFacturadas);
         setOrdenesCargadas(true);
-        console.log("Datos de ordenes:", ordenesSinCanceladasOFacturadas);
       })
     } catch(error){
       console.error("Error al obtener las ordenes:", error);
@@ -101,7 +104,6 @@ const Orden = () => {
       const response = await axios.get('http://localhost:4000/api/ordenescocina');
       if (Array.isArray(response.data)) {
         setOrdenesActuales(response.data);
-        console.log("Datos de ordenes actuales:", response.data);
       } else {
         console.error('La respuesta no es un array:', response.data);
       }
@@ -112,7 +114,7 @@ const Orden = () => {
 
   useEffect(() => {
     setTotalOrden((prevTotal) => {
-      const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad, 0);
+      const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad + parseFloat(settings[0].PRECIO_EXTRA_SE * (plato.aDomicilio ? plato.aDomicilio : 0)), 0);
       return total;
     });
   }, [orden]);
@@ -139,7 +141,7 @@ const Orden = () => {
         setOrden((prevOrden) =>
           prevOrden.map((item) =>
             item.ID_PL === platoId
-              ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL }
+              ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL + (settings[0].PRECIO_EXTRA_SE * item.aDomicilio) }
               : item
           )
         );
@@ -164,7 +166,7 @@ const Orden = () => {
         setOrden((prevOrden) =>
           prevOrden.map((item) =>
             item.ID_PL === platoId
-              ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL }
+              ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL + (settings[0].PRECIO_EXTRA_SE * (item.aDomicilio ? item.aDomicilio : 0)) }
               : item
           )
         );
@@ -201,7 +203,9 @@ const Orden = () => {
           setOrden((prevOrden) =>
             prevOrden.map((item) =>
               item.ID_PL === platoId
-                ? { ...item, cantidad: item.cantidad - 1, total: (item.cantidad - 1) * item.PRECIO_PL }
+                ? { ...item, cantidad: item.cantidad - 1, 
+                             aDomicilio: item.aDomicilio - 1 === item.cantidad - 1 ? item.aDomicilio - 1 : item.aDomicilio,
+                             total: (item.cantidad - 1) * item.PRECIO_PL + (settings[0].PRECIO_EXTRA_SE * (item.aDomicilio - 1 === item.cantidad - 1 ? item.aDomicilio - 1 : item.aDomicilio))}
                 : item
             )
           );
@@ -285,7 +289,7 @@ const Orden = () => {
   };
 
   const calculateTotalOrden = () => {
-    const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad, 0);
+    const total = orden.reduce((acc, plato) => acc + plato.PRECIO_PL * plato.cantidad + (settings[0].PRECIO_EXTRA_SE * plato.aDomicilio), 0);
     return total;
   };
 
@@ -491,6 +495,7 @@ const Orden = () => {
         CANTXPLA_PE: pedido.cantidad,
         ESTADO_PE: "Por Hacer",
         CANTREALIZADA_PE: 0,
+        PARALLEVAR_PE: pedido.aDomicilio,
       };
 
       // Send the pedido data for this plato to the server
@@ -505,8 +510,7 @@ const Orden = () => {
         });
     });
 
-    const Mesa = document.getElementById("Mesa");
-    const NumMesa = parseInt(Mesa.value) || null;
+    const NumMesa = mesa
     const Observaciones = document.getElementById("Observaciones");
     const Observacion = Observaciones.value;
     let CedulaCliente = clienteData.CEDULA_CLI;
@@ -612,14 +616,12 @@ const Orden = () => {
           setModalEditar(false);
           setEditarOrden(true);
           setCLienteSubido(true);
-          console.log('Pedidos de la orden:', ordenActual);
           // Calculate the total quantity of platos
           const putcantidadPlatos = response.data.map((plato) => ({
             ID_PLATO_PEDIDO: plato.ID_PLATO_PEDIDO,
             CANTIDAD_PLATOS_PEDIDOS: plato.CANTIDAD_PLATOS_PEDIDOS,
           }));
           setCantidadPlatos(putcantidadPlatos);
-          console.log(cantidadPlatos);
         })
         .catch((error) => {
           console.error('Error al obtener los pedidos:', error);
@@ -632,7 +634,7 @@ const Orden = () => {
   
   const ordenesActualesInvertidas = [...ordenesFiltradas].reverse();
   const totalOrdenActual = ordenActual.reduce((total, plato) => {
-    const subtotal = plato.PRECIO_PLATO * plato.CANTIDAD_PLATOS_PEDIDOS;
+    const subtotal = plato.PRECIO_PLATO * plato.CANTIDAD_PLATOS_PEDIDOS + (settings[0].PRECIO_EXTRA_SE * plato.PARA_LLEVAR);
     return total + subtotal;
   }, 0);
 
@@ -679,12 +681,12 @@ const Orden = () => {
         updateData = {
           ID_PL: platoEnOrden.ID_PLATO_PEDIDO,
           ID_OR: platoEnOrden.ID_OR,
-          PRECIO_PE: platoEnOrden.PRECIO_PLATO * (platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1),
+          PRECIO_PE: platoEnOrden.PRECIO_PLATO * (platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1) + (settings[0].PRECIO_EXTRA_SE * platoEnOrden.PARA_LLEVAR),
           CANTXPLA_PE: platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1,
           ESTADO_PE: "Por hacer",
           CANTREALIZADA_PE: platoEnOrden.PLATOS_REALIZADOS,
+          PARA_LLEVAR: platoEnOrden.PARA_LLEVAR,
         }
-        console.log(ordenActual);
       } else {
         // Si el plato no está en la orden, agrégalo con cantidad 1 y calcula su total
         const nuevoPlato = {
@@ -701,6 +703,7 @@ const Orden = () => {
           CANTIDAD_PLATOS_PEDIDOS: 1,
           ESTADO_PLATO: "Por Hacer",
           PLATOS_REALIZADOS: 0,
+          PARA_LLEVAR: 0,
         };
         setOrdenActual((prevOrdenActual) => [...prevOrdenActual ,nuevoPlato]);
         setCantidadPlatos((prevCantidadPlatos) => [
@@ -720,6 +723,7 @@ const Orden = () => {
           CANTXPLA_PE: nuevoPlato.CANTIDAD_PLATOS_PEDIDOS,
           ESTADO_PE: nuevoPlato.ESTADO_PLATO,
           CANTREALIZADA_PE: nuevoPlato.PLATOS_REALIZADOS,
+          PARA_LLEVAR: nuevoPlato.PARA_LLEVAR,
         }
       }
       axios.post(`http://localhost:4000/api/pedidosNuevos`, updateData)
@@ -731,6 +735,58 @@ const Orden = () => {
         console.error("Error updating pedido:", error);
         // Handle error here if needed
       });
+
+    }
+  };
+
+  const handleMesaSelection = (selectedValue) => {
+    setMesa(selectedValue);
+  };
+
+  const handleDomicilioSelection  = (selectedValue, idPlato, idOrden) => {
+    let updateData = {};
+
+    const platoEnOrden = orden.find((item) => item.ID_PL === idPlato);
+
+    const platoSeleccionado = platos.find((plato) => plato.ID_PL === idPlato);
+    if (platoSeleccionado) {
+      const platoEnOrdenActual = ordenActual.find((item) => item.ID_PLATO_PEDIDO === idPlato);
+  
+      if (platoEnOrdenActual) {
+        // Si el plato ya está en la orden, actualiza su cantidad y total
+        setOrdenActual((prevOrdenActual) =>
+          prevOrdenActual.map((item) =>
+            item.ID_PLATO_PEDIDO === idPlato
+              ? {
+                  ...item,
+                  PRECIO_PLATOS: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS) + (settings[0].PRECIO_EXTRA_SE * selectedValue),
+                  PARA_LLEVAR: selectedValue,
+                }
+              : item,
+          )
+        );
+        updateData = {
+          PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS) + (settings[0].PRECIO_EXTRA_SE * selectedValue),
+          PARA_LLEVAR: selectedValue,
+        }
+        axios.put(`http://localhost:4000/api/domicilio/${idPlato}/${idOrden}`, updateData)
+        .then((response) => {
+          console.log("Pedido updated successfully:", response.data);
+          // You can also update the UI or state here if needed
+        })
+        .catch((error) => {
+          console.error("Error updating pedido:", error);
+          // Handle error here if needed
+        });
+      } else if (platoEnOrden) {
+        setOrden((prevOrden) =>
+          prevOrden.map((item) =>
+            item.ID_PL === idPlato
+              ? { ...item, total: (item.cantidad) * item.PRECIO_PL + (settings[0].PRECIO_EXTRA_SE * selectedValue), aDomicilio: selectedValue }
+              : item
+          )
+        );
+      }
 
     }
   };
@@ -794,14 +850,18 @@ const Orden = () => {
                         ▼
                         </button>
                         </div>
+                        <div className="Domicilio">
+                          <p>Para llevar:</p>
+                          <ComboBox mode='domicilio' opcionActual={plato.aDomicilio} cantidadPlatos={plato.cantidad} idOrden={plato.ID_OR} idPlato={plato.ID_PL} initialText={"0"} onSelectChange={handleDomicilioSelection}/>
+                        </div>
                       </div>
                     ))}
-                    {orden.length === 0 && <div className="centrarVertical" style={{display:"flex", justifyContent: "center"}}><p>No hay platos en la orden</p></div>}
+                    {orden.length === 0 && <div className="centrarVertical" ><p>No hay platos en la orden</p></div>}
                   </div>
                   <div className="total-orden">
-                    <h3>Total de la Orden: ${totalOrden.toFixed(2)}</h3>
+                    <h3>Total de la Orden: ${parseFloat(totalOrden).toFixed(2)}</h3>
                   </div>
-                  <input type="text" id="Mesa" placeholder="Agregar mesa..." />
+                  <ComboBox mode='mesas' initialText={"Seleccione una mesa"} onSelectChange={handleMesaSelection}/>
                   <input type="text" id="Observaciones" placeholder="Observaciones" />
                   {orden.length > 0 && (
                     <button onClick={enviarPedidos}>Enviar Orden</button>
@@ -831,13 +891,17 @@ const Orden = () => {
                           ▼
                         </button>
                         </div>
+                        <div className="Domicilio">
+                          <p>Para llevar:</p>
+                          <ComboBox mode='domicilio' opcionActual={plato.PARA_LLEVAR} cantidadPlatos={plato.CANTIDAD_PLATOS_PEDIDOS} idOrden={plato.ID_OR} idPlato={plato.ID_PLATO_PEDIDO} initialText={"0"} onSelectChange={handleDomicilioSelection}/>
+                        </div>
                       </div>
                     ))}
                   </div>
                   {ordenActual.length > 0 && (
                     <>
                     <div className="total-orden">
-                    <h3>Total de la Orden: ${cantidadActual.toFixed(2)}</h3>
+                    <h3>Total de la Orden: ${parseFloat(cantidadActual).toFixed(2)}</h3>
                      </div>
                       <input
                         type="text"
@@ -853,20 +917,7 @@ const Orden = () => {
                           });
                         }}
                       />
-                      <input
-                        type="text"
-                        value={ordenActual[0].NMESA_OR}
-                        id="Mesa"
-                        placeholder="Agregar mesa..."
-                        onChange={(e) => {
-                          const newValue = e.target.value;
-                          setOrdenActual(prevOrdenActual => {
-                            const newOrdenActual = [...prevOrdenActual];
-                            newOrdenActual[0].NMESA_OR = newValue;
-                            return newOrdenActual;
-                          });
-                        }}
-                      />
+                      <ComboBox mode='mesas' initialText={"Seleccione una mesa"} onSelectChange={handleMesaSelection} opcionActual={ordenActual[0].NMESA_OR}/>
                     </>
                   )}
                   {orden.length > 0 && (
@@ -1018,7 +1069,6 @@ const Orden = () => {
 
         </div>
       </Modal>
-
     </>
   );
 };

@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -16,29 +18,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `empleado`
+-- Table structure for table `settings`
 --
 
-DROP TABLE IF EXISTS `empleado`;
+DROP TABLE IF EXISTS `settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `empleado` (
-  `ID_EMP` int NOT NULL,
-  `USUARIO_EMP` longtext,
-  `CONTRASENA_EMP` longtext,
-  `CARGO_EMP` longtext,
-  PRIMARY KEY (`ID_EMP`)
+CREATE TABLE `settings` (
+  `ID_SE` int NOT NULL,
+  `PRECIO_EXTRA_SE` decimal(20,2) NOT NULL,
+  `DESCUENTOS_SE` tinyint(1) DEFAULT NULL,
+  `NUM_MESAS_SE` int DEFAULT NULL,
+  PRIMARY KEY (`ID_SE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `empleado`
+-- Dumping data for table `settings`
 --
 
-LOCK TABLES `empleado` WRITE;
-/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
-INSERT INTO `empleado` VALUES (1,'admin','admin','admin');
-/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
+LOCK TABLES `settings` WRITE;
+/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
+INSERT INTO `settings` VALUES (1,0.50,1,20);
+/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-09 10:16:55
+-- Dump completed on 2023-08-21 19:02:59

@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -16,30 +18,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `cliente`
+-- Table structure for table `ingredientes`
 --
 
-DROP TABLE IF EXISTS `cliente`;
+DROP TABLE IF EXISTS `ingredientes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cliente` (
-  `CEDULA_CL` varchar(15) NOT NULL,
-  `NOMBRE_CL` text NOT NULL,
-  `CORREO_CL` text,
-  `TELEFONO_CL` varchar(15) DEFAULT NULL,
-  `DIRECCION_CL` text,
-  PRIMARY KEY (`CEDULA_CL`)
+CREATE TABLE `ingredientes` (
+  `ID_I` int NOT NULL,
+  `NOMBRE_I` text NOT NULL,
+  `DESCRIPCION_I` text NOT NULL,
+  `PRECIO_I` float NOT NULL,
+  PRIMARY KEY (`ID_I`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cliente`
+-- Dumping data for table `ingredientes`
 --
 
-LOCK TABLES `cliente` WRITE;
-/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES ('1723653976','Dylan Tipan','djtipan2@espe.edu.ec','0962596640','Quitumbe'),('9999999999','CONSUMIDOR FINAL',NULL,'','');
-/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
+LOCK TABLES `ingredientes` WRITE;
+/*!40000 ALTER TABLE `ingredientes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ingredientes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-09 10:16:56
+-- Dump completed on 2023-08-21 19:02:59

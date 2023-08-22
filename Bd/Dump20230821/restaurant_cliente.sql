@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -16,27 +18,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `proveedor`
+-- Table structure for table `cliente`
 --
 
-DROP TABLE IF EXISTS `proveedor`;
+DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `proveedor` (
-  `ID_PR` int NOT NULL,
-  `NOMBRE_PR` text NOT NULL,
-  `DESCRIPCION_I` text NOT NULL,
-  PRIMARY KEY (`ID_PR`)
+CREATE TABLE `cliente` (
+  `CEDULA_CL` varchar(15) NOT NULL,
+  `NOMBRE_CL` text NOT NULL,
+  `CORREO_CL` text,
+  `TELEFONO_CL` varchar(15) DEFAULT NULL,
+  `DIRECCION_CL` text,
+  PRIMARY KEY (`CEDULA_CL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `proveedor`
+-- Dumping data for table `cliente`
 --
 
-LOCK TABLES `proveedor` WRITE;
-/*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
-/*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
+LOCK TABLES `cliente` WRITE;
+/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
+INSERT INTO `cliente` VALUES ('0201068772','Hola','hola@espe.edu.ec','7777777777','San Rafael'),('1719851527','Tipán','hola@espe.edu.ec','9999999999','Sangoqui'),('1723653940','Juanito Alcachofa','asd@hotmail.com','0962597741','San Rafael'),('1723653976','Dylan Tipán','djtipan2@espe.edu.ec','0962596640','Quitumbe'),('9999999999','CONSUMIDOR FINAL',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-09 10:16:56
+-- Dump completed on 2023-08-21 19:02:59

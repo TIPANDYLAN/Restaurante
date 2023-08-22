@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `restaurant` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `restaurant`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: restaurant
@@ -16,31 +18,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `entrega`
+-- Table structure for table `empleado`
 --
 
-DROP TABLE IF EXISTS `entrega`;
+DROP TABLE IF EXISTS `empleado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `entrega` (
-  `ID_EN` int NOT NULL,
-  `ID_PR` int DEFAULT NULL,
-  `FECHA_EN` date NOT NULL,
-  `TIPO_EN` text NOT NULL,
-  `CANTIDAD_EN` float NOT NULL,
-  PRIMARY KEY (`ID_EN`),
-  KEY `FK_REALIZA` (`ID_PR`),
-  CONSTRAINT `FK_REALIZA` FOREIGN KEY (`ID_PR`) REFERENCES `proveedor` (`ID_PR`) ON DELETE RESTRICT ON UPDATE RESTRICT
+CREATE TABLE `empleado` (
+  `ID_EMP` int NOT NULL,
+  `USUARIO_EMP` longtext,
+  `CONTRASENA_EMP` longtext,
+  `CARGO_EMP` longtext,
+  PRIMARY KEY (`ID_EMP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `entrega`
+-- Dumping data for table `empleado`
 --
 
-LOCK TABLES `entrega` WRITE;
-/*!40000 ALTER TABLE `entrega` DISABLE KEYS */;
-/*!40000 ALTER TABLE `entrega` ENABLE KEYS */;
+LOCK TABLES `empleado` WRITE;
+/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+INSERT INTO `empleado` VALUES (1,'admin','admin','admin'),(2,'chef','chef','chef'),(3,'caja','caja','caja'),(4,'mesero','mesero','mesero');
+/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-09 10:16:55
+-- Dump completed on 2023-08-21 19:02:59

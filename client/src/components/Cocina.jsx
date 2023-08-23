@@ -87,7 +87,7 @@ const revistarEstado = ()=>{
   const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
 
   const ordenesFiltradas = ordenesConPlatosAgrupados.filter(
-    (orden) => orden.ESTADO_OR !== 'Cancelada' && orden.ESTADO_OR !== 'Entregado'
+    (orden) => orden.ESTADO_OR !== 'Cancelada' && orden.ESTADO_OR !== 'Entregado' && orden.ESTADO_OR !== 'Facturada'
   );
   
   const handleEstadoClick = async (idOrden, nuevoEstado) => {

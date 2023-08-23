@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUtensils } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import "../styles/Caja.css";
 
@@ -49,10 +47,10 @@ const Caja = () => {
           NOMBRE_PLATO_PEDIDO: orden.NOMBRE_PLATO_PEDIDO,
           CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS,
           ESTADO_PLATO: orden.ESTADO_PLATO,
-          PRECIO_PE: parseFloat(orden.PRECIO_PE)
+          PRECIO_PE: parseFloat(orden.PRECIO_PLATOS),
         });
       }
-    });
+    }); 
 
     return Object.values(ordenesConPlatos);
   };
@@ -72,16 +70,17 @@ const Caja = () => {
 
   const calcularTotal = (orden) => {
     const totalPlatos = orden.platos.reduce(
-      (total, plato) => total + plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS,
+      (total, plato) => total + parseFloat(plato.PRECIO_PE),
       0
-    );
-
+    );    
+  
     const descuento = orden.aplicarDescuento ? (orden.descuento / 100) : 0;
     const totalSinDescuento = totalPlatos + (totalPlatos * 0.12); // Total con IVA
     const totalConDescuento = totalSinDescuento - (totalSinDescuento * descuento);
-
-    return totalConDescuento.toFixed(2);
-  };
+  
+    console.log("Calcular total:" ,totalPlatos);
+    return parseFloat(totalConDescuento);
+  };  
 
 
   const crearYGuardarFactura = async (orden) => {
@@ -165,19 +164,19 @@ const Caja = () => {
         <tr>
           <td>${plato.NOMBRE_PLATO_PEDIDO}</td>
           <td>${plato.CANTIDAD_PLATOS_PEDIDOS}</td>
-          <td>$${plato.PRECIO_PE.toFixed(2)}</td>
-          <td>$${(plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS).toFixed(2)}</td>
+          <td>$${parseFloat(plato.PRECIO_PE)}</td>
+          <td>$${parseFloat(plato.PRECIO_PE)}</td>
         </tr>
       `);
     });
     facturaWindow.document.write('</table>');
-    const totalSinIVA = orden.platos.reduce((sum, plato) => sum + (plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS), 0);
-    const iva = totalSinIVA * 0.12;
-    const totalConIVA = totalSinIVA + iva;
-    const descuentoAmount = orden.aplicarDescuento ? totalConIVA * (orden.descuento / 100) : 0;
-    facturaWindow.document.write('<p class="text-right">Total (sin IVA): $' + totalSinIVA.toFixed(2) + '</p>');
-    facturaWindow.document.write('<p class="text-right">IVA (12%): $' + iva.toFixed(2) + '</p>');
-    facturaWindow.document.write('<p class="text-right">Descuento: $' + descuentoAmount.toFixed(2) + '</p>');
+    const totalSinIVA = (orden.platos.reduce((sum, plato) => sum + parseFloat(plato.PRECIO_PE), 0.00)).toFixed(2);
+    const iva = (totalSinIVA * 0.12).toFixed(2);
+    const totalConIVA = parseFloat(totalSinIVA + iva).toFixed(2);
+    const descuentoAmount = parseFloat(orden.aplicarDescuento ? totalConIVA * (orden.descuento / 100) : 0).toFixed(2);
+    facturaWindow.document.write('<p class="text-right">Total (sin IVA): $' + parseFloat(totalSinIVA).toFixed(2) + '</p>');
+    facturaWindow.document.write('<p class="text-right">IVA (12%): $' + iva + '</p>');
+    facturaWindow.document.write('<p class="text-right">Descuento: $' + descuentoAmount + '</p>');
     facturaWindow.document.write('<p class="text-right">Total (con IVA): $' + (totalConIVA - descuentoAmount).toFixed(2) + '</p>');
     facturaWindow.document.write('</body></html>');
     facturaWindow.document.close();
@@ -220,7 +219,7 @@ const Caja = () => {
                 <div key={plato.ID_PLATO_PEDIDO} className="PlatoOrden">
                   <p className="nombrePlato">{plato.NOMBRE_PLATO_PEDIDO}</p>
                   <p className="cantidadPlato">x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
-                  <p className="precioPlato">${(plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS).toFixed(2)}</p>
+                  <p className="precioPlato">${parseFloat(plato.PRECIO_PE).toFixed(2)}</p>
                 </div>
               ))}
             </div>
@@ -244,7 +243,7 @@ const Caja = () => {
               Aplicar descuento
             </label>
             <p className="precioTotal">
-              Total: ${(1 - (descuentosPorOrden[orden.ID_OR] || 0) / 100) * orden.platos.reduce((sum, plato) => sum + (plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS), 0).toFixed(2)}
+              Total: ${((1 - (descuentosPorOrden[orden.ID_OR] || 0) / 100) * orden.platos.reduce((sum, plato) => sum + parseFloat(plato.PRECIO_PE), 0)).toFixed(2)}
             </p>
             <div className="botonFactura">
               <button className="button-fac" onClick={() => printFactura(orden)}>

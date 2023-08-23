@@ -253,7 +253,7 @@ const Orden = () => {
               PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + parseFloat(settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)).toFixed(2),
               PARA_LLEVAR: platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR,
               CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1,
-              ESTADO_PE: !platoEnOrdenActual.REDUCIR_PLATOS ? "Terminado" : "Por hacer",
+              ESTADO_PE: !platoEnOrdenActual.REDUCIR_PLATOS ? "Terminado" : "Por Hacer",
             };
 
             updateOrden = {
@@ -748,7 +748,7 @@ const Orden = () => {
           CANTXPLA_PE: nuevoPlato.CANTIDAD_PLATOS_PEDIDOS,
           ESTADO_PE: nuevoPlato.ESTADO_PLATO,
           CANTREALIZADA_PE: nuevoPlato.PLATOS_REALIZADOS,
-          PARA_LLEVAR: nuevoPlato.PARA_LLEVAR,
+          PARALLEVAR_PE: nuevoPlato.PARA_LLEVAR,
         }
       }
       axios.post(`http://localhost:4000/api/pedidosNuevos`, updateData)

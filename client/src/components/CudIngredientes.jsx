@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "../styles/CrudIngredientes.css"
 
 function CrudIngredientes() {
   const [ingredientes, setIngredientes] = useState([]);
@@ -81,66 +82,46 @@ function CrudIngredientes() {
   };
 
   return (
-    <div className="ingredientes-container">
-      <button className="AgregarPlato" onClick={toggleFormulario}>
-        Agregar ingrediente
-      </button>
-      {mostrarFormulario && (
-        <div className="crear-editar-container">
-          <h2>Crear/Editar Ingrediente</h2>
-          <input
-            className="input-field"
-            type="text"
-            placeholder="Nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-          <input
-            className="input-field"
-            type="text"
-            placeholder="Descripción"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-          />
-          <input
-            className="input-field"
-            type="text"
-            placeholder="Precio"
-            value={precio}
-            onChange={(e) => setPrecio(e.target.value)}
-          />
-          {editingId ? (
-            <button className="update-button" onClick={actualizarIngrediente}>
-              Actualizar
-            </button>
-          ) : (
-            <button className="create-button" onClick={crearIngrediente}>
-              Crear
-            </button>
-          )}
-          <button className="cancel-button" onClick={resetForm}>
-            Cancelar
-          </button>
-        </div>
-      )}
-
-      <div className="lista-ingredientes">
+    <div>
+      <h1>CRUD de Ingredientes</h1>
+      <div>
+        <h2>Crear/Editar Ingrediente</h2>
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Descripción"
+          value={descripcion}
+          onChange={(e) => setDescripcion(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Precio"
+          value={precio}
+          onChange={(e) => setPrecio(e.target.value)}
+        />
+        {editingId ? (
+          <button onClick={actualizarIngrediente}>Actualizar</button>
+        ) : (
+          <button onClick={crearIngrediente}>Crear</button>
+        )}
+        <button onClick={resetForm}>Cancelar</button>
+      </div>
+      <div>
         <h2>Lista de Ingredientes</h2>
         <ul>
           {ingredientes.map((ingrediente) => (
             <li key={ingrediente.ID_I}>
               {ingrediente.NOMBRE_I} - {ingrediente.DESCRIPCION_I} -{" "}
               {ingrediente.PRECIO_I}
-              <button
-                className="edit-button"
-                onClick={() => editarIngrediente(ingrediente.ID_I)}
-              >
+              <button onClick={() => editarIngrediente(ingrediente.ID_I)}>
                 Editar
               </button>
-              <button
-                className="delete-button"
-                onClick={() => eliminarIngrediente(ingrediente.ID_I)}
-              >
+              <button onClick={() => eliminarIngrediente(ingrediente.ID_I)}>
                 Eliminar
               </button>
             </li>

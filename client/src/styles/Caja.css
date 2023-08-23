@@ -35,7 +35,7 @@
   .button-fac {
 
     padding: 8px 16px;
-    background-color: #f9cc83;
+    background-color: #ec8a3a;
     color: white;
     border: none;
     border-radius: 4px;
@@ -58,8 +58,8 @@
 
   @media (max-width: 768px) {
     .OrdenCaja {
-      width: 100%; /* Ajusta el ancho para ocupar todo el espacio en pantallas pequeñas */
-      margin: 10px 0; /* Margen superior e inferior para separar las órdenes */
+      width: 100%; 
+      margin: 10px 0; 
     }
   
     .OrdenInfo h2 {
@@ -83,3 +83,42 @@
       padding: 10px; /* Reduce el padding en pantallas muy pequeñas */
     }
   }
+
+  .historial-container {
+    margin-top: 20px;
+    margin-left: 200px;
+    margin-bottom: 30px;
+
+  }
+  
+  .historial-heading {
+    font-size: 20px;
+    margin-bottom: 10px;
+
+  }
+  
+  .historial-table {
+    width: 80%;
+    border-collapse: collapse;
+    background-color: #f2f2f2;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .table-header {
+    background-color: #d3cfcd;
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .table-row {
+    border: 1px solid #ccc;
+  }
+  
+  .table-row td {
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  

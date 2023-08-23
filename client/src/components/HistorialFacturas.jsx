@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import "../styles/Caja.css";
 
 const HistorialFacturas = () => {
   const [facturas, setFacturas] = useState([]);
@@ -22,19 +23,19 @@ const HistorialFacturas = () => {
   };
 
   return (
-    <div>
-      <h2>Historial de Facturas</h2>
-      <table>
+    <div className="historial-container">
+      <h2 className="historial-heading">Historial de Facturas</h2>
+      <table className="historial-table">
         <thead>
           <tr>
-            <th>Fecha</th>
-            <th>Cliente</th>
-            <th>Total</th>
+            <th className="table-header">Fecha</th>
+            <th className="table-header">Cliente</th>
+            <th className="table-header">Total</th>
           </tr>
         </thead>
         <tbody>
           {facturas.map((factura) => (
-            <tr key={factura.ID_FACTURA}>
+            <tr key={factura.ID_FACTURA} className="table-row">
               <td>{factura.FECHA}</td>
               <td>{factura.NOMBRE_CL}</td>
               <td>${factura.TOTAL}</td>

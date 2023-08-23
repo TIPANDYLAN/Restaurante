@@ -1,19 +1,20 @@
 .ContainerCaja {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: flex-start;
-    padding: 20px;
-  }
+  /* Estilos para el contenedor principal */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
+}
   
-  .OrdenCaja {
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 10px;
-    width: 300px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.OrdenCaja {
+  /* Estilos para cada orden en el contenedor */
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
   
   .MesaOrden {
     font-size: 1.2rem;
@@ -53,4 +54,32 @@
 
   .button-fac:hover {
     background-color: #3cb300;
+  }
+
+  @media (max-width: 768px) {
+    .OrdenCaja {
+      width: 100%; /* Ajusta el ancho para ocupar todo el espacio en pantallas pequeñas */
+      margin: 10px 0; /* Margen superior e inferior para separar las órdenes */
+    }
+  
+    .OrdenInfo h2 {
+      text-align: center; /* Centra el título en pantallas pequeñas */
+    }
+  
+    .botonFactura {
+      align-items: center; /* Centra los botones verticalmente en pantallas pequeñas */
+      flex-direction: column; /* Cambia la dirección de los botones a columna en pantallas pequeñas */
+    }
+  
+    .button-fac {
+      margin-top: 10px; /* Espaciado entre los botones en pantallas pequeñas */
+      width: 100%; /* Ajusta el ancho de los botones para ocupar todo el espacio disponible */
+    }
+  }
+  
+  /* Media query para pantallas muy pequeñas */
+  @media (max-width: 480px) {
+    .OrdenCaja {
+      padding: 10px; /* Reduce el padding en pantallas muy pequeñas */
+    }
   }

@@ -162,3 +162,61 @@
   height: 100%;
   margin: 5;
 }
+@media (max-width: 768px) {
+  .Platos {
+    grid-template-columns: repeat(auto-fill, 100%); /* Cambiar a una sola columna */
+    justify-content: center; /* Centrar los elementos */
+    margin: 0; /* Eliminar el margen lateral */
+  }
+
+  .Plato {
+    grid-template-columns: 100%; /* El plato ocupa toda la fila */
+    margin: 10px 0; /* Espaciado vertical */
+    padding: 10px; /* Espaciado interno */
+  }
+
+  .Plato img {
+    grid-column: 1; /* La imagen ocupa toda la columna */
+    grid-row: 2; /* Ubicación de la imagen */
+    width: 100%; /* Ancho completo */
+    height: auto; /* Altura automática */
+    padding: 10px 0; /* Espaciado interior */
+  }
+
+  .Platos .Plato p {
+    font-size: 16px; /* Cambiar el tamaño de fuente para los textos en los li */
+  }
+
+  .Plato button {
+    font-size: 16px; /* Cambiar el tamaño de fuente para los botones */
+  }
+
+
+  .Editar {
+    padding: 10px; /* Espaciado interno */
+  }
+
+  .AgregarPlato {
+    width: 100%; /* Ancho completo */
+    padding: 10px; /* Espaciado interno */
+  }
+
+  /* Estilos para el formulario */
+  .SegundoModal form {
+    width: 100%; /* Ancho completo */
+  }
+
+  /* Estilos para el botón del formulario */
+  .SegundoModal form button {
+    grid-column: 1; /* El botón ocupa una columna */
+    padding: 10px; /* Espaciado interno */
+    font-size: 20px; /* Tamaño de fuente */
+  }
+
+  /* Estilos para la imagen del formulario */
+  .SegundoModal .imagenContainer img {
+    width: 100%; /* Ancho completo */
+    height: auto; /* Altura automática */
+  }
+  
+}

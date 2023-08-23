@@ -93,3 +93,40 @@
     display: flex;
     justify-content: space-between;
   }
+
+  /* Estilos generales */
+/* ... Tus estilos existentes ... */
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .ContainerCocina {
+    grid-template-columns: repeat(1, 1fr); /* Cambiar a una sola columna */
+  }
+
+  .OrdenCocina {
+    margin: 10px; /* Aumentar el margen para separar las órdenes */
+  }
+
+  .botonPlato {
+    flex-direction: column; /* Cambiar la dirección del flexbox */
+    align-items: center; /* Centrar contenido horizontalmente */
+  }
+
+  .botonPlato button {
+    margin: 5px 0; /* Espaciado entre los botones */
+  }
+
+  .DescripcionPlato {
+    padding: 10px; /* Aumentar el padding para mayor espacio */
+  }
+
+  .MesaOrden {
+    font-size: 20px; /* Reducir el tamaño del texto */
+    padding-bottom: 3px; /* Reducir el espaciado inferior */
+  }
+
+  .EstadoOrden {
+    font-size: 20px; /* Reducir el tamaño del texto */
+    margin: 10px auto; /* Alinear el texto al centro */
+  }
+}

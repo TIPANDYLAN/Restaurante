@@ -326,9 +326,40 @@
 }
 
 /* PLATOS  */
+.botoncito{
+  display: inline-block; /* Change display to inline-block */
+  margin-top:20px;
+  margin-left: 10px;
+  padding: 10px 20px;
+  height: 20%;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #30ac0e;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+.botoncito2{
+  display: inline-block; /* Change display to inline-block */
+  margin-top:20px;
+  margin-left: 10px;
+  padding: 10px 20px;
+  height: 20%;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ec532c;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
 
 
-/* Estilo para los botones */
 .AgregarPlato,
 .Plato button {
   padding: 10px 20px;
@@ -343,6 +374,7 @@
   font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
 
 }
+
 
 /* Estilo para el efecto hover en los botones */
 
@@ -585,7 +617,7 @@
   padding: 10px;
 }
 
-.loader-container {
+.Floader-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -669,4 +701,213 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.ingredientes-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.crear-editar-container {
+  width: 80%;
+  background-color: #f3a34d;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 3px rgba(159, 159, 159, 0.436);
+}
+
+.input-field {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.update-button,
+.create-button,
+.cancel-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #30ac0e;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-button:hover,
+.create-button:hover,
+.cancel-button:hover {
+  background-color: #dfa53b;
+}
+
+.lista-ingredientes {
+  width: 110%;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+}
+
+.edit-button,
+.delete-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #e6e6e6;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  background-color: #ccc;
+}
+
+.edit-button{
+  background-color: rgb(144, 144, 216);
+}
+.delete-button{
+  background-color: #dc354693;
+}
+
+@media (max-width: 768px) {
+  .crear-editar-container {
+    /* Ajusta los estilos para el formulario de crear/editar en pantallas pequeñas */
+    width: 100%;
+  }
+
+  /* Ajusta el tamaño de fuente de los campos de formulario en pantallas pequeñas */
+  .input-field {
+    font-size: 16px;
+  }
+
+  /* Ajusta el tamaño de fuente de los botones en pantallas pequeñas */
+  .create-button,
+  .update-button,
+  .cancel-button {
+    font-size: 14px;
+  }
+}
+
+/* Media query para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  /* Ajusta el tamaño de fuente del botón "Agregar ingrediente" en pantallas muy pequeñas */
+  .AgregarPlato {
+    font-size: 12px;
+  }
+}
+/* Estilos generales */
+/* ... Tus estilos existentes ... */
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .gridAbajo {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .gridAbajo .recipe-desco {
+    text-align: center;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .tipoOrden button {
+    margin-top: 20px;
+  }
+
+  .imagenContainer {
+    width: 100%;
+  }
+
+  .pizza-box {
+    flex: auto;
+    height: auto;
+  }
+
+  .platos-container,
+  .orden-container {
+    padding: 0 10px;
+  }
+
+  .platos-container img,
+  .orden-item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .orden-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .Floader-container,
+  .grid-orden {
+    margin: 0 5px;
+  }
+
+  .tipoOrden button {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Media query para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .tipoOrden button {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .gridAbajo .recipe-desco {
+    font-size: 20px;
+  }
+
+  .platos-container,
+  .orden-container {
+    padding: 0;
+  }
+
+  .platos-container h2,
+  .orden-container h2 {
+    font-size: 20px;
+  }
+
+  .platos-container img,
+  .orden-item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .orden-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .Floader-container,
+  .grid-orden {
+    margin: 0 5px;
+  }
 }

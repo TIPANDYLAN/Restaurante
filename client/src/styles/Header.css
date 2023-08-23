@@ -107,3 +107,73 @@
     color: white;
   }
   
+  @media (max-width: 768px) {
+    .Header {
+      background: url("../images/Logo.png") center / 200px no-repeat,
+        url("../images/HeaderBackground.jpg") center / 800px no-repeat;
+      height: 8rem;
+    }
+  
+    .Menu {
+      height: auto;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+    }
+  
+    .Menu .titulo {
+      margin: 0;
+      margin-bottom: 10px;
+      font-size: 24px;
+      text-align: center;
+    }
+  
+    .login {
+      margin: 10px 0;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .login .texto {
+      margin: 0;
+      font-size: 14px;
+    }
+  
+    .login img {
+      margin: 0;
+      transform: scale(1.4);
+    }
+  
+    .Usuario {
+      margin: 10px 0;
+      text-align: center;
+    }
+  
+    .Usuario p {
+      font-size: 14px;
+      margin: 0;
+    }
+  
+    .Busqueda {
+      margin: 10px 0;
+      text-align: center;
+    }
+  
+    .Busqueda button {
+      transform: none;
+      margin: 5px;
+    }
+  
+    .Busqueda button img {
+      margin-left: 0;
+    }
+  
+    .Menu .Buscar {
+      margin: 10px 0;
+      width: 90%;
+      padding: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+  }
+  

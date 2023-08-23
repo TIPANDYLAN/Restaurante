@@ -9,12 +9,13 @@ const CocinaCrud = () => {
 
 useEffect(() => {
   fetchOrdenes();
+  revistarEstado();
 }, []);
 
-useEffect(() => {
+const revistarEstado = ()=>{
   const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
   const ordenesFiltradas = ordenesConPlatosAgrupados.filter(
-    (orden) => orden.ESTADO_OR !== 'Cancelada' && orden.ESTADO_OR !== 'Entregado' && orden.ESTADO_OR !== 'Facturada',
+    (orden) => orden.ESTADO_OR !== 'Cancelada'  && orden.ESTADO_OR !== 'Facturada',
   );
 
   ordenesFiltradas.forEach((orden) => {
@@ -38,9 +39,8 @@ useEffect(() => {
       )
     );
   });
-}, [ordenes]);
 
-
+}
   // Función para agrupar los platos por orden
 
   const groupPlatosByOrden = (ordenes) => {

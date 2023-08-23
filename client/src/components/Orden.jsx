@@ -158,6 +158,7 @@ const Orden = () => {
 
   const handleCantidadPlato = (platoId, ordenId, estado) => {
     let updateData = {};
+    let updateOrden = {};
     const platoEnOrden = orden.find((item) => item.ID_PL === platoId);
     const platoEnOrdenActual = ordenActual.find((item) => item.ID_PLATO_PEDIDO === platoId);
     
@@ -178,6 +179,7 @@ const Orden = () => {
                   ...item,
                   PRECIO_PLATOS: item.PRECIO_PLATO * (item.CANTIDAD_PLATOS_PEDIDOS + 1),
                   CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS + 1,
+                  ESTADO_PLATO:"Por Hacer",
                   REDUCIR_PLATOS: false,
                 }
               : item
@@ -185,8 +187,13 @@ const Orden = () => {
         );
             updateData = {
               PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS + 1),
+              PARA_LLEVAR: platoEnOrdenActual.PARA_LLEVAR,
               CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS + 1,
+              ESTADO_PE:"Por Hacer",
             };
+            updateOrden = {
+              ESTADO_OR: "Por hacer"
+            }
             axios.put(`http://localhost:4000/api/pedidosCantidad/${platoId}/${ordenId}`, updateData)
           .then((response) => {
             console.log("Pedido updated successfully:", response.data);
@@ -196,7 +203,16 @@ const Orden = () => {
             console.error("Error updating pedido:", error);
             // Handle error here if needed
           });
-      }
+            axios.put(`http://localhost:4000/api/ordenesEstado/${ordenId}`, updateOrden)
+            .then((response) => {
+              console.log("Orden updated successfully:", response.data);
+              // You can also update the UI or state here if needed
+            })
+            .catch((error) => {
+              console.error("Error updating pedido:", error);
+              // Handle error here if needed
+            });
+      }   
     } else {
       if (platoEnOrden) {
         if (platoEnOrden.cantidad > 1) {
@@ -227,6 +243,7 @@ const Orden = () => {
                     PRECIO_PLATOS: item.PRECIO_PLATO * (item.CANTIDAD_PLATOS_PEDIDOS - 1) + (settings[0].PRECIO_EXTRA_SE * (item.PARA_LLEVAR - 1 === item.CANTIDAD_PLATOS_PEDIDOS - 1 ? item.PARA_LLEVAR - 1 : item.PARA_LLEVAR)),
                     PARA_LLEVAR: item.PARA_LLEVAR - 1 === item.CANTIDAD_PLATOS_PEDIDOS - 1 ? item.PARA_LLEVAR - 1 : item.PARA_LLEVAR,
                     CANTIDAD_PLATOS_PEDIDOS: item.CANTIDAD_PLATOS_PEDIDOS - 1,
+                    ESTADO_PLATO: !item.REDUCIR_PLATOS ? "Terminado" : "Por Hacer",
                   }
                 : item
             )
@@ -235,7 +252,12 @@ const Orden = () => {
             PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + (settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)),
             PARA_LLEVAR: platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR,
             CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1,
+            ESTADO_PE: !platoEnOrdenActual.REDUCIR_PLATOS ? "Terminado" : "Por hacer",
           };
+
+          updateOrden = {
+            ESTADO_OR: !platoEnOrdenActual.REDUCIR_PLATOS ? "" : platoEnOrdenActual.ESTADO_OR
+          }
           axios.put(`http://localhost:4000/api/pedidosCantidad/${platoId}/${ordenId}`, updateData)
           .then((response) => {
             console.log("Pedido updated successfully:", response.data);
@@ -893,10 +915,12 @@ const Orden = () => {
                           ▼
                         </button>
                         </div>
+                        {
                         <div className="Domicilio">
                           <p>Para llevar:</p>
                           <ComboBox mode='domicilio' opcionActual={plato.PARA_LLEVAR} cantidadPlatos={plato.CANTIDAD_PLATOS_PEDIDOS} idOrden={plato.ID_OR} idPlato={plato.ID_PLATO_PEDIDO} initialText={"0"} onSelectChange={handleDomicilioSelection}/>
                         </div>
+                        }
                       </div>
                     ))}
                   </div>
@@ -1071,7 +1095,7 @@ const Orden = () => {
 
         </div>
       </Modal>
-      <ComboBox mode='ingredientes' initialText={"Seleccione una mesa"}/>
+      <ComboBox mode='ingredientes' initialText={"Seleccione un ingrediente"}/>
     </>
   );
 };

@@ -30,7 +30,8 @@ const Caja = () => {
           NOMBRE_PLATO_PEDIDO: orden.NOMBRE_PLATO_PEDIDO,
           CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS,
           ESTADO_PLATO: orden.ESTADO_PLATO,
-          PRECIO_PE: parseFloat(orden.PRECIO_PE)
+          PRECIO_PE: parseFloat(orden.PRECIO_PE),
+          PARA_LLEVAR: orden.PARA_LLEVAR,
         });
       }
     });
@@ -147,10 +148,17 @@ const Caja = () => {
             
             {/* Mostrar detalles de la orden y platos */}
             <div className="PlatosContainer">
+              <div className="PlatoOrden">
+                <p className="nombrePlato">Nombre:</p>
+                <p className="cantidadPlato">Aqui</p>
+                <p className="domicilio">Llevar</p>
+                <p className="precioPlato">Total:</p>
+              </div>
               {orden.platos.map((plato) => (
                 <div key={plato.ID_PLATO_PEDIDO} className="PlatoOrden">
                   <p className="nombrePlato">{plato.NOMBRE_PLATO_PEDIDO}</p>
-                  <p className="cantidadPlato">x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
+                  <p className="cantidadPlato">x{plato.CANTIDAD_PLATOS_PEDIDOS - plato.PARA_LLEVAR}</p>
+                  <p className="domicilio">x{plato.PARA_LLEVAR}</p>
                   <p className="precioPlato">${(plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS).toFixed(2)}</p>
                 </div>
               ))}

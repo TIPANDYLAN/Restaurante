@@ -19,10 +19,12 @@
     display: flex;
     align-items: center; /* Centrar contenido verticalmente */
     border-bottom: 1px solid rgba(128, 128, 128, 0.336);
+    justify-content: space-around;
   }
   
   .PlatoOrden .nombrePlato,
-  .PlatoOrden .cantidadPlato{
+  .PlatoOrden .cantidadPlato, 
+  .precioPlato, .domicilio{
     flex: 1; /* Distribuir espacio en partes iguales */
   }
   
@@ -79,9 +81,8 @@
     flex: 1;
   }
 
-  .cantidadPlato{
-    padding-left: 30px;
-    margin: 0 -50px 0 5px;
+  .cantidadPlato, .domicilio, .precioPlato{
+    text-align: center;
   }
 
 .platosRealizados{

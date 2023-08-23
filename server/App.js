@@ -525,10 +525,10 @@ app.get("/api/ordenescocina", (req, res) => {
 app.put("/api/pedidosCantidad/:idPlato/:idOrden", (req, res) => {
   const idPlato = req.params.idPlato;
   const idOrden = req.params.idOrden;
-  const { PRECIO_PE,PARA_LLEVAR ,CANTXPLA_PE } = req.body;
+  const { PRECIO_PE,PARA_LLEVAR ,CANTXPLA_PE ,ESTADO_PE } = req.body;
 
-  const updateQuery = "UPDATE PEDIDO SET PRECIO_PE = ?, PARALLEVAR_PE = ? ,CANTXPLA_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
-  connection.query(updateQuery, [PRECIO_PE, PARA_LLEVAR ,CANTXPLA_PE, idPlato, idOrden], (error, result) => {
+  const updateQuery = "UPDATE PEDIDO SET PRECIO_PE = ?, PARALLEVAR_PE = ? ,CANTXPLA_PE = ?, ESTADO_PE = ? WHERE ID_PL = ? AND ID_OR = ?";
+  connection.query(updateQuery, [PRECIO_PE, PARA_LLEVAR ,CANTXPLA_PE, ESTADO_PE,idPlato, idOrden], (error, result) => {
     if (error) {
       console.error("Error updating pedido:", error);
       res.sendStatus(500);
@@ -554,10 +554,11 @@ app.get("/api/ordenescocina/:idOrden", (req, res) => {
       P.ID_PL AS ID_PLATO_PEDIDO,
       P.NOMBRE_PL AS NOMBRE_PLATO_PEDIDO,
       P.PRECIO_PL AS PRECIO_PLATO,
+      P.CATEGORIA_PL AS CATEGORIA_PLATO,
       PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS,
       PE.ESTADO_PE AS ESTADO_PLATO,
       PE.CANTREALIZADA_PE AS PLATOS_REALIZADOS,
-      PE.PRECIO_PE AS PRECIO_PLATOS,
+      PE.PRECIO_PE AS PRECIO_PLATOS,  
       PE.PARALLEVAR_PE AS PARA_LLEVAR
     FROM ORDEN O
     JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
@@ -824,7 +825,8 @@ app.get("/api/factura", (req, res) => {
     P.NOMBRE_PL AS NOMBRE_PLATO_PEDIDO,
     P.PRECIO_PL AS PRECIO_PE,
     PE.CANTXPLA_PE AS CANTIDAD_PLATOS_PEDIDOS,
-    PE.ESTADO_PE AS ESTADO_PLATO
+    PE.ESTADO_PE AS ESTADO_PLATO,
+    PE.PARALLEVAR_PE AS PARA_LLEVAR
   FROM ORDEN O
   JOIN PEDIDO PE ON O.ID_OR = PE.ID_OR
   JOIN PLATO P ON PE.ID_PL = P.ID_PL

@@ -1,0 +1,118 @@
+/* CrudIngredientes.css */
+
+.crud-ingredientes-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.ingredient-form {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.ingredient-form h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.create-button,
+.update-button,
+.cancel-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.cancel-button {
+  background-color: #ccc;
+}
+
+.ingredient-list {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.ingredient-list h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.edit-button,
+.delete-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.AgregarPlatoI {
+    padding: 6px 20px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    background-color: #255d15;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    font-size: clamp(0.7em, 1.2vw, 1.3em);
+    font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+  }
+
+  .EliminarPlato {
+    padding: 6px 20px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    background-color: #7b2b27;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    font-size: clamp(0.7em, 1.2vw, 1.3em);
+    font-family: "Roboto Slab", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+  }

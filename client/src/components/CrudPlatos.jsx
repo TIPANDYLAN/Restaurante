@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
 import CudIngredientes from "./CudIngredientes";
+import ComboBox from "./ComboBox";
 import "../styles/Platos/CrudPlatos.css";
 import "../styles/Orden.css";
 
@@ -18,6 +19,8 @@ const CrudPlatos = () => {
   const [mostrar, setMostrar] = useState(false);
   const [mostrarSegundoModal, setMostrarSegundoModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedIngrediente, setSelectedIngrediente] = useState(null);
+
 
 
   useEffect(() => {
@@ -63,6 +66,7 @@ const CrudPlatos = () => {
       }
     });
   };
+  
   const handleActualizarPlato = (id) => {
     // Validar que al menos un campo esté lleno
     if (!nombre.trim() && !precio && !foto) {
@@ -103,9 +107,6 @@ const CrudPlatos = () => {
       setMostrar(false);
     }
   };
-  
-  
-
 
   const handleAgregarPlato = () => {
     // Crear un objeto FormData para enviar la imagen al servidor
@@ -115,21 +116,53 @@ const CrudPlatos = () => {
     formData.append("Categoria", categoria);
     formData.append("Estado", estado);
     formData.append("Foto", foto);
-
-    // Hacer la solicitud POST a la API para crear un nuevo plato
+  
     axios
       .post("http://localhost:4000/api/platos", formData)
       .then((response) => {
-
         console.log("Plato creado exitosamente");
-        window.location.reload();
-        // Actualizar la lista de platos después de crear uno nuevo
         setPlatos([...platos, response.data]);
+  
+        const nuevoIdPlato = response.data.ID_PL;
+  
+        const nombreIngredienteSeleccionado = selectedIngrediente;
+  
+        axios
+          .get(`http://localhost:4000/ingredientes/nombre/${nombreIngredienteSeleccionado}`)
+          .then((response) => {
+            const idIngredienteSeleccionado = response.data.id;
+  
+            const descripcion = "Descripción predeterminada";
+            const nombreReceta = response.data.NOMBRE_PL;
+  
+            const nuevaReceta = {
+              id_i: idIngredienteSeleccionado,
+              id_pl: nuevoIdPlato,
+              peso_re: 100,
+              descripcion_re: descripcion,
+              nombre_re: nombre,
+            };
+  
+            axios
+              .post("http://localhost:4000/recetas", nuevaReceta)
+              .then(() => {
+                console.log("Receta creada exitosamente");
+              })
+              .catch((error) => {
+                console.error("Error al crear la receta:", error);
+              });
+  
+            handleCerrarSegundoModal();
+          })
+          .catch((error) => {
+            console.error("Error al obtener el ID del ingrediente:", error);
+          });
       })
       .catch((error) => {
         console.error("Error al crear el plato:", error);
       });
   };
+  
 
   const handleEditarPlato = (plato) => {
     setPlatoSeleccionado(plato);
@@ -284,6 +317,14 @@ const CrudPlatos = () => {
                 <label>Foto:</label>
                 <input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files[0])} />
 
+                <label>Ingrediente:</label>
+                <ComboBox
+                  mode="ingredientes"
+                  onSelectChange={(value) => {
+                    setSelectedIngrediente(value);
+                  }}
+                />
+                
                 <button type="button" onClick={handleAgregarPlato}>
                   Agregar Plato
                 </button>

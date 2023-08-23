@@ -30,7 +30,7 @@ const fileUpload = multer({
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
+  password: "root",
   database: "Restaurant",
 });
 
@@ -125,8 +125,119 @@ app.delete("/ingredientes/:id", (req, res) => {
     }
   });
 });
+
+app.get("/ingredientes/nombre/:nombre", (req, res) => {
+  const { nombre } = req.params;
+  const query = "SELECT ID_I FROM INGREDIENTES WHERE NOMBRE_I = ?";
+
+  connection.query(query, [nombre], (error, results) => {
+    if (error) {
+      res
+        .status(500)
+        .json({ error: "Error al obtener el ID del ingrediente." });
+    } else {
+      if (results.length > 0) {
+        const idIngrediente = results[0].ID_I;
+        res.status(200).json({ id: idIngrediente });
+      } else {
+        res.status(404).json({ error: "Ingrediente no encontrado." });
+      }
+    }
+  });
+});
+
+//================================================================
+//RECETA
 //================================================================
 
+// Crear una nueva receta
+app.post("/recetas", (req, res) => {
+  const { id_i, id_pl, peso_re, descripcion_re, nombre_re } = req.body;
+
+  const query = "INSERT INTO RECETA (ID_I, ID_PL, PESO_RE, DESCRIPCION_RE, NOMBRE_RE) VALUES (?, ?, ?, ?, ?)";
+  
+  connection.query(query, [id_i, id_pl, peso_re, descripcion_re, nombre_re], (error, results) => {
+    if (error) {
+      console.error("Error al crear la receta:", error);
+      res.status(500).json({ error: "Error al crear la receta." });
+    } else {
+      console.log("Receta creada exitosamente.");
+      res.status(201).json({ message: "Receta creada exitosamente." });
+    }
+  });
+});
+
+//Leer todas las recetas
+app.get("/recetas", (req, res) => {
+  const query = "SELECT * FROM RECETA";
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Error al obtener las recetas:", error);
+      res.status(500).json({ error: "Error al obtener las recetas." });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
+// Leer una receta por ID
+app.get("/recetas/:id", (req, res) => {
+  const recetaId = req.params.id;
+  const query = "SELECT * FROM RECETA WHERE ID_RE = ?";
+  
+  connection.query(query, [recetaId], (error, results) => {
+    if (error) {
+      console.error("Error al obtener la receta:", error);
+      res.status(500).json({ error: "Error al obtener la receta." });
+    } else {
+      if (results.length === 0) {
+        res.status(404).json({ message: "Receta no encontrada." });
+      } else {
+        res.status(200).json(results[0]);
+      }
+    }
+  });
+});
+
+// Actualizar una receta por ID
+app.put("/recetas/:id", (req, res) => {
+  const recetaId = req.params.id;
+  const { id_i, id_pl, peso_re, descripcion_re, nombre_re } = req.body;
+
+  const query = "UPDATE RECETA SET ID_I = ?, ID_PL = ?, PESO_RE = ?, DESCRIPCION_RE = ?, NOMBRE_RE = ? WHERE ID_RE = ?";
+  
+  connection.query(query, [id_i, id_pl, peso_re, descripcion_re, nombre_re, recetaId], (error, results) => {
+    if (error) {
+      console.error("Error al actualizar la receta:", error);
+      res.status(500).json({ error: "Error al actualizar la receta." });
+    } else {
+      console.log("Receta actualizada exitosamente.");
+      res.status(200).json({ message: "Receta actualizada exitosamente." });
+    }
+  });
+});
+
+
+// Eliminar una receta por ID
+app.delete("/recetas/:id", (req, res) => {
+  const recetaId = req.params.id;
+  const query = "DELETE FROM RECETA WHERE ID_RE = ?";
+  
+  connection.query(query, [recetaId], (error, results) => {
+    if (error) {
+      console.error("Error al eliminar la receta:", error);
+      res.status(500).json({ error: "Error al eliminar la receta." });
+    } else {
+      console.log("Receta eliminada exitosamente.");
+      res.status(200).json({ message: "Receta eliminada exitosamente." });
+    }
+  });
+});
+
+
+
+//================================================================
 
 
 // Obtener todos los platos

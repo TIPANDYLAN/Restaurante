@@ -81,18 +81,21 @@ function CrudIngredientes() {
       <div>
         <h2>Agregar | Editar</h2>
         <input
+          className="input-field"
           type="text"
           placeholder="Nombre"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
         />
         <input
+          className="input-field"
           type="text"
           placeholder="Descripción"
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
         />
         <input
+          className="input-field"
           type="text"
           placeholder="Precio"
           value={precio}

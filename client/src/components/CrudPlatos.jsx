@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "./Modal";
+import CudIngredientes from "./CudIngredientes";
 import "../styles/Platos/CrudPlatos.css";
 import "../styles/Orden.css";
 
@@ -187,6 +188,8 @@ const CrudPlatos = () => {
       {isLoading ? (
       <div className="loading-screen">Cargando...</div>
     ) : (<>
+
+      <CudIngredientes/>
       <button className="AgregarPlato" onClick={() => setMostrarSegundoModal(true)}>Agregar Nuevo Plato</button>
       <h2>Platos disponibles:</h2>
       <ul>

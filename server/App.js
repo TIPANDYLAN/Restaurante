@@ -946,3 +946,87 @@ app.get("/api/ingredientes", (req, res) => {
     res.send(rows);
   });
 });
+
+
+
+// Crear una nueva factura
+app.post("/api/factura", (req, res) => {
+  const {
+    ID_ORDEN,
+    CEDULA_CL,
+    NOMBRE_CL,
+    CORREO_CL,
+    TELEFONO_CL,
+    DIRECCION_CL,
+    TOTAL,
+    FECHA
+  } = req.body;
+
+  const query =
+    "INSERT INTO factura (ID_ORDEN, CEDULA_CL, NOMBRE_CL, CORREO_CL, TELEFONO_CL, DIRECCION_CL, TOTAL, FECHA) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+  connection.query(
+    query,
+    [
+      ID_ORDEN,
+      CEDULA_CL,
+      NOMBRE_CL,
+      CORREO_CL,
+      TELEFONO_CL,
+      DIRECCION_CL,
+      TOTAL,
+      FECHA
+    ],
+    (error, result) => {
+      if (error) {
+        console.error("Error al crear la factura:", error);
+        res.sendStatus(500);
+      } else {
+        console.log("Factura creada exitosamente");
+        res.json({
+          ID_FACTURA: result.insertId,
+          ID_ORDEN,
+          CEDULA_CL,
+          NOMBRE_CL,
+          CORREO_CL,
+          TELEFONO_CL,
+          DIRECCION_CL,
+          TOTAL,
+          FECHA
+        });
+      }
+    }
+  );
+});
+
+
+// Obtener historial de facturas
+app.get("/api/factura/historial", (req, res) => {
+  const query = "SELECT * FROM FACTURA";
+
+  connection.query(query, (error, rows) => {
+    if (error) {
+      console.error("Error al obtener el historial de facturas:", error);
+      res.sendStatus(500);
+    } else {
+      res.send(rows);
+    }
+  });
+});
+
+// Ejemplo de una nueva ruta para cambiar el estado a facturado
+app.put("/api/orden/:id/facturado", (req, res) => {
+  const orderId = req.params.id;
+
+  const query = "UPDATE ORDEN SET ESTADO_OR = 'Facturado' WHERE ID_OR = ?";
+
+  connection.query(query, [orderId], (error, result) => {
+    if (error) {
+      console.error("Error al cambiar el estado a facturado:", error);
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+

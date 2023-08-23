@@ -5,13 +5,30 @@ import axios from 'axios';
 import "../styles/Caja.css";
 
 import Logo from "../images/Logo.png";
+import HistorialFacturas from './HistorialFacturas'; // Importa el componente
 
 const Caja = () => {
   const [ordenes, setOrdenes] = useState([]);
+  const [descuentosPorOrden, setDescuentosPorOrden] = useState({});
+  const [aplicarDescuentoPorOrden, setAplicarDescuentoPorOrden] = useState({});
+  const [ordenesFacturadas, setOrdenesFacturadas] = useState([]);
 
   useEffect(() => {
     fetchOrdenes();
   }, []);
+
+  const cambiarEstadoFacturado = async (ordenId) => {
+    try {
+      // Lógica para cambiar el estado a "facturado" en la base de datos
+      await axios.put(`http://localhost:4000/api/orden/${ordenId}/facturado`);
+      setOrdenesFacturadas((prevOrdenesFacturadas) => [...prevOrdenesFacturadas, ordenId]);
+    } catch (error) {
+      console.error('Error al cambiar el estado a facturado:', error);
+    }
+  };
+
+
+
 
   const groupPlatosByOrden = (ordenes) => {
     const ordenesConPlatos = {};
@@ -20,7 +37,9 @@ const Caja = () => {
       if (!ordenesConPlatos[orden.ID_OR]) {
         ordenesConPlatos[orden.ID_OR] = {
           ...orden,
-          platos: []
+          platos: [],
+          descuento: descuentosPorOrden[orden.ID_OR] || 0,
+          aplicarDescuento: aplicarDescuentoPorOrden[orden.ID_OR] || false,
         };
       }
 
@@ -30,8 +49,7 @@ const Caja = () => {
           NOMBRE_PLATO_PEDIDO: orden.NOMBRE_PLATO_PEDIDO,
           CANTIDAD_PLATOS_PEDIDOS: orden.CANTIDAD_PLATOS_PEDIDOS,
           ESTADO_PLATO: orden.ESTADO_PLATO,
-          PRECIO_PE: parseFloat(orden.PRECIO_PE),
-          PARA_LLEVAR: orden.PARA_LLEVAR,
+          PRECIO_PE: parseFloat(orden.PRECIO_PE)
         });
       }
     });
@@ -52,11 +70,42 @@ const Caja = () => {
     }
   };
 
-  const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
+  const calcularTotal = (orden) => {
+    const totalPlatos = orden.platos.reduce(
+      (total, plato) => total + plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS,
+      0
+    );
 
-  const ordenesFiltradas = ordenesConPlatosAgrupados.filter(
-    (orden) => orden.ESTADO_OR === 'Entregado'
-  );
+    const descuento = orden.aplicarDescuento ? (orden.descuento / 100) : 0;
+    const totalSinDescuento = totalPlatos + (totalPlatos * 0.12); // Total con IVA
+    const totalConDescuento = totalSinDescuento - (totalSinDescuento * descuento);
+
+    return totalConDescuento.toFixed(2);
+  };
+
+
+  const crearYGuardarFactura = async (orden) => {
+    try {
+      const nuevaFactura = {
+        CEDULA_CL: orden.CEDULA_CL,
+        NOMBRE_CL: orden.NOMBRE_CL,
+        CORREO_CL: orden.CORREO_CL,
+        TELEFONO_CL: orden.TELEFONO_CL,
+        DIRECCION_CL: orden.DIRECCION_CL,
+        TOTAL: calcularTotal(orden),
+        FECHA: new Date().toISOString().split('T')[0],
+      };
+
+      const response = await axios.post('http://localhost:4000/api/factura', nuevaFactura);
+
+      console.log('Factura creada y guardada:', response.data);
+
+      // Marcar la orden como facturada
+      setOrdenesFacturadas((prevOrdenesFacturadas) => [...prevOrdenesFacturadas, orden.ID_OR]);
+    } catch (error) {
+      console.error('Error al crear y guardar la factura:', error);
+    }
+  };
 
   const printFactura = (orden) => {
     const facturaWindow = window.open('', '_blank');
@@ -125,55 +174,92 @@ const Caja = () => {
     const totalSinIVA = orden.platos.reduce((sum, plato) => sum + (plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS), 0);
     const iva = totalSinIVA * 0.12;
     const totalConIVA = totalSinIVA + iva;
+    const descuentoAmount = orden.aplicarDescuento ? totalConIVA * (orden.descuento / 100) : 0;
     facturaWindow.document.write('<p class="text-right">Total (sin IVA): $' + totalSinIVA.toFixed(2) + '</p>');
     facturaWindow.document.write('<p class="text-right">IVA (12%): $' + iva.toFixed(2) + '</p>');
-    facturaWindow.document.write('<p class="text-right">Total (con IVA): $' + totalConIVA.toFixed(2) + '</p>');
+    facturaWindow.document.write('<p class="text-right">Descuento: $' + descuentoAmount.toFixed(2) + '</p>');
+    facturaWindow.document.write('<p class="text-right">Total (con IVA): $' + (totalConIVA - descuentoAmount).toFixed(2) + '</p>');
     facturaWindow.document.write('</body></html>');
     facturaWindow.document.close();
     facturaWindow.print();
   };
-  
+
+  const handleDescuentoChange = (ordenId, newDescuento) => {
+    setDescuentosPorOrden((prevDescuentos) => ({
+      ...prevDescuentos,
+      [ordenId]: newDescuento,
+    }));
+  };
+
+  const handleAplicarDescuentoChange = (ordenId) => {
+    setAplicarDescuentoPorOrden((prevAplicarDescuento) => ({
+      ...prevAplicarDescuento,
+      [ordenId]: !prevAplicarDescuento[ordenId],
+    }));
+  };
+
+  const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
+
+  const ordenesFiltradas = ordenesConPlatosAgrupados.filter(
+    (orden) => orden.ESTADO_OR === 'Entregado' && !ordenesFacturadas.includes(orden.ID_OR)
+  );
+
   return (
     <>
       <h2 style={{ marginLeft: "1rem" }}>Ordenes a facturar</h2>
       <div className="ContainerCocina">
         {ordenesFiltradas.map((orden) => (
           <div key={orden.ID_OR} className="OrdenCocina">
-            {/* Mostrar número de orden y cliente */}
             <div className="OrdenInfo">
               <h2>Mesa {orden.NMESA_OR}</h2>
               <p>Número de orden: {orden.ID_OR}</p>
               <p>Cliente: {orden.NOMBRE_CL}</p>
             </div>
-            
-            {/* Mostrar detalles de la orden y platos */}
             <div className="PlatosContainer">
-              <div className="PlatoOrden">
-                <p className="nombrePlato">Nombre:</p>
-                <p className="cantidadPlato">Aqui</p>
-                <p className="domicilio">Llevar</p>
-                <p className="precioPlato">Total:</p>
-              </div>
               {orden.platos.map((plato) => (
                 <div key={plato.ID_PLATO_PEDIDO} className="PlatoOrden">
                   <p className="nombrePlato">{plato.NOMBRE_PLATO_PEDIDO}</p>
-                  <p className="cantidadPlato">x{plato.CANTIDAD_PLATOS_PEDIDOS - plato.PARA_LLEVAR}</p>
-                  <p className="domicilio">x{plato.PARA_LLEVAR}</p>
+                  <p className="cantidadPlato">x{plato.CANTIDAD_PLATOS_PEDIDOS}</p>
                   <p className="precioPlato">${(plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS).toFixed(2)}</p>
                 </div>
               ))}
             </div>
-            
-            {/* Mostrar precio total */}
-            <p className="precioTotal">Total: ${orden.platos.reduce((sum, plato) => sum + (plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS), 0).toFixed(2)}</p>
-            
-            {/* Botón de impresión */}
+            <div className="descuentoContainer">
+              <label htmlFor={`descuento_${orden.ID_OR}`}>Descuento (%)</label>
+              <input
+                type="number"
+                id={`descuento_${orden.ID_OR}`}
+                name={`descuento_${orden.ID_OR}`}
+                value={descuentosPorOrden[orden.ID_OR] || ""}
+                onChange={(event) => handleDescuentoChange(orden.ID_OR, parseFloat(event.target.value))}
+                disabled={!orden.aplicarDescuento}
+              />
+            </div>
+            <label>
+              <input
+                type="checkbox"
+                checked={orden.aplicarDescuento}
+                onChange={() => handleAplicarDescuentoChange(orden.ID_OR)}
+              />
+              Aplicar descuento
+            </label>
+            <p className="precioTotal">
+              Total: ${(1 - (descuentosPorOrden[orden.ID_OR] || 0) / 100) * orden.platos.reduce((sum, plato) => sum + (plato.PRECIO_PE * plato.CANTIDAD_PLATOS_PEDIDOS), 0).toFixed(2)}
+            </p>
             <div className="botonFactura">
-              <button className="button-fac"onClick={() => printFactura(orden)}>Imprimir Factura</button>
+              <button className="button-fac" onClick={() => printFactura(orden)}>
+                Imprimir Factura
+              </button>
+              {!ordenesFacturadas.includes(orden.ID_OR) && (
+                <button className="button-fac" onClick={() => cambiarEstadoFacturado(orden.ID_OR)}>
+                  Finalizar
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
+      <HistorialFacturas />
     </>
   );
 };

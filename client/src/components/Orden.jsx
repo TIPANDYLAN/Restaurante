@@ -136,12 +136,11 @@ const Orden = () => {
 
       // Verificar si el plato ya está en la orden
       const platoEnOrden = orden.find((item) => item.ID_PL === platoId);
-      if (clienteSubido) {
         if (platoEnOrden) {
           setOrden((prevOrden) =>
             prevOrden.map((item) =>
               item.ID_PL === platoId
-                ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL + (settings[0].PRECIO_EXTRA_SE * item.aDomicilio) }
+                ? { ...item, cantidad: item.cantidad + 1, total: (item.cantidad + 1) * item.PRECIO_PL + parseFloat(settings[0].PRECIO_EXTRA_SE * item.aDomicilio).toFixed(2) }
                 : item
             )
           );
@@ -150,7 +149,7 @@ const Orden = () => {
             ...prevOrden,
             { ...platoSeleccionado, cantidad: 1, total: platoSeleccionado.PRECIO_PL },
           ]);
-        }
+        
       }
     }
   };
@@ -222,7 +221,7 @@ const Orden = () => {
                 ? {
                   ...item, cantidad: item.cantidad - 1,
                   aDomicilio: item.aDomicilio - 1 === item.cantidad - 1 ? item.aDomicilio - 1 : item.aDomicilio,
-                  total: (item.cantidad - 1) * item.PRECIO_PL + (settings[0].PRECIO_EXTRA_SE * (item.aDomicilio - 1 === item.cantidad - 1 ? item.aDomicilio - 1 : item.aDomicilio))
+                  total: (item.cantidad - 1) * item.PRECIO_PL + parseFloat(settings[0].PRECIO_EXTRA_SE * (item.aDomicilio - 1 === item.cantidad - 1 ? item.aDomicilio - 1 : item.aDomicilio)).toFixed(2)
                 }
                 : item
             )
@@ -251,7 +250,7 @@ const Orden = () => {
               )
             );
             updateData = {
-              PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + (settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)),
+              PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + parseFloat(settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)).toFixed(2),
               PARA_LLEVAR: platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR,
               CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1,
               ESTADO_PE: !platoEnOrdenActual.REDUCIR_PLATOS ? "Terminado" : "Por hacer",
@@ -709,7 +708,7 @@ const Orden = () => {
           ID_OR: platoEnOrden.ID_OR,
           PRECIO_PE: platoEnOrden.PRECIO_PLATO * (platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1) + (settings[0].PRECIO_EXTRA_SE * platoEnOrden.PARA_LLEVAR),
           CANTXPLA_PE: platoEnOrden.CANTIDAD_PLATOS_PEDIDOS + 1,
-          ESTADO_PE: "Por hacer",
+          ESTADO_PE: "Por Hacer",
           CANTREALIZADA_PE: platoEnOrden.PLATOS_REALIZADOS,
           PARA_LLEVAR: platoEnOrden.PARA_LLEVAR,
         }

@@ -251,7 +251,7 @@ const Caja = () => {
                 Imprimir Factura
               </button>
               {!ordenesFacturadas.includes(orden.ID_OR) && (
-                <button className="button-fac" onClick={() => cambiarEstadoFacturado(orden.ID_OR)}>
+                <button className="button-fac" onClick={() => {cambiarEstadoFacturado(orden.ID_OR); crearYGuardarFactura(orden)}}>
                   Finalizar
                 </button>
               )}
@@ -259,7 +259,7 @@ const Caja = () => {
           </div>
         ))}
       </div>
-      <HistorialFacturas />
+      <HistorialFacturas/>
     </>
   );
 };

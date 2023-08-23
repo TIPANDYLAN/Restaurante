@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 const Caja = ()=> {
 
     useEffect(() => {
-        document.title = 'Cocina - Kandela';
+        document.title = 'Facturación - Kandela';
       }, []);
 
     return(

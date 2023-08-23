@@ -18,27 +18,29 @@ USE `restaurant`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `proveedor`
+-- Table structure for table `empleado`
 --
 
-DROP TABLE IF EXISTS `proveedor`;
+DROP TABLE IF EXISTS `empleado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `proveedor` (
-  `ID_PR` int NOT NULL,
-  `NOMBRE_PR` text NOT NULL,
-  `DESCRIPCION_I` text NOT NULL,
-  PRIMARY KEY (`ID_PR`)
+CREATE TABLE `empleado` (
+  `ID_EMP` int NOT NULL,
+  `USUARIO_EMP` longtext,
+  `CONTRASENA_EMP` longtext,
+  `CARGO_EMP` longtext,
+  PRIMARY KEY (`ID_EMP`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `proveedor`
+-- Dumping data for table `empleado`
 --
 
-LOCK TABLES `proveedor` WRITE;
-/*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
-/*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
+LOCK TABLES `empleado` WRITE;
+/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+INSERT INTO `empleado` VALUES (1,'admin','admin','admin'),(2,'chef','chef','chef'),(3,'caja','caja','caja'),(4,'mesero','mesero','mesero');
+/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-21 19:02:59
+-- Dump completed on 2023-08-22 22:36:28

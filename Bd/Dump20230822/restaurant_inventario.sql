@@ -18,31 +18,32 @@ USE `restaurant`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `entrega`
+-- Table structure for table `inventario`
 --
 
-DROP TABLE IF EXISTS `entrega`;
+DROP TABLE IF EXISTS `inventario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `entrega` (
-  `ID_EN` int NOT NULL,
-  `ID_PR` int DEFAULT NULL,
-  `FECHA_EN` date NOT NULL,
-  `TIPO_EN` text NOT NULL,
-  `CANTIDAD_EN` float NOT NULL,
-  PRIMARY KEY (`ID_EN`),
-  KEY `FK_REALIZA` (`ID_PR`),
-  CONSTRAINT `FK_REALIZA` FOREIGN KEY (`ID_PR`) REFERENCES `proveedor` (`ID_PR`) ON DELETE RESTRICT ON UPDATE RESTRICT
+CREATE TABLE `inventario` (
+  `ID_INV` int NOT NULL,
+  `ID_EN` int DEFAULT NULL,
+  `ID_I` int DEFAULT NULL,
+  `TOTAL_INV` bigint NOT NULL,
+  PRIMARY KEY (`ID_INV`),
+  KEY `FK_LLENA` (`ID_EN`),
+  KEY `FK_PROVEEN` (`ID_I`),
+  CONSTRAINT `FK_LLENA` FOREIGN KEY (`ID_EN`) REFERENCES `entrega` (`ID_EN`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_PROVEEN` FOREIGN KEY (`ID_I`) REFERENCES `ingredientes` (`ID_I`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `entrega`
+-- Dumping data for table `inventario`
 --
 
-LOCK TABLES `entrega` WRITE;
-/*!40000 ALTER TABLE `entrega` DISABLE KEYS */;
-/*!40000 ALTER TABLE `entrega` ENABLE KEYS */;
+LOCK TABLES `inventario` WRITE;
+/*!40000 ALTER TABLE `inventario` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inventario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-21 19:02:59
+-- Dump completed on 2023-08-22 22:36:28

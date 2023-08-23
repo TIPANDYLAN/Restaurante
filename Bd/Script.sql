@@ -70,7 +70,7 @@ create table ENTREGA
 /*==============================================================*/
 create table INGREDIENTES
 (
-   ID_I                 int not null,
+   ID_I                 int auto_increment not null,
    NOMBRE_I             text not null,
    DESCRIPCION_I        text not null,
    PRECIO_I             float not null,
@@ -115,6 +115,7 @@ create table PEDIDO
    CANTXPLA_PE          numeric(50,0) not null,
    ESTADO_PE			varchar(20) not null,
    CANTREALIZADA_PE		bigint,
+   PARALLEVAR_PE		bigint,
    primary key (ID_PL, ID_OR)
 );
 
@@ -157,6 +158,17 @@ create table RECETA
    primary key (ID_RE)
 );
 
+/*==============================================================*/
+/* Table: SETTINGS                                              */
+/*==============================================================*/
+create table SETTINGS
+(
+	ID_SE				int not null,
+	PRECIO_EXTRA_SE		DECIMAL(20,2) not null,
+    DESCUENTOS_SE		boolean,
+    NUM_MESAS_SE		int,
+    primary key (ID_SE)
+);
 alter table INVENTARIO add constraint FK_PROVEEN foreign key (ID_I)
       references INGREDIENTES (ID_I) on delete restrict on update restrict;
 

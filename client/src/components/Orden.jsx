@@ -1100,7 +1100,6 @@ const Orden = () => {
 
         </div>
       </Modal>
-      <ComboBox mode='ingredientes' initialText={"Seleccione un ingrediente"} />
     </>
   );
 };

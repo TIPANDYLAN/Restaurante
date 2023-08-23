@@ -177,3 +177,12 @@
     }
   }
   
+  .login{
+    box-shadow: none;
+    text-decoration: none !important;
+  }
+
+  .login a{
+    text-decoration: none;
+    color: yellowgreen;
+  }

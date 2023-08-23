@@ -8,7 +8,6 @@ function CrudIngredientes() {
   const [descripcion, setDescripcion] = useState("");
   const [precio, setPrecio] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false); // Nuevo estado
 
   useEffect(() => {
     fetchIngredientes();
@@ -76,16 +75,11 @@ function CrudIngredientes() {
     setEditingId(null);
   };
 
-  const toggleFormulario = () => {
-    setMostrarFormulario(!mostrarFormulario);
-    resetForm(); // Resetear el formulario cuando se cambie la visibilidad
-  };
-
   return (
     <div>
-      <h1>CRUD de Ingredientes</h1>
+      <h1>INGREDIENTES</h1>
       <div>
-        <h2>Crear/Editar Ingrediente</h2>
+        <h2>Agregar | Editar</h2>
         <input
           type="text"
           placeholder="Nombre"
@@ -105,28 +99,39 @@ function CrudIngredientes() {
           onChange={(e) => setPrecio(e.target.value)}
         />
         {editingId ? (
-          <button onClick={actualizarIngrediente}>Actualizar</button>
+          <button className="AgregarPlatoI"  onClick={actualizarIngrediente}>Actualizar</button>
         ) : (
-          <button onClick={crearIngrediente}>Crear</button>
+          <button className="AgregarPlatoI" onClick={crearIngrediente}>Crear</button>
         )}
-        <button onClick={resetForm}>Cancelar</button>
+        <button className="EliminarPlato" onClick={resetForm}>Cancelar</button>
       </div>
       <div>
-        <h2>Lista de Ingredientes</h2>
-        <ul>
-          {ingredientes.map((ingrediente) => (
-            <li key={ingrediente.ID_I}>
-              {ingrediente.NOMBRE_I} - {ingrediente.DESCRIPCION_I} -{" "}
-              {ingrediente.PRECIO_I}
-              <button onClick={() => editarIngrediente(ingrediente.ID_I)}>
-                Editar
-              </button>
-              <button onClick={() => eliminarIngrediente(ingrediente.ID_I)}>
-                Eliminar
-              </button>
-            </li>
-          ))}
-        </ul>
+      <h2>Lista de Ingredientes</h2>
+  <ul>
+    {ingredientes.map((ingrediente) => (
+      <li key={ingrediente.ID_I} className="ingredient-item">
+        <div className="ingredient-details">
+          <div className="ingredient-column">
+            <span className="ingredient-name">Nombre: {ingrediente.NOMBRE_I}</span>
+          </div>
+          <div className="ingredient-column">
+            <span className="ingredient-description"> Descripcion: {ingrediente.DESCRIPCION_I}</span>
+          </div>
+          <div className="ingredient-column">
+            <span className="ingredient-price">Precio: ${ingrediente.PRECIO_I}</span>
+          </div>
+          <div className="ingredient-buttons">
+            <button className="AgregarPlatoI" onClick={() => editarIngrediente(ingrediente.ID_I)}>
+              Editar
+            </button>
+            <button className="EliminarPlato" onClick={() => eliminarIngrediente(ingrediente.ID_I)}>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ul>
       </div>
     </div>
   );

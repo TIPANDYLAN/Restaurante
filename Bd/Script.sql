@@ -149,15 +149,14 @@ create table PROVEEDOR
 /*==============================================================*/
 create table RECETA
 (
-   ID_RE                int not null,
+   ID_RE                int auto_increment not null,
    ID_I                 int not null,
    ID_PL                int,
-   PESO_RE              float not null,
-   DESCRIPCION_RE       text not null,
-   NOMBRE_RE            text not null,
+   PESO_RE              float,
+   DESCRIPCION_RE       text,
+   NOMBRE_RE            text,
    primary key (ID_RE)
 );
-
 /*==============================================================*/
 /* Table: SETTINGS                                              */
 /*==============================================================*/
@@ -169,6 +168,23 @@ create table SETTINGS
     NUM_MESAS_SE		int,
     primary key (ID_SE)
 );
+
+/*==============================================================*/
+/* Table: FACTURA                                             */
+/*==============================================================*/
+create table FACTURA
+(
+	ID_ORDEN			int not null,
+	CEDULA_CL			int not null,
+    NOMBRE_CL			varchar(50),
+    CORREO_CL			varchar(50),
+    TELEFONO_CL			int,
+    DIRECCION_CL		varchar(80),
+    TOTAL				decimal(20,2),
+    FECHA				date,
+    primary key (ID_ORDEN)
+);
+
 alter table INVENTARIO add constraint FK_PROVEEN foreign key (ID_I)
       references INGREDIENTES (ID_I) on delete restrict on update restrict;
 

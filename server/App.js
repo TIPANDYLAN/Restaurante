@@ -30,7 +30,7 @@ const fileUpload = multer({
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "root",
+  password: "password",
   database: "Restaurant",
 });
 
@@ -1129,7 +1129,7 @@ app.get("/api/factura/historial", (req, res) => {
 app.put("/api/orden/:id/facturado", (req, res) => {
   const orderId = req.params.id;
 
-  const query = "UPDATE ORDEN SET ESTADO_OR = 'Facturado' WHERE ID_OR = ?";
+  const query = "UPDATE ORDEN SET ESTADO_OR = 'Facturada' WHERE ID_OR = ?";
 
   connection.query(query, [orderId], (error, result) => {
     if (error) {

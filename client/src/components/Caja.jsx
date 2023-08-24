@@ -170,14 +170,14 @@ const Caja = () => {
       `);
     });
     facturaWindow.document.write('</table>');
-    const totalSinIVA = (orden.platos.reduce((sum, plato) => sum + parseFloat(plato.PRECIO_PE), 0.00)).toFixed(2);
-    const iva = (totalSinIVA * 0.12).toFixed(2);
+    const totalSinIVA = orden.platos.reduce((sum, plato) => sum + parseFloat(plato.PRECIO_PE), 0.00);
+    const iva = parseFloat(totalSinIVA * 0.12);
     const totalConIVA = parseFloat(totalSinIVA + iva).toFixed(2);
     const descuentoAmount = parseFloat(orden.aplicarDescuento ? totalConIVA * (orden.descuento / 100) : 0).toFixed(2);
     facturaWindow.document.write('<p class="text-right">Total (sin IVA): $' + parseFloat(totalSinIVA).toFixed(2) + '</p>');
     facturaWindow.document.write('<p class="text-right">IVA (12%): $' + iva + '</p>');
     facturaWindow.document.write('<p class="text-right">Descuento: $' + descuentoAmount + '</p>');
-    facturaWindow.document.write('<p class="text-right">Total (con IVA): $' + (totalConIVA - descuentoAmount).toFixed(2) + '</p>');
+    facturaWindow.document.write('<p class="text-right">Total (con IVA): $' + parseFloat(totalConIVA - descuentoAmount).toFixed(2) + '</p>');
     facturaWindow.document.write('</body></html>');
     facturaWindow.document.close();
     facturaWindow.print();

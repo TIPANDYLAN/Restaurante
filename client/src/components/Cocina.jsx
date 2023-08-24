@@ -7,10 +7,11 @@ const CocinaCrud = () => {
 
   // Dentro del componente CocinaCrud
 
-useEffect(() => {
-  fetchOrdenes();
-  revistarEstado();
-}, []);
+  useEffect(() => {
+    fetchOrdenes().then(() => {
+      revistarEstado();
+    });
+  }, [ordenes]);
 
 const revistarEstado = ()=>{
   const ordenesConPlatosAgrupados = groupPlatosByOrden(ordenes);
@@ -22,22 +23,22 @@ const revistarEstado = ()=>{
     let nuevoEstadoOrden = "";
 
     const estadosPlatos = orden.platos.map((plato) => plato.NIVEL_ESTADO);
-    if (estadosPlatos.every((estado) => estado === 2)) {
+    if (orden.ESTADO_OR ==='Entregado' && estadosPlatos.every((estado) => estado === 2)){
+      nuevoEstadoOrden = "Entregado";
+    } else if (estadosPlatos.every((estado) => estado === 2)) {
       nuevoEstadoOrden = "Completado";
     } else if (estadosPlatos.every((estado) => estado === 0)) {
       nuevoEstadoOrden = "Por hacer";
-    } else if (estadosPlatos.includes(1) || estadosPlatos.includes(2)) {
+    } else if (estadosPlatos.includes(1) || estadosPlatos.includes(2) || estadosPlatos.includes(0)) {
       nuevoEstadoOrden = "En proceso";
     }
 
-    // Actualizar el estado local de las órdenes con los estados recalculados
-    setOrdenes(prevOrdenes =>
-      prevOrdenes.map(prevOrden =>
-        prevOrden.ID_OR === orden.ID_OR
-          ? { ...prevOrden, ESTADO_OR: nuevoEstadoOrden }
-          : prevOrden
-      )
-    );
+    if(nuevoEstadoOrden !== orden.ESTADO_OR){
+    axios.put(`http://localhost:4000/api/ordenesEstado/${orden.ID_OR}`, {
+        ESTADO_OR: nuevoEstadoOrden,
+      });
+        console.log("Pedido Actualizado Correctamente");
+      }
   });
 
 }

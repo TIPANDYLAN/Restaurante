@@ -250,7 +250,7 @@ const Orden = () => {
               )
             );
             updateData = {
-              PRECIO_PE: platoEnOrdenActual.PRECIO_PLATO * (platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + parseFloat(settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)).toFixed(2),
+              PRECIO_PE: parseFloat(platoEnOrdenActual.PRECIO_PLATO) * parseFloat(platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1) + parseFloat(settings[0].PRECIO_EXTRA_SE * (platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR)),
               PARA_LLEVAR: platoEnOrdenActual.PARA_LLEVAR - 1 === platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1 ? platoEnOrdenActual.PARA_LLEVAR - 1 : platoEnOrdenActual.PARA_LLEVAR,
               CANTXPLA_PE: platoEnOrdenActual.CANTIDAD_PLATOS_PEDIDOS - 1,
               ESTADO_PE: !platoEnOrdenActual.REDUCIR_PLATOS ? "Terminado" : "Por Hacer",

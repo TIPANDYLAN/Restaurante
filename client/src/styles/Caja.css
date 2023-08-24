@@ -121,4 +121,18 @@
     padding: 8px;
     border: 1px solid #ccc;
   }
-  
+
+  .filtro-container{
+    display: flex;
+    height: 30px;
+    margin: 10px 0;
+    align-items: center;
+  }
+
+  .filtro-container p{
+    padding: 0 10px;
+  }
+
+  .filtro-container button{
+    margin-left: 10px;
+  }
